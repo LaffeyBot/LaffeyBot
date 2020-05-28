@@ -1,4 +1,4 @@
 from nonebot.default_config import *
 
-SUPERUSERS = {353884697}
+SUPERUSERS = {}
 COMMAND_START = {'', '/', '!', '／', '！'}
