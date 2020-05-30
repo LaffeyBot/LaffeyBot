@@ -12,6 +12,7 @@ def record_task():
     result = recognize_text(screenshot_path)
     print(result)
     # TODO: 然后传回做数据处理
+    # TODO: 然后调用NoneBot给群聊发信息汇报
 
 
 def connect():

@@ -8,6 +8,10 @@ class RecordDamage:
         # Example List: [['User1', '野性狮鹫', '183197'], ['User2', '野性狮鹫', '27891']...]
         return list()
 
-    def get_record(self) -> list:
+    def get_record(self, date) -> list:
         # TODO: 根据参数（date...）返回符合要求的记录
         return list()
+
+    def delete_record(self, object_id):
+        # TODO: 根据参数（date/id...）删除符合要求的记录
+        pass
