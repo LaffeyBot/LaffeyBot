@@ -34,13 +34,15 @@ def recognize_text(img_path: str) -> list:
 
     img = Image.open('output.png')
     text: str = pytesseract.image_to_string(img, lang='chi_sim', config=tessdata_dir_config)
+    # print(text)
     record_list: list = process_text(text)
 
     return record_list
 
 
 def process_text(text: str) -> list:
-    text = text.replace(' ', '')
+    # 下面将（和{替换成了1，因为有时候1会被识别成这两个字符
+    text = text.replace(' ', '').replace('{', '1').replace('(', '1')
     split = re.split('\n\n+', text)  # 以空白行分割字符串
     filtered = list(filter(lambda t: '伤害' in t or '造成了' in t, split))  # 必须包含伤害 或 造成了
     record_list = list()
