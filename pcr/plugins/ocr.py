@@ -26,7 +26,7 @@ def preprocess(img_path: str):
     cv2.imwrite(filename, gray)
 
 
-def recognize_text(img_path: str):
+def recognize_text(img_path: str) -> list:
     pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files (x86)/Tesseract-OCR/tesseract.exe'
     tessdata_dir_config = '--tessdata-dir "C:/Program Files (x86)/Tesseract-OCR/tessdata"'
 
@@ -34,13 +34,12 @@ def recognize_text(img_path: str):
 
     img = Image.open('output.png')
     text: str = pytesseract.image_to_string(img, lang='chi_sim', config=tessdata_dir_config)
-    print(text)
     record_list: list = process_text(text)
 
-    print(record_list)
+    return record_list
 
 
-def process_text(text: str):
+def process_text(text: str) -> list:
     text = text.replace(' ', '')
     split = re.split('\n\n+', text)  # 以空白行分割字符串
     filtered = list(filter(lambda t: '伤害' in t or '造成了' in t, split))  # 必须包含伤害 或 造成了
@@ -53,7 +52,6 @@ def process_text(text: str):
         target = record_split[1].replace('造成了', '')
         damage = re.findall(r'\d+', record_split[2])[0]
         record_list.append([username, target, damage])
-    print(record_list)
     return record_list
 
 

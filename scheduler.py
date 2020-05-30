@@ -1,24 +1,35 @@
 from datetime import datetime
 import os
 from apscheduler.schedulers.blocking import BlockingScheduler
-from pykeyboard import PyKeyboard
-import win32api
-import win32con
-import keyboard
+from pcr.plugins.ocr import recognize_text
+import warnings
 
 
 def record_task():
-    # win32api.keybd_event(0x12, 0, 0, 0)  # alt键位码是17
-    # win32api.keybd_event(0x51, 0, 0, 0)  # Q键位码是81
-    # win32api.keybd_event(0x12, 0, win32con.KEYEVENTF_KEYUP, 0)
-    # win32api.keybd_event(0x51, 0, win32con.KEYEVENTF_KEYUP, 0)
-    keyboard.press_and_release('alt+q')
-    print('Tapped')
+    screenshot_path = 'screenshots/screen.png'
+    connect()
+    screenshot(screenshot_path)
+    result = recognize_text(screenshot_path)
+    print(result)
+    # TODO: 然后传回做数据处理
+
+
+def connect():
+    try:
+        os.system('adb connect 127.0.0.1:7555')
+    except:
+        warnings.warn("无法连接到模拟器，请检查模拟器是否正常运作。")
+
+
+def screenshot(relative_path: str):
+    path = os.path.abspath('.') + '/' + relative_path
+    os.system('adb shell screencap /data/screen.png')
+    os.system('adb pull /data/screen.png %s' % path)
 
 
 if __name__ == '__main__':
     scheduler = BlockingScheduler()
-    scheduler.add_job(record_task, 'interval', seconds=5)
+    scheduler.add_job(record_task, 'interval', seconds=10)
 
     try:
         scheduler.start()
