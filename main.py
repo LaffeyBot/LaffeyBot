@@ -1,5 +1,5 @@
 import nonebot
-import config
+import my_config as config
 from os import path
 
 if __name__ == '__main__':
