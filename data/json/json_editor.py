@@ -5,7 +5,7 @@ from config import BOSS_HEALTH
 class JSONEditor:
     def __init__(self):
         with open('status.json', 'r') as file:
-            self.dict = json.load(file)
+            self.dict: dict = json.load(file)
 
     def save(self):
         with open('status.json', 'w') as file:
@@ -37,6 +37,24 @@ class JSONEditor:
             self.set_remaining_health(remaining_health - damage)
         self.save()
         return did_kill_boss
+
+    def add_on_tree(self, name):
+        if self.dict.get('tree', None) is None:
+            self.dict['tree'] = [name]
+        else:
+            tree: list = self.dict['tree']
+            tree.append(name)
+        self.save()
+
+    def clear_tree(self) -> list:
+        tree: list = self.dict['tree']
+        self.dict['tree'] = list()
+        return tree
+
+    def exists_player_on_tree(self) -> bool:
+        if self.dict.get('tree', None) is None:
+            return False
+        return len(self.dict['tree']) > 0
 
     def kill_boss(self):
         if self.dict['current_boss_order'] != 5:

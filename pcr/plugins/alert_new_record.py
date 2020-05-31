@@ -12,8 +12,13 @@ async def alert_new_record(new_records: list, did_kill: bool):
     remaining_health = JSONEditor().get_remaining_health()
     if did_kill:
         message += 'BOSS被击破了喵！干得漂亮喵！(≧▽≦)'
+        if JSONEditor().exists_player_on_tree():
+            message += '\n'
+            for player in JSONEditor().clear_tree():
+                message += '@' + player + ' '
+            message += '可以从树上下来了喵~'
     else:
-        message + boss_status_text(remaining_health)
+        message += boss_status_text(remaining_health)
 
     print(message)
     await nonebot.get_bot().send_group_msg(group_id=config.GROUP_ID, message=message)
