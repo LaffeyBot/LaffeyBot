@@ -2,6 +2,7 @@ from PIL import Image
 import pytesseract
 import cv2
 import re
+from data.json.json_editor import JSONEditor
 
 
 def preprocess(img_path: str):
@@ -9,14 +10,14 @@ def preprocess(img_path: str):
     width, height = img.size
     img = img.crop((width*0.7, height*0.25, width*0.9, height*0.9))  # 截取需要的部分
 
-    datas = img.getdata()
-    newData = []
-    for item in datas:
+    data = img.getdata()
+    new_data = []
+    for item in data:
         if (item[0] + item[1]) / (item[2] + 1) >= 3:  # 将图片黄色部分替换为纯黑
-            newData.append((0, 0, 0))
+            new_data.append((0, 0, 0))
         else:
-            newData.append(item)  # 其余部分不变
-    img.putdata(newData)
+            new_data.append(item)  # 其余部分不变
+    img.putdata(new_data)
     img.save("intermediate.jpg", "JPEG")
 
     image = cv2.imread("intermediate.jpg")
@@ -53,6 +54,8 @@ def process_text(text: str) -> list:
         username = record_split[0].replace('对', '')
         target = record_split[1].replace('造成了', '')
         damage = re.findall(r'\d+', record_split[2])[0]
+        if '击破' in record_split[2]:
+            damage = JSONEditor().get_remaining_health()
         record_list.append([username, target, damage])
     return record_list
 

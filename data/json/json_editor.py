@@ -11,6 +11,13 @@ class JSONEditor:
         with open('status.json', 'w') as file:
             json.dump(self.dict, file)
 
+    def get_fetch_status(self) -> bool:
+        return self.dict.get('fetch_status', True)
+
+    def set_fetch_status(self, status: bool):
+        self.dict['fetch_status'] = status
+        self.save()
+
     def get_remaining_health(self):
         return self.dict['remaining_health']
 

@@ -4,12 +4,15 @@ from pcr.plugins.ocr import recognize_text
 import warnings
 from data import damage
 import nonebot
+import config
+from data.json.json_editor import JSONEditor
 from pcr.plugins.alert_new_record import alert_new_record
 
 
-@nonebot.scheduler.scheduled_job('interval', seconds=10)
+@nonebot.scheduler.scheduled_job('interval', seconds=config.FETCH_INTERVAL)
 async def _():
-    await record_task()
+    if JSONEditor().get_fetch_status():
+        await record_task()
 
 
 async def record_task():
