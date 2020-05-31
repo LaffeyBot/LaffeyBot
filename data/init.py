@@ -16,6 +16,7 @@ def init_database():
     connection.execute('CREATE TABLE IF NOT EXISTS player_list ('
                        'username TEXT UNIQUE'
                        ');')
+    connection.commit()
 
 
 def get_connection():

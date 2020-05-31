@@ -19,7 +19,7 @@ def add_record(records: list) -> list:
         added_records.append(record)
         record.append(today)
         c.execute("INSERT INTO record (username, target, damage, date) VALUES "
-                  "(?, ?, ?, ?)", record)
+                  "(?, ?, ?, ?)", tuple(record))
     c.commit()
     return added_records
 
