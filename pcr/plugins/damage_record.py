@@ -1,6 +1,6 @@
 from nonebot import on_command, CommandSession, permission as perm
 from data.damage import delete_all_records, add_record
-from pcr.plugins.alert_new_record import alert_new_record
+from pcr.plugins.alert_new_record import alert_new_record, boss_status_text
 from data.json.json_editor import JSONEditor
 import config
 
@@ -21,6 +21,18 @@ async def manual_damage(session: CommandSession):
     target = config.NAME_FOR_BOSS[JSONEditor().get_current_boss_order()-1]
     new_record, did_kill = add_record([[username, target, damage]])
     await alert_new_record(new_record, did_kill)
+
+
+@on_command('status', aliases=['状态', 'boss状态'], only_to_me=False)
+async def status(session: CommandSession):
+    if session.event.group_id != config.GROUP_ID:
+        print('NOT IN SELECTED GROUP')
+        return
+    editor = JSONEditor()
+    message = '现在攻略的是' + str(editor.get_generation()) + '周目的' + \
+              str(editor.get_current_boss_order()) + '王喵~\n'
+    message += boss_status_text(editor.get_remaining_health())
+    await session.send(message=message)
 
 
 @manual_damage.args_parser

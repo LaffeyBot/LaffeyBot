@@ -21,6 +21,9 @@ class JSONEditor:
     def get_current_boss_order(self) -> int:
         return self.dict['current_boss_order']
 
+    def get_generation(self) -> int:
+        return self.dict['current_generation']
+
     def add_damage(self, damage: int) -> bool:
         remaining_health: int = self.get_remaining_health()
         print('ADD_DAMAGE ' + str(damage))
