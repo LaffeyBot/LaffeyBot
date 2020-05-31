@@ -17,7 +17,9 @@ async def manual_damage(session: CommandSession):
         print('NOT IN SELECTED GROUP')
         return
     damage = session.get('damage')
-    username = session.event.sender['nickname']
+    username = session.event.sender['card']
+    if len(username) == 0:
+        username = session.event.sender['nickname']
     target = config.NAME_FOR_BOSS[JSONEditor().get_current_boss_order()-1]
     new_record, did_kill = add_record([[username, target, damage]])
     await alert_new_record(new_record, did_kill)

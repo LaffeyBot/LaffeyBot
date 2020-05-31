@@ -8,7 +8,9 @@ async def hang_on_tree(session: CommandSession):
     if session.event.group_id != config.GROUP_ID:
         print('NOT IN SELECTED GROUP')
         return
-    name: str = session.event.sender['nickname']
+    name: str = session.event.sender['card']
+    if len(name) == 0:
+        name = session.event.sender['nickname']
     JSONEditor().add_on_tree(name)
     await session.send(message='将' + name + '挂到树上了喵~')
 

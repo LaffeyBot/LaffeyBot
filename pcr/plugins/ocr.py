@@ -3,6 +3,7 @@ import pytesseract
 import cv2
 import re
 from data.json.json_editor import JSONEditor
+import random
 
 
 def preprocess(img_path: str):
@@ -43,7 +44,7 @@ def recognize_text(img_path: str) -> list:
 
 def process_text(text: str) -> list:
     # 下面将（和{替换成了1，因为有时候1会被识别成这两个字符
-    text = text.replace(' ', '').replace('{', '1').replace('(', '1')
+    text = text.replace(' ', '')
     split = re.split('\n\n+', text)  # 以空白行分割字符串
     filtered = list(filter(lambda t: '伤害' in t or '造成了' in t, split))  # 必须包含伤害 或 造成了
     record_list = list()
@@ -53,11 +54,30 @@ def process_text(text: str) -> list:
             continue
         username = record_split[0].replace('对', '')
         target = record_split[1].replace('造成了', '')
-        damage = re.findall(r'\d+', record_split[2])[0]
-        if '击破' in record_split[2]:
+        damage_text = record_split[2].replace('{', '1').replace('(', '1').replace('）', '1')
+        damage = re.findall(r'\d+', damage_text)[0]
+        if '击破' in damage_text:
             damage = JSONEditor().get_remaining_health()
         record_list.append([username, target, damage])
     return record_list
+
+
+def image_to_position(image) -> (float, float):
+    image_path = 'templates/' + str(image) + '.png'
+    screen = cv2.imread('screenshots/screen.png', 0)
+    template = cv2.imread(image_path, 0)
+    methods = [cv2.TM_CCOEFF_NORMED, cv2.TM_SQDIFF_NORMED, cv2.TM_CCORR_NORMED]
+    image_x, image_y = template.shape[:2]
+    result = cv2.matchTemplate(screen, template, methods[0])
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+    if max_val > 0.8:
+        random_x = random.randint(-5, 5)
+        random_y = random.randint(-5, 5)
+        center = (max_loc[0] + image_y / 2 + random_y, max_loc[1] + image_x / 2 + random_x)
+        print(center)
+        return center
+    else:
+        return None
 
 
 if __name__ == '__main__':

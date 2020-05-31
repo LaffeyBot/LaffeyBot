@@ -1,6 +1,6 @@
-from datetime import datetime
+import time
 import os
-from pcr.plugins.ocr import recognize_text
+from pcr.plugins.ocr import recognize_text, image_to_position
 import warnings
 from data import damage
 import nonebot
@@ -18,6 +18,7 @@ async def _():
 async def record_task():
     screenshot_path = 'screenshots/screen.png'
     connect()
+    refresh_data()
     screenshot(screenshot_path)
     result = recognize_text(screenshot_path)
     print(result)
@@ -25,6 +26,21 @@ async def record_task():
     new_records, did_kill = damage.add_record(result)
     # 然后调用NoneBot给群聊发信息汇报
     await alert_new_record(new_records, did_kill)
+
+
+def refresh_data():
+    images = ['back_button', 'gild_battle', 'expand_button']
+    screenshot_path = 'screenshots/screen.png'
+    for image in images:
+        screenshot(screenshot_path)
+        center = image_to_position(image)
+        if center is not None:
+            click(center[0], center[1])
+            time.sleep(1)
+
+
+def click(x, y):
+    os.system('adb shell input tap %s %s' % (x, y))
 
 
 def connect():
