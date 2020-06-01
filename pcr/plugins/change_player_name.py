@@ -14,7 +14,7 @@ async def change_player_name(session: CommandSession):
     old_name = session.state['old_name']
     new_name = session.state['new_name']
     modify_name(old_name, new_name)
-    await session.send(message='将' + old_name + '大人的名字修改为' + new_name + '了喵！')
+    await session.send(message='将' + old_name + '的名字修改为' + new_name + '了喵！')
 
 
 def modify_name(old_name: str, new_name: str):

@@ -2,6 +2,7 @@ from data.init_database import get_connection
 from data.json.json_editor import JSONEditor
 import time
 from datetime import timedelta, datetime
+import config
 
 
 def add_record(records: list, force=False) -> (list, bool):
@@ -24,6 +25,7 @@ def add_record(records: list, force=False) -> (list, bool):
         if not force and c.execute('SELECT * FROM record WHERE username=? AND damage=? AND date=?',
                                    (record[0], record[2], today)).fetchone() is not None:
             continue  # 如果不是强制记录并且 Record 已存在
+        record[1] = config.NAME_FOR_BOSS[JSONEditor().get_current_boss_order()-1]
         added_records.append(record)
         record.append(today)
         c.execute("INSERT INTO record (username, target, damage, date) VALUES "

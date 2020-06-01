@@ -53,9 +53,17 @@ class JSONEditor:
             tree.append(name)
         self.save()
 
+    def remove_from_tree(self, name):
+        if self.dict.get('tree', None) is not None:
+            tree: list = self.dict['tree']
+            tree.remove(name)
+            self.dict['tree'] = tree
+            self.save()
+
     def clear_tree(self) -> list:
         tree: list = self.dict['tree']
         self.dict['tree'] = list()
+        self.save()
         return tree
 
     def exists_player_on_tree(self) -> bool:

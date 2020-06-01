@@ -1,6 +1,10 @@
 from data.init_database import init_database, get_connection
 import os
 import csv
+from pcr.plugins.backup import backup
+
+
+backup()  # 备份之前的数据库
 
 init_database()
 

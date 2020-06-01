@@ -8,12 +8,19 @@ from data.json.json_editor import JSONEditor
 from pcr.plugins.alert_new_record import alert_new_record
 import random
 import asyncio
+from pcr.plugins.backup import backup
 
 
 @nonebot.scheduler.scheduled_job('interval', seconds=config.FETCH_INTERVAL)
 async def _():
     if JSONEditor().get_fetch_status():
         await record_task()
+
+
+@nonebot.scheduler.scheduled_job('interval', minutes=config.BACKUP_INTERVAL)
+async def _():
+    if config.BACKUP_ENABLED:
+        backup()
 
 
 async def record_task():
