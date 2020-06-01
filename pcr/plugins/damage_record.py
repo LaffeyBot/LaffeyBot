@@ -3,6 +3,7 @@ from data.damage import delete_all_records, add_record
 from pcr.plugins.alert_new_record import alert_new_record, boss_status_text
 from data.json.json_editor import JSONEditor
 import config
+from pcr.plugins.get_best_name import get_best_name
 
 
 @on_command('deleteAll', aliases='删除所有记录', only_to_me=True, permission=perm.SUPERUSER)
@@ -17,9 +18,7 @@ async def manual_damage(session: CommandSession):
         print('NOT IN SELECTED GROUP')
         return
     damage = session.get('damage')
-    username = session.event.sender['card']
-    if len(username) == 0:
-        username = session.event.sender['nickname']
+    username = get_best_name(session)
     target = config.NAME_FOR_BOSS[JSONEditor().get_current_boss_order()-1]
     new_record, did_kill = add_record([[username, target, damage]])
     await alert_new_record(new_record, did_kill)

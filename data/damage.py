@@ -1,13 +1,18 @@
-from data.init import get_connection
+from data.init_database import get_connection
 from data.json.json_editor import JSONEditor
 import time
+from datetime import timedelta, datetime
 
 
 def add_record(records: list) -> (list, bool):
     # 传入一个list，将list数据与已有数据比对，如果不同则添加进去
     # 最后传回新添加的数据（以list形式）
     # Example List: [['User1', '野性狮鹫', '183197'], ['User2', '野性狮鹫', '27891']...]
-    today = int(time.strftime("%Y%m%d", time.localtime()))
+    today = int(datetime.now().strftime("%Y%m%d"))
+    current_time = int(time.strftime("%H", time.localtime()))
+    # 如果是五点前，出刀算入上一天
+    if current_time < 5:
+        today = int((datetime.now() - timedelta(days=1)).strftime("%Y%m%d"))
     print(today)
     c = get_connection()
     json_editor = JSONEditor()

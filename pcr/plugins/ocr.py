@@ -5,11 +5,17 @@ import re
 from data.json.json_editor import JSONEditor
 import random
 
+SCREENSHOT_PATH = 'screenshots/screen.png'
 
-def preprocess(img_path: str):
+
+def preprocess(img_path: str, crop: (float, float, float, float)):
+    """
+    :param img_path: relative path of image
+    :type crop: tuple (minX, minY, maxX, maxY)
+    """
     img = Image.open(img_path).convert('RGB')
     width, height = img.size
-    img = img.crop((width*0.7, height*0.25, width*0.9, height*0.9))  # 截取需要的部分
+    img = img.crop((width*crop[0], height*crop[1], width*crop[2], height*crop[3]))  # 截取需要的部分
 
     data = img.getdata()
     new_data = []
@@ -28,18 +34,26 @@ def preprocess(img_path: str):
     cv2.imwrite(filename, gray)
 
 
-def recognize_text(img_path: str) -> list:
-    pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files (x86)/Tesseract-OCR/tesseract.exe'
-    tessdata_dir_config = '--tessdata-dir "C:/Program Files (x86)/Tesseract-OCR/tessdata"'
+def recognize_text_to_record_list(img_path: str, crop: (float, float, float, float) = (0.7, 0.25, 0.9, 0.9)) -> list:
+    """
+        :param img_path: relative path of image
+        :type crop: tuple (minX, minY, maxX, maxY)
+    """
 
-    preprocess(img_path)
+    preprocess(img_path, crop)
 
-    img = Image.open('output.png')
-    text: str = pytesseract.image_to_string(img, lang='chi_sim', config=tessdata_dir_config)
+    text: str = recognize_text('output.png')
     # print(text)
     record_list: list = process_text(text)
 
     return record_list
+
+
+def recognize_text(img_path) -> str:
+    pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files (x86)/Tesseract-OCR/tesseract.exe'
+    tessdata_dir_config = '--tessdata-dir "C:/Program Files (x86)/Tesseract-OCR/tessdata"'
+    img = Image.open(img_path)
+    return pytesseract.image_to_string(img, lang='chi_sim', config=tessdata_dir_config)
 
 
 def process_text(text: str) -> list:
@@ -64,7 +78,8 @@ def process_text(text: str) -> list:
 
 def image_to_position(image) -> (float, float):
     image_path = 'templates/' + str(image) + '.png'
-    screen = cv2.imread('screenshots/screen.png', 0)
+    print(image_path)
+    screen = cv2.imread(SCREENSHOT_PATH, 0)
     template = cv2.imread(image_path, 0)
     methods = [cv2.TM_CCOEFF_NORMED, cv2.TM_SQDIFF_NORMED, cv2.TM_CCORR_NORMED]
     image_x, image_y = template.shape[:2]
@@ -81,4 +96,4 @@ def image_to_position(image) -> (float, float):
 
 
 if __name__ == '__main__':
-    recognize_text('../../test/10.png')
+    recognize_text_to_record_list('../../test/10.png')

@@ -14,7 +14,8 @@ def init_database():
                        'value TEXT NOT NULL'
                        ');')
     connection.execute('CREATE TABLE IF NOT EXISTS player_list ('
-                       'username TEXT UNIQUE'
+                       'qq_name TEXT,'
+                       'player_name TEXT'
                        ');')
     connection.commit()
 

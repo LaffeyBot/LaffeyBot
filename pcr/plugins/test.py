@@ -7,6 +7,7 @@ async def test(session: CommandSession):
     print(session.event)
     response = '现在的group_id:' + str(event.group_id) + '\n' + \
                '内容: ' + event.raw_message + '\n' + \
-               '发件人: ' + event.sender['nickname'] + '\n' + \
-               '群名片：' + event.sender['card']
+               '发件人: ' + event.sender['nickname']
+    if 'card' in event.sender:
+        response += '\n 群名片：' + event.sender['card']
     await session.send(response)
