@@ -5,6 +5,6 @@ def qq_to_game_name(qq_name: str) -> str:
     c = get_connection()
     matching_record = c.execute('SELECT player_name FROM player_list WHERE qq_name=?', (qq_name,)).fetchone()
     if matching_record is None:
-        return ''
+        return qq_name
     else:
         return matching_record[0]

@@ -24,9 +24,15 @@ async def show_rank(session: CommandSession):
 
 
 def position_on_rank(rank: list, name: str) -> int:
+    current_damage = 9999999999999999
+    current_best_index = 1
     for index, element in enumerate(rank):
-        if element[0][0] == name:
-            return index + 1
+        # 当多人伤害完全相同的时候，取最高排名
+        if element[1] < current_damage:
+            current_best_index = index + 1
+            current_damage = element[1]
+        if element[0] == name:
+            return current_best_index
     return -1
 
 
@@ -53,9 +59,10 @@ def list_rank(records) -> list:
 
     list_of_players = c.execute('SELECT player_name FROM player_list').fetchall()
     for player in list_of_players:
-        rank_dict[player] = 0
+        rank_dict[player[0]] = 0
 
     for record in records:
+        print(record)
         record_name = record[0]
         if record_name in rank_dict:
             rank_dict[record_name] += record[1]

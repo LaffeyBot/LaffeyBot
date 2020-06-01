@@ -2,6 +2,7 @@ from nonebot import on_command, CommandSession, permission as perm
 from data.damage import delete_all_records, add_record
 from pcr.plugins.alert_new_record import alert_new_record, boss_status_text
 from data.json.json_editor import JSONEditor
+from data.qq_game_name_converter import qq_to_game_name
 import config
 from pcr.plugins.get_best_name import get_best_name
 
@@ -19,14 +20,15 @@ async def manual_damage(session: CommandSession):
         return
     damage = session.get('damage')
     username = get_best_name(session)
+    game_name = qq_to_game_name(username)
     target = config.NAME_FOR_BOSS[JSONEditor().get_current_boss_order()-1]
-    new_record, did_kill = add_record([[username, target, damage]])
+    new_record, did_kill = add_record([[game_name, target, damage]], force=True)
     await alert_new_record(new_record, did_kill)
 
 
 @on_command('status', aliases=['状态', 'boss状态'], only_to_me=False)
 async def status(session: CommandSession):
-    if session.event.group_id != config.GROUP_ID:
+    if session.event.group_id != config.GROUP_ID and session.event['message_type'] != 'private':
         print('NOT IN SELECTED GROUP')
         return
     editor = JSONEditor()
@@ -40,7 +42,6 @@ async def status(session: CommandSession):
 async def _(session: CommandSession):
     # 去掉消息首尾的空白符
     stripped_arg = session.current_arg_text.strip().replace('出刀', '')
-    print('STRIPPED ' + stripped_arg)
 
     if stripped_arg and stripped_arg.isdigit():
         session.state['damage'] = int(stripped_arg)

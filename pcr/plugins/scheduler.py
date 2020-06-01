@@ -22,7 +22,6 @@ async def record_task():
     await refresh_data(['back_button', 'gild_battle', 'expand_button'])
     screenshot(screenshot_path)
     result = recognize_text_to_record_list(screenshot_path)
-    await nonebot.get_bot().send_private_msg(user_id=353884697, message=str(result))
     print(result)
     #  然后传回做数据处理
     new_records, did_kill = damage.add_record(result)

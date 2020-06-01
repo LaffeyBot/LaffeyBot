@@ -4,7 +4,7 @@ import time
 from datetime import timedelta, datetime
 
 
-def add_record(records: list) -> (list, bool):
+def add_record(records: list, force=False) -> (list, bool):
     # 传入一个list，将list数据与已有数据比对，如果不同则添加进去
     # 最后传回新添加的数据（以list形式）
     # Example List: [['User1', '野性狮鹫', '183197'], ['User2', '野性狮鹫', '27891']...]
@@ -21,9 +21,9 @@ def add_record(records: list) -> (list, bool):
     killed_boss = False
     record: list
     for record in records:
-        if c.execute('SELECT * FROM record WHERE username=? AND damage=? AND date=?',
-                     (record[0], record[2], today)).fetchone() is not None:
-            continue  # Record 已存在
+        if not force and c.execute('SELECT * FROM record WHERE username=? AND damage=? AND date=?',
+                                   (record[0], record[2], today)).fetchone() is not None:
+            continue  # 如果不是强制记录并且 Record 已存在
         added_records.append(record)
         record.append(today)
         c.execute("INSERT INTO record (username, target, damage, date) VALUES "
