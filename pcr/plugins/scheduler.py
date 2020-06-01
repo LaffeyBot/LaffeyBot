@@ -1,4 +1,3 @@
-import time
 import os
 from pcr.plugins.ocr import recognize_text_to_record_list, image_to_position, recognize_text, preprocess
 import warnings
@@ -8,6 +7,7 @@ import config
 from data.json.json_editor import JSONEditor
 from pcr.plugins.alert_new_record import alert_new_record
 import random
+import asyncio
 
 
 @nonebot.scheduler.scheduled_job('interval', seconds=config.FETCH_INTERVAL)
@@ -19,7 +19,7 @@ async def _():
 async def record_task():
     screenshot_path = 'screenshots/screen.png'
     connect()
-    refresh_data(['back_button', 'gild_battle', 'expand_button'])
+    await refresh_data(['back_button', 'gild_battle', 'expand_button'])
     screenshot(screenshot_path)
     result = recognize_text_to_record_list(screenshot_path)
     await nonebot.get_bot().send_private_msg(user_id=353884697, message=str(result))
@@ -30,20 +30,20 @@ async def record_task():
     await alert_new_record(new_records, did_kill)
 
 
-def refresh_data(images: list):
+async def refresh_data(images: list):
     screenshot_path = 'screenshots/screen.png'
     for image in images:
         screenshot(screenshot_path)
         center = image_to_position(image)
         if center is not None:
             click(center[0], center[1])
-            time.sleep(2)
+            await asyncio.sleep(2)
         else:
-            game_error_handling()
+            await game_error_handling()
             # 出错。可能是由于：1. 号被顶下去了 2. 日期变更
 
 
-def game_error_handling():
+async def game_error_handling():
     screenshot_path = 'screenshots/screen.png'
     preprocess(screenshot_path, (0.25, 0.25, 0.75, 0.75))
     error_text = recognize_text('output.png').replace(' ', '')
@@ -58,20 +58,20 @@ def game_error_handling():
         warnings.warn('无法解决游戏问题，请检查模拟器')
         return
     click(center[0], center[1])
-    time.sleep(5)
+    await asyncio.sleep(5)
     # 现在应该回到了标题画面
     button_image = 'adventure_button'
     center = None
     while center is None:
         click(random.randint(0, 100), random.randint(0, 100))
-        time.sleep(5)
+        await asyncio.sleep(5)
         screenshot(screenshot_path)
         center = image_to_position(button_image)
     # 现在应该在主界面
     click(center[0], center[1])
     # 现在应该在冒险界面
     images = ['gild_battle', 'expand_button']
-    refresh_data(images)
+    await refresh_data(images)
     # 现在应该回到了公会战界面，结束
 
 
