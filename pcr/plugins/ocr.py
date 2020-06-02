@@ -70,8 +70,8 @@ def process_text(text: str) -> list:
         target = record_split[1].replace('造成了', '')
         damage_text = record_split[2].replace('{', '1').replace('(', '1').replace('）', '1')
         damage = re.findall(r'\d+', damage_text)[0]
-        if '击破' in damage_text:
-            damage = JSONEditor().get_remaining_health()
+        # if '击破' in damage_text:
+        #     damage = JSONEditor().get_remaining_health()
         record_list.append([username, target, damage])
     return record_list
 

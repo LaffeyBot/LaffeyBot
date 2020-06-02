@@ -7,6 +7,14 @@ async def alert_new_record(new_records: list, did_kill: bool):
     if len(new_records) == 0:
         return
     message = '添加了新的记录喵\n'
+
+    no_report_list = JSONEditor().get_no_report_list()
+    for record in new_records:
+        if record[0] in no_report_list:
+            new_records.remove(record)
+    if len(new_records) == 0:
+        return  # 不汇报
+
     for record in new_records:
         message += '- ' + record[0] + '对' + record[1] + '造成了 ' + str(record[2]) + ' 点伤害\n'
     remaining_health = JSONEditor().get_remaining_health()

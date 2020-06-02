@@ -51,14 +51,36 @@ class JSONEditor:
         else:
             tree: list = self.dict['tree']
             tree.append(name)
+            self.dict['tree'] = tree
         self.save()
 
     def remove_from_tree(self, name):
         if self.dict.get('tree', None) is not None:
             tree: list = self.dict['tree']
-            tree.remove(name)
-            self.dict['tree'] = tree
+            if name in tree:
+                tree.remove(name)
+                self.dict['tree'] = tree
+                self.save()
+
+    def add_to_no_report_list(self, name):
+        if self.dict.get('no_report', None) is None:
+            self.dict['no_report'] = [name]
+        else:
+            no_report: list = self.dict['no_report']
+            no_report.append(name)
+            self.dict['no_report'] = no_report
+        self.save()
+
+    def remove_from_no_report_list(self, name):
+        if self.dict.get('no_report', None) is not None:
+            no_report: list = self.dict['no_report']
+            if name in no_report:
+                no_report.remove(name)
+                self.dict['no_report'] = no_report
             self.save()
+
+    def get_no_report_list(self):
+        return self.dict.get('no_report', list())
 
     def clear_tree(self) -> list:
         tree: list = self.dict['tree']

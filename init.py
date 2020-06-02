@@ -17,7 +17,7 @@ if os.path.isfile('player_list.csv'):
         # noinspection SqlWithoutWhere
         c.execute('DELETE FROM player_list')
 
-        if headers[0] == 'player_name':
+        if headers[0] == 'game_name':
             player_name_row = 0
             qq_name_row = 1
         else:

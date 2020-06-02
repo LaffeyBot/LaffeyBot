@@ -5,7 +5,6 @@
 
 1. [scheduler.py](https://github.com/zjdavid/PCRBot/blob/master/pcr/plugins/scheduler.py) 将会周期性（默认30秒）读取截屏文件夹，并将截屏文件交给[ocr.py](https://github.com/zjdavid/PCRBot/blob/master/pcr/plugins/ocr.py) 处理
 2. [ocr.py](https://github.com/zjdavid/PCRBot/blob/master/pcr/plugins/ocr.py) 会尝试识别出图片中的出刀记录并传回。
-- 注意：中文识别不可靠，可能需要模糊匹配
 3. [scheduler.py](https://github.com/zjdavid/PCRBot/blob/master/pcr/plugins/scheduler.py) 会将数据传给 [damage_record.py](https://github.com/zjdavid/PCRBot/blob/master/pcr/plugins/damage_record.py)
 4. [record_damage.py](https://github.com/zjdavid/PCRBot/blob/master/pcr/plugins/damage_record.py) 会记录下此次伤害记录
 5. 随后，[scheduler.py](https://github.com/zjdavid/PCRBot/blob/master/pcr/plugins/scheduler.py) 会调用 QQ 机器人汇报新增出刀。
