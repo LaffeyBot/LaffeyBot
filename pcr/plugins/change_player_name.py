@@ -3,7 +3,7 @@ from data.json.json_editor import JSONEditor
 import config
 from pcr.plugins.get_best_name import get_best_name
 from data.init_database import get_connection
-from data.qq_game_name_converter import qq_to_game_name
+from data.player_name import qq_to_game_name
 
 
 @on_command('change_player_name', aliases=['修改游戏名'], only_to_me=False, permission=permission.SUPERUSER)

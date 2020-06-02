@@ -2,7 +2,7 @@ from nonebot import on_command, CommandSession
 from data.init_database import get_connection
 import config
 from datetime import datetime
-from data.qq_game_name_converter import qq_to_game_name
+from data.player_name import qq_to_game_name
 from pcr.plugins.get_best_name import get_best_name
 
 

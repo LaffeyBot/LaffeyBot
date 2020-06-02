@@ -3,10 +3,11 @@ from nonebot.default_config import *
 SUPERUSERS = {353884697}  # 管理员账号
 COMMAND_START = {'', '/', '!', '／', '！'}  # 可作为命令起始符的字符，‘’代表没有也可以
 GROUP_ID = 967350580  # 会战群
+# GROUP_ID = 1108319335
 BOSS_HEALTH = [6000000, 8000000, 10000000, 12000000, 20000000]  # BOSS的血量
-NAME_FOR_BOSS = ['野性狮鹫', '野性狮鹫', '野性狮鹫', '野性狮鹫', '野性狮鹫']  # BOSS的名字
+NAME_FOR_BOSS = ['双足飞龙', '野性狮鹫', '兽人头目', '灵魂角鹿', '弥诺陶洛斯']  # BOSS的名字
 MINIMUM_ATTACK = 1  # TODO
-FETCH_INTERVAL = 60  # 抓取初级记录的时间（秒）
+FETCH_INTERVAL = 120  # 抓取初级记录的时间（秒）
 BACKUP_INTERVAL = 10  # 备份数据库的时间（分）
 BACKUP_ENABLED = True  # 是否启用数据库备份
 MY_NAME = '威严满满的Laffey酱'  # Bot名字

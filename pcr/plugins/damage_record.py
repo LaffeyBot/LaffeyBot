@@ -2,7 +2,7 @@ from nonebot import on_command, CommandSession, permission as perm
 from data.damage import delete_all_records, add_record
 from pcr.plugins.alert_new_record import alert_new_record, boss_status_text
 from data.json.json_editor import JSONEditor
-from data.qq_game_name_converter import qq_to_game_name
+from data.player_name import qq_to_game_name
 import config
 from pcr.plugins.get_best_name import get_best_name
 
