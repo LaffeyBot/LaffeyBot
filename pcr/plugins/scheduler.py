@@ -30,7 +30,7 @@ async def record_task():
         await refresh_data(['back_button', 'gild_battle', 'expand_button'])
     screenshot(screenshot_path)
     result = recognize_text_to_record_list(screenshot_path)
-    print(result)
+    # print(result)
     #  然后传回做数据处理
     new_records, did_kill = damage.add_record(result)
     # 然后调用NoneBot给群聊发信息汇报
