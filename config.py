@@ -1,5 +1,7 @@
 from nonebot.default_config import *
 
+HOST = '127.0.0.1'
+PORT = 8080
 SUPERUSERS = {353884697}  # 管理员账号
 COMMAND_START = {'', '/', '!', '／', '！'}  # 可作为命令起始符的字符，‘’代表没有也可以
 GROUP_ID = 967350580  # 会战群
