@@ -36,8 +36,8 @@ async def list_attacks(session: CommandSession):
     await session.send(message)
 
 
-@on_command('list_attack_detail', aliases=['昨日出刀详情', '昨日出击详情'], only_to_me=False)
-async def list_attack_detail(session: CommandSession):
+@on_command('list_yesterday_attack_detail', aliases=['昨日出刀详情', '昨日出击详情'], only_to_me=False)
+async def list_yesterday_attack_detail(session: CommandSession):
     record_list: list = get_list_of_attacks(datetime.now() - timedelta(days=1))
     message = '下面是昨天的出击详情喵：\n'
     for item in record_list:
