@@ -26,7 +26,8 @@ async def _():
 async def record_task():
     screenshot_path = 'screenshots/screen.png'
     connect()
-    await refresh_data(['back_button', 'gild_battle', 'expand_button'])
+    if config.DO_REFRESH_DATA:
+        await refresh_data(['back_button', 'gild_battle', 'expand_button'])
     screenshot(screenshot_path)
     result = recognize_text_to_record_list(screenshot_path)
     print(result)

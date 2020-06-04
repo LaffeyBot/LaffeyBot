@@ -19,6 +19,8 @@ async def manual_damage(session: CommandSession):
         print('NOT IN SELECTED GROUP')
         return
     damage = session.get('damage')
+    if not damage:
+        await session.send('请输入伤害喵')
     username = get_best_name(session)
     game_name = qq_to_game_name(username)
     target = config.NAME_FOR_BOSS[JSONEditor().get_current_boss_order()-1]
@@ -46,5 +48,3 @@ async def _(session: CommandSession):
     if stripped_arg and stripped_arg.isdigit():
         session.state['damage'] = int(stripped_arg)
         return
-    else:
-        await session.send('请输入伤害喵')
