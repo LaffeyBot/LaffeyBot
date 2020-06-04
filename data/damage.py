@@ -1,8 +1,8 @@
 from data.init_database import get_connection
 from data.json.json_editor import JSONEditor
-import time
 from data.player_name import get_closest_player_name
-from datetime import timedelta, datetime
+from data.get_date_int import get_date_int
+from datetime import datetime
 import config
 
 
@@ -10,11 +10,7 @@ def add_record(records: list, force=False) -> (list, bool):
     # 传入一个list，将list数据与已有数据比对，如果不同则添加进去
     # 最后传回新添加的数据（以list形式）
     # Example List: [['User1', '野性狮鹫', '183197'], ['User2', '野性狮鹫', '27891']...]
-    today = int(datetime.now().strftime("%Y%m%d"))
-    current_time = int(time.strftime("%H", time.localtime()))
-    # 如果是五点前，出刀算入上一天
-    if current_time < 5:
-        today = int((datetime.now() - timedelta(days=1)).strftime("%Y%m%d"))
+    today = get_date_int(datetime.now())
     print(today)
     c = get_connection()
     json_editor = JSONEditor()
@@ -22,13 +18,13 @@ def add_record(records: list, force=False) -> (list, bool):
     added_records = list()
     killed_boss = False
     record: list
-    for record in records:
+    for record in reversed(records):
         # 修正target和用户名
         record[1] = config.NAME_FOR_BOSS[JSONEditor().get_current_boss_order() - 1]
         record[0] = get_closest_player_name(record[0])
 
-        if not force and c.execute('SELECT * FROM record WHERE username=? AND damage=? AND date=?',
-                                   (record[0], record[2], today)).fetchone() is not None:
+        if not force and c.execute('SELECT * FROM record WHERE damage=?',
+                                   (record[2],)).fetchone() is not None:
             continue  # 如果不是强制记录并且 Record 已存在
         added_records.append(record)
         record.append(today)
