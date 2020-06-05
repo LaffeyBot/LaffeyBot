@@ -2,6 +2,7 @@ from nonebot import on_command, CommandSession
 from nonebot import on_notice, NoticeSession
 import config
 
+
 #group_id = [1104038724, 1108319335]
 @on_notice('group_increase')
 async def welcome_new_member(session: NoticeSession):
