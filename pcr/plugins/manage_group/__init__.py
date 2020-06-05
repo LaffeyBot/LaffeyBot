@@ -7,7 +7,7 @@ import config
 @on_notice('group_increase')
 async def welcome_new_member(session: NoticeSession):
     # 群成员增加时自动触发欢迎信息功能
-    if session.event.group_id != config.GROUP_ID and session.event['message_type'] != 'private':
+    if session.event.group_id == config.GROUP_ID and session.event['message_type'] != 'private':
         print(session.event.user_id)
         if session.event.sender['card'] != '':
             await session.send(f"欢迎新的指挥官@{session.event.sender['card']}加入碧蓝焊接指挥部喵~\n"
