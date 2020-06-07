@@ -4,8 +4,8 @@ HOST = '127.0.0.1'
 PORT = 8080
 SUPERUSERS = {353884697}  # 管理员账号
 COMMAND_START = {'', '/', '!', '／', '！'}  # 可作为命令起始符的字符，‘’代表没有也可以
-GROUP_ID = 967350580  # 会战群
-# GROUP_ID = 1108319335
+#GROUP_ID = 967350580  # 会战群
+GROUP_ID = 1108319335
 BOSS_HEALTH = [6000000, 8000000, 10000000, 12000000, 20000000]  # BOSS的血量
 NAME_FOR_BOSS = ['双足飞龙', '野性狮鹫', '兽人头目', '灵魂角鹿', '弥诺陶洛斯']  # BOSS的名字
 MINIMUM_ATTACK = 1  # TODO
@@ -33,4 +33,9 @@ WELCOME_MESSAGE = f'这里是{MY_NAME}为指挥官提供服务喵~\n' \
                   f'指挥官可以通过【自我介绍】命令查看{SHORT_NAME}的功能喵~\n' \
                   f'希望指挥官能够和司令部的其他指挥官在这里玩的开心喵~\n' \
                   f'最后，{SHORT_NAME}希望指挥官能跟其他指挥官多商量一下公会战的策略喵~\n' \
-                  f'还请多多关照喵~'
+                  f'还请多多关照喵~'     # 新增群成员欢迎信息
+SENDER_ADDRESS = "3461372627@qq.com"   # 反馈发送服务器
+SENDER_PWD = "uxoximotyatnciii"   # 邮箱授权码
+#RECEIVE_ADDRESS = "3551318424@qq.com"   # 开发者邮箱地址
+RECEIVE_ADDRESS = "zjdavid.2003@gmail.com"
+
