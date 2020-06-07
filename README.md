@@ -27,3 +27,5 @@
 - [Android Debug Bridge](https://developer.android.com/studio/releases/platform-tools)
 - 安卓模拟器（本程序仅在网易Mumu上测试过）
 - 酷Q + [cqhttp](https://github.com/richardchien/coolq-http-api)
+
+本项目必须在python3.7以上版本环境中运行！
