@@ -3,7 +3,8 @@ from nonebot import on_notice, NoticeSession
 import config
 from .send_email import email
 
-#group_id = [1104038724, 1108319335]
+
+# group_id = [1104038724, 1108319335]
 @on_notice('group_increase')
 async def welcome_new_member(session: NoticeSession):
     # 群成员增加时自动触发欢迎信息功能
@@ -34,13 +35,3 @@ async def feedback_bugs(session: CommandSession):
             await session.send("喵，已经成功通知了喵~")
         else:
             await session.send("QAQ喵，发送失败了喵，重新试试喵")
-
-
-
-
-
-
-
-
-
-
