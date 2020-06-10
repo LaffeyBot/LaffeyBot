@@ -1,6 +1,6 @@
 from nonebot import on_command, CommandSession, permission as perm
 from data.damage import delete_all_records, add_record
-from pcr.plugins.alert_new_record import alert_new_record, boss_status_text
+from pcr.plugins.record.alert_new_record import alert_new_record, boss_status_text
 from data.json.json_editor import JSONEditor
 from data.player_name import qq_to_game_name
 import config

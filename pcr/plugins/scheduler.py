@@ -5,7 +5,7 @@ from data import damage
 import nonebot
 import config
 from data.json.json_editor import JSONEditor
-from pcr.plugins.alert_new_record import alert_new_record
+from pcr.plugins.record.alert_new_record import alert_new_record
 import random
 import asyncio
 from pcr.plugins.backup import backup
