@@ -2,6 +2,7 @@ from nonebot import on_command,CommandSession
 from .data_source import get_weather_of_city,get_report
 import config
 
+
 @on_command('weather', aliases=('天气', '当前天气'),only_to_me=False)
 async def weather(session: CommandSession):
     if session.event.group_id == config.GROUP_ID:
