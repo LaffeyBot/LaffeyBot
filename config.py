@@ -1,12 +1,11 @@
 from nonebot.default_config import *
 
 HOST = '127.0.0.1'
-PORT = 8081
+PORT = 8080
 SUPERUSERS = {353884697}  # 管理员账号
 COMMAND_START = {'', '/', '!', '／', '！'}  # 可作为命令起始符的字符，‘’代表没有也可以
-#GROUP_ID = 967350580  # 会战群
-#GROUP_ID = 1108319335
-GROUP_ID = 826407504
+GROUP_ID = 967350580  # 会战群
+#GROUP_ID = 1108319335GROUP_ID = 826407504
 BOSS_HEALTH = [6000000, 8000000, 10000000, 12000000, 20000000]  # BOSS的血量
 NAME_FOR_BOSS = ['双足飞龙', '野性狮鹫', '兽人头目', '灵魂角鹿', '弥诺陶洛斯']  # BOSS的名字
 MINIMUM_ATTACK = 1  # TODO
@@ -26,6 +25,9 @@ SELF_INTRODUCTION = '各位指挥官好，这里是%s喵~\n' \
                     '【停止汇报】【开始汇报】可以关闭/开启【发送者】的出刀汇报\n' \
                     '【出刀报告】可以查看今日出刀次数的汇总报告\n' \
                     '【出刀详情】可以查看每位玩家的出刀次数\n' \
+                    '【天气 XXX】可以查看当前天气\n' \
+                    '【天气预报 XXX】可以查看天气预报\n' \
+                    '【bug反馈】【功能反馈】可以反馈bug/功能建议\n' \
                     '如果指挥官忘了某项命令，可以随时通过【自我介绍】命令查看喵！\n' \
                     '还请多多关照喵~' % (MY_NAME, SHORT_NAME, SHORT_NAME)  # 自我介绍
 WELCOME_MESSAGE = f'这里是{MY_NAME}为指挥官提供服务喵~\n' \
