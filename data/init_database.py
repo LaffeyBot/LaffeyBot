@@ -17,6 +17,11 @@ def init_database():
                        'qq_name TEXT,'
                        'player_name TEXT'
                        ');')
+    connection.execute('CREATE TABLE IF NOT EXISTS picture_list ('
+                       'file_name TEXT,'
+                       'sub_directory TEXT,'
+                       'origin TEXT'
+                       ');')
     connection.commit()
 
 
