@@ -6,11 +6,11 @@ from datetime import datetime
 from aiocqhttp.exceptions import Error as e
 
 
-@nonebot.scheduler.scheduled_job('cron', minute='*/30', hour='8-23/1')
+@nonebot.scheduler.scheduled_job('cron', minute='*/1', hour='8-23/1')
 async def send_hour_message():
     # 定时在群聊中发布消息，活跃群气氛
     bot = nonebot.get_bot()
-    msg = config.LAFFEY_MESSAGE[r.randint(0, len(config.LAFFEY_MESSAGE)-1)]
+    msg = config.LAFFEY_MESSAGE[r.randint(0, len(config.LAFFEY_MESSAGE) - 1)]
     time_msg = f'现在是北京时间{datetime.now().hour}点{datetime.now().minute}分\n'
     try:
         if datetime.now().hour == 8 and datetime.now().minute == 0:
@@ -18,7 +18,7 @@ async def send_hour_message():
         elif datetime.now().hour == 23 and datetime.now().minute == 30:
             await bot.send_group_msg(group_id=config.GROUP_ID, message="呼啊...指挥官，要一起睡一会儿吗？")
         else:
-            await bot.send_group_msg(group_id=config.GROUP_ID, message=time_msg+msg)
+            await bot.send_group_msg(group_id=config.GROUP_ID, message=time_msg + msg)
     except e:
         print(e)
         await bot.send_group_msg(group_id=config.GROUP_ID, message="唔……嗯……糟了，站着睡着了")
@@ -33,3 +33,12 @@ async def hint_message():
     except e:
         await bot.send_group_msg(group_id=config.GROUP_ID, message=e)
 
+
+@nonebot.scheduler.scheduled_job('cron', hour=12, minute=15)
+async def hint_message():
+    bot = nonebot.get_bot()
+    msg = "今天，等一下好像有什么事情要做的样子……唔，记不起来了……指挥官，一起午睡吗？"
+    try:
+        await bot.send_group_msg(group_id=config.GROUP_ID, message=msg)
+    except e:
+        await bot.send_group_msg(group_id=config.GROUP_ID, message=e)
