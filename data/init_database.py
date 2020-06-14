@@ -22,6 +22,10 @@ def init_database():
                        'sub_directory TEXT,'
                        'origin TEXT'
                        ');')
+    connection.execute('CREATE TABLE IF NOT EXISTS picture_quota ('
+                       'qq_id integer UNIQUE PRIMARY KEY,'
+                       'count integer'
+                       ');')
     connection.commit()
 
 

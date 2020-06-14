@@ -48,7 +48,7 @@ class JSONEditor:
     def add_on_tree(self, name):
         if self.dict.get('tree', None) is None:
             self.dict['tree'] = [name]
-        else:
+        elif name in self.dict['tree']:
             tree: list = self.dict['tree']
             tree.append(name)
             self.dict['tree'] = tree
