@@ -2,6 +2,7 @@ from nonebot import on_command, CommandSession
 from nonebot import on_notice, NoticeSession
 import config
 from .send_email import email
+import re
 
 
 # group_id = [1104038724, 1108319335]
@@ -23,6 +24,9 @@ async def feedback_bugs(session: CommandSession):
     bug_info = session.get('bug_info', prompt="请问指挥官有什么bug或者新的功能需求需要反馈的喵？>_<")
     print(session.event)
     print(bug_info)
+    if re.match(r'break', bug_info) is not None:
+        await session.send('会话已经终止了喵~')
+        return
     if session.event.sender['card']:
         status = email(session.event.sender['card'], bug_info)
         if status:
