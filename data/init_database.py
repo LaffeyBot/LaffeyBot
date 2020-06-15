@@ -26,6 +26,10 @@ def init_database():
                        'qq_id integer UNIQUE PRIMARY KEY,'
                        'count integer'
                        ');')
+    connection.execute('CREATE TABLE IF NOT EXISTS message_record ('
+                       'qq_id integer,'
+                       'date date'
+                       ');')
     connection.commit()
 
 

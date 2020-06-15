@@ -1,5 +1,6 @@
 import json
 from config import BOSS_HEALTH
+from aiocqhttp.event import Event
 
 
 class JSONEditor:
@@ -102,3 +103,21 @@ class JSONEditor:
 
         current_order = self.dict['current_boss_order']
         self.set_remaining_health(BOSS_HEALTH[current_order-1])  # 将血量设置到下一个boss
+
+    def do_repeat(self, cq_event: Event) -> bool:
+        do_repeat = False
+        if 'message' in self.dict and self.dict['message'] == dict(cq_event.message[0]):
+            self.dict['message_count'] += 1
+            self.dict['message_users'].append(cq_event.sender['user_id'])
+            # print()
+            if self.dict['message_count'] >= 3 and len(set(self.dict['message_users'])) > 1:
+                self.dict['message_count'] = 0
+                self.dict['message_users'] = []
+                self.dict['message'] = dict()
+                do_repeat = True
+        else:
+            self.dict['message'] = cq_event.message[0]
+            self.dict['message_count'] = 1
+            self.dict['message_users'] = [cq_event.sender['user_id']]
+        self.save()
+        return do_repeat
