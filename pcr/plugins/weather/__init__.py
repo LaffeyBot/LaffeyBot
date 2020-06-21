@@ -1,5 +1,6 @@
 from nonebot import on_command,CommandSession
 from .data_source import get_weather_of_city,get_report
+from .international_city_weather import get_detail_city_weather_report
 import config
 
 
@@ -37,5 +38,7 @@ async def _(session: CommandSession):
 async def weather_report(session: CommandSession):
     if session.event.group_id == config.GROUP_ID:
         city = session.get('city',prompt='喵？指挥官要查询哪座城市喵？')
-        reports = await get_report(city)
+        # reports = await get_report(city)
+        reports = get_detail_city_weather_report(city)
         await session.send(reports)
+

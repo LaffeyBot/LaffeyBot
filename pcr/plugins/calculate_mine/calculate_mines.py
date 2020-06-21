@@ -71,16 +71,16 @@ def init(ssl, sdl, hsl, hdl):
 def calculate(crank, arank, hrank):
     init(season_sequence_list, season_discrete_list, history_sequence_list, history_discrete_list)
     for i in sl:
-        print(i.start_rank,i.per_mine,i.end_rank)
+        print(i.start_rank, i.per_mine, i.end_rank)
     print('===')
     for j in hl:
-        print(j.start_rank,j.per_mine,j.end_rank)
+        print(j.start_rank, j.per_mine, j.end_rank)
     print("====")
     print(f'当前排名{crank}目标排名{arank},历史最高排名{hrank}')
     if arank >= hrank:
         mines = count(arank, crank, sl)
     else:
-        mines = count(arank, crank, sl) + count(arank, crank, hl)
+        mines = count(hrank, crank, sl) + count(arank, hrank, hl)
     print(sl)
     print(hl)
     return mines
@@ -93,7 +93,7 @@ def count(sr, er, ls):
     for j in range(len(ls)):
         if ls[j].is_this_range(er):
             break
-    print(i,j)
+    print(i, j)
     if i == j:
         return ls[i].range_in_mine(sr, er)
     else:
@@ -115,7 +115,3 @@ def get_range(rank, sl, dl):
         for i in range(len(dl)):
             if dl[i] <= rank and dl[i + 1] > rank:
                 return i, 1
-
-
-
-

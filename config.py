@@ -1,13 +1,13 @@
 from nonebot.default_config import *
+import os
 
 HOST = '127.0.0.1'
-PORT = 8080
-SUPERUSERS = {353884697}  # 管理员账号
+PORT = 8081
+SUPERUSERS = {353884697, 3551318424}  # 管理员账号
 COMMAND_START = {'', '/', '!', '／', '！'}  # 可作为命令起始符的字符，‘’代表没有也可以
-
 # GROUP_ID = 967350580  # 会战群
 GROUP_ID = 1108319335
-GROUP_ID = 967350580  # 会战群
+#GROUP_ID = 967350580  # 会战群
 # GROUP_ID = 1108319335
 BOSS_HEALTH = [6000000, 8000000, 10000000, 12000000, 20000000]  # BOSS的血量
 NAME_FOR_BOSS = ['双足飞龙', '野性狮鹫', '兽人头目', '灵魂角鹿', '弥诺陶洛斯']  # BOSS的名字
@@ -106,4 +106,5 @@ HISTORY_DISCRETE_DIC = {
     12100: 45,
 }  # 历史不连续排名奖励
 SESSION_EXPIRE_TIMEOUT = timedelta(minutes=2)
+PROJECT_PATH = os.path.dirname(__file__)
 
