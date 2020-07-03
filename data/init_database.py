@@ -30,6 +30,10 @@ def init_database():
                        'qq_id integer,'
                        'date date'
                        ');')
+    connection.execute('CREATE TABLE IF NOT EXISTS rank_record ('
+                       'date integer UNIQUE PRIMARY KEY,'
+                       'rank integer'
+                       ');')
     connection.commit()
 
 

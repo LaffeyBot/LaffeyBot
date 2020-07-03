@@ -2,14 +2,17 @@ from PIL import Image
 import pytesseract
 import cv2
 import re
-from data.json.json_editor import JSONEditor
+from data.get_date_int import get_date_int
+from data.init_database import get_connection
+import datetime
 import random
 
 SCREENSHOT_PATH = 'screenshots/screen.png'
 
 
-def preprocess(img_path: str, crop: (float, float, float, float)):
+def preprocess(img_path: str, crop: (float, float, float, float), ex_color: str='YELLOW'):
     """
+    :param ex_color: YELLOW/BLUE 需要加强的颜色
     :param img_path: relative path of image
     :type crop: tuple (minX, minY, maxX, maxY)
     """
@@ -20,15 +23,22 @@ def preprocess(img_path: str, crop: (float, float, float, float)):
     data = img.getdata()
     new_data = []
     for item in data:
-        if (item[0] + item[1]) / (item[2] + 1) >= 3:  # 将图片黄色部分替换为纯黑
+        if ex_color == 'YELLOW' and (item[0] + item[1]) / (item[2] + 1) >= 3:  # 将图片黄色部分替换为纯黑
             new_data.append((0, 0, 0))
+            continue
+        if ex_color == 'BLUE' and (item[0] + item[1]) / (item[2] + 1) <= 1.4:
+            new_data.append((0, 0, 0))
+            continue
         else:
             new_data.append(item)  # 其余部分不变
+            continue
     img.putdata(new_data)
     img.save("intermediate.jpg", "JPEG")
 
     image = cv2.imread("intermediate.jpg")
     gray = image * 1.5 - 100  # 增加对比度
+    if ex_color == 'BLUE':
+        gray = image * 1.5
 
     filename = "output.png"  # 写至 output.png
     cv2.imwrite(filename, gray)
@@ -45,6 +55,17 @@ def recognize_text_to_record_list(img_path: str, crop: (float, float, float, flo
     text: str = recognize_text('output.png')
     # print(text)
     record_list: list = process_text(text)
+
+    preprocess(img_path=img_path, crop=(0.1, 0.16, 0.225, 0.23), ex_color='BLUE')
+    text = recognize_text('output.png')
+    rank_number = int(''.join(filter(str.isdigit, text)))
+    date = datetime.datetime.now()
+    date_int: int = get_date_int(date, with_hour=True)
+    c = get_connection()
+    c.execute('INSERT INTO rank_record (date, rank)'
+              'VALUES (?, ?)', (date_int, rank_number))
+    c.commit()
+    print(rank_number)
 
     return record_list
 
@@ -100,4 +121,4 @@ def image_to_position(image) -> (float, float):
 
 
 if __name__ == '__main__':
-    recognize_text_to_record_list('../../test/10.png')
+    recognize_text_to_record_list('../../screenshots/screen.png')

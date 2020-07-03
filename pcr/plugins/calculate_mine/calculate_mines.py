@@ -80,7 +80,7 @@ def calculate(crank, arank, hrank):
     if arank >= hrank:
         mines = count(arank, crank, sl)
     else:
-        mines = count(arank, crank, sl) + count(arank, crank, hl)
+        mines = count(hrank, crank, sl) + count(arank, crank, hl)
     print(sl)
     print(hl)
     return mines

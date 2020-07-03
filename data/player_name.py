@@ -22,7 +22,10 @@ def get_closest_player_name(name: str):
                 element[1] += 1
 
     all_players_list.sort(key=sort_by_relevance, reverse=True)
-    return all_players_list[0][0]
+    if all_players_list[0][1] == 0:
+        return '不知道是谁'
+    else:
+        return all_players_list[0][0]
 
 
 def sort_by_relevance(element):

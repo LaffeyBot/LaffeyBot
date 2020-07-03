@@ -42,3 +42,12 @@ async def hint_message():
         await bot.send_group_msg(group_id=config.GROUP_ID, message=msg)
     except e:
         await bot.send_group_msg(group_id=config.GROUP_ID, message=e)
+
+@nonebot.scheduler.scheduled_job('cron', month=6,year=2020,day=21,hour=12,minute=20)
+async def temp_message():
+    bot = nonebot.get_bot()
+    msg = "指挥官，根据天文台发来的报道，今天下午14点以后会发生十年一遇的eclipse，虽然Laffey过去习惯一个人了……和指挥官一起观看的话，总觉得这样更好"
+    try:
+        await bot.send_group_msg(group_id=config.GROUP_ID, message=msg)
+    except e:
+        await bot.send_group_msg(group_id=config.GROUP_ID, message=e)
