@@ -4,3 +4,4 @@ Pillow~=7.1.2
 nonebot~=1.6.0
 APScheduler
 requests~=2.23.0
+xlrd~=1.2.0
