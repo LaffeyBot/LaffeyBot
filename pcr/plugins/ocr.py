@@ -63,7 +63,9 @@ def recognize_text_to_record_list(img_path: str, crop: (float, float, float, flo
     date_int: int = get_date_int(date, with_hour=True)
     c = get_connection()
     c.execute('INSERT INTO rank_record (date, rank)'
-              'VALUES (?, ?)', (date_int, rank_number))
+              'VALUES (?, ?)'
+              'ON CONFLICT(date)'
+              'DO UPDATE SET rank=?', (date_int, rank_number, rank_number))
     c.commit()
     print(rank_number)
 
