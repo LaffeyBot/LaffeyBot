@@ -6,7 +6,8 @@ PORT = 8081
 SUPERUSERS = {353884697, 3551318424}  # 管理员账号
 COMMAND_START = {'', '/', '!', '／', '！'}  # 可作为命令起始符的字符，‘’代表没有也可以
 # GROUP_ID = 967350580  # 会战群
-GROUP_ID = 1108319335
+# GROUP_ID = 1108319335
+GROUP_ID = 1104038724
 #GROUP_ID = 967350580  # 会战群
 # GROUP_ID = 1108319335
 BOSS_HEALTH = [6000000, 8000000, 10000000, 12000000, 20000000]  # BOSS的血量
@@ -107,4 +108,5 @@ HISTORY_DISCRETE_DIC = {
 }  # 历史不连续排名奖励
 SESSION_EXPIRE_TIMEOUT = timedelta(minutes=2)
 PROJECT_PATH = os.path.dirname(__file__)
+TEAM_RANK_CHART_PATH = '' # 公会排名折线图生成地址
 

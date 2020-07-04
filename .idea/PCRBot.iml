@@ -8,4 +8,7 @@
     <orderEntry type="jdk" jdkName="Python 3.7 (qqbot) (1)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PyDocumentationSettings">
+    <option name="renderExternalDocumentation" value="true" />
+  </component>
 </module>

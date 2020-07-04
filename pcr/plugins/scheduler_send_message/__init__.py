@@ -6,7 +6,7 @@ from datetime import datetime
 from aiocqhttp.exceptions import Error as e
 
 
-@nonebot.scheduler.scheduled_job('cron', minute='*/30', hour='8-23/1')
+@nonebot.scheduler.scheduled_job('cron', minute='*/1', hour='8-23/1')
 async def send_hour_message():
     # 定时在群聊中发布消息，活跃群气氛
     bot = nonebot.get_bot()
