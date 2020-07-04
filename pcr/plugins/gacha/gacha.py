@@ -1,7 +1,7 @@
 import random
 
 from pcr import util
-from .. import chara
+from . import chara
 
 
 class Gacha(object):
