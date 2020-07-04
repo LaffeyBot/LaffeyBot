@@ -5,3 +5,9 @@ nonebot~=1.6.0
 APScheduler
 requests~=2.23.0
 xlrd~=1.2.0
+
+jieba~=0.42.1
+aiocqhttp~=1.2.5
+pytz~=2020.1
+zhconv~=1.4.1
+matplotlib~=3.2.2

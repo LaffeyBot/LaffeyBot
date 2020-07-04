@@ -19,6 +19,7 @@ MY_NAME = '威严满满的Laffey酱'  # Bot名字
 SHORT_NAME = 'Laffey酱'
 DO_REFRESH_DATA = True
 PICTURE_QUOTA = 5
+
 SELF_INTRODUCTION = '各位指挥官好，这里是%s喵~\n' \
                     '%s会通过公会战详情界面自动记录出刀，所以各位指挥官不用手动报刀的喵！记录出击的任务就放心交给%s吧喵~\n' \
                     '目前支持的指令：\n' \
@@ -106,3 +107,15 @@ HISTORY_DISCRETE_DIC = {
     12100: 45,
 }  # 历史不连续排名奖励
 SESSION_EXPIRE_TIMEOUT = timedelta(minutes=2)
+
+USE_CQPRO = True
+# 发送图片的协议
+# 可选 http, file, base64
+# 建议Windows部署使用file协议
+# 建议Linux部署配合本地web server使用http协议
+# 如果你不清楚上面在说什么，请用base64协议（发送大图时可能会失败）
+RES_PROTOCOL = 'file'
+# 资源库文件夹，需可读可写，windows下注意反斜杠转义
+RES_DIR = r'./res/'
+# 使用http协议时需填写，原则上该url应指向RES_DIR目录
+RES_URL = 'http://127.0.0.1:5000/static/'

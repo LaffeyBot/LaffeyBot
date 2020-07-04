@@ -1,6 +1,9 @@
 import nonebot
 import config
 from os import path
+from log import new_logger
+
+logger = new_logger('bot', config.DEBUG)
 
 if __name__ == '__main__':
     nonebot.init(config)
