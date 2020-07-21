@@ -4,14 +4,12 @@ from aiocqhttp import MessageSegment
 from data.picture_quota import PictureQuota
 from data.init_database import get_connection
 import time
+import asyncio
 
 
 @on_command('hentai', aliases=('炼铜', '瑟图', '色图', '本子'), only_to_me=False)
 async def hentai(session: CommandSession):
     if session.event.group_id in config.GROUP_ID or session.event['message_type'] == 'private':
-        if int(time.strftime("%H", time.localtime())) < 14:
-            await session.send('指挥官要好好休息喵~')
-            return
         user_id = session.event.sender['user_id']
         quota = PictureQuota(user_id)
         if not quota.get_one_picture():
@@ -30,4 +28,7 @@ async def hentai(session: CommandSession):
         # else:
         #     await hentai(session)
         #     return
-        await session.send(seq)
+        result = await session.send(seq)
+        if int(time.strftime("%H", time.localtime())) < 14:
+            await asyncio.sleep(60)
+            await session.bot.delete_msg(message_id=result['message_id'])

@@ -42,27 +42,27 @@ async def feedback_bugs(session: CommandSession):
         else:
             await session.send("QAQ喵，发送失败了喵，重新试试喵")
 
-bot = nonebot.get_bot()
-@bot.on_message()
-async def demo(event):
-    print("demo")
-    info = await bot.get_group_member_list(group_id=1043493394)
-    '''for i in info:
-        print(i)'''
-
-    if event['message_type']=='group' and event['group_id'] in config.GROUP_ID:
-        print('=')
-        print("event is:%s"%event)
-        print(event['sender']['nickname'])
-        if event['sender']['nickname']=='genres':
-            msg_id = await bot.send_group_msg(group_id=1108319335, message='oxo')
-            await asyncio.sleep(5)
-            print(msg_id['message_id'])
-            await bot.delete_msg(message_id=event['message_id'])
-    '''if event['message_type']=='private':
-        # msg_id = await bot.send_group_msg(group_id=594524346, message='oxo')
-        msg_id = await bot.send_private_msg(user_id=3551318424, message='oxo')
-        await asyncio.sleep(5)
-        print(msg_id['message_id'])
-        await bot.delete_msg(message_id=msg_id['message_id'],self_id=3473890852)
-        # await bot.delete_msg(**event)'''
+# bot = nonebot.get_bot()
+# @bot.on_message()
+# async def demo(event):
+#     print("demo")
+#     info = await bot.get_group_member_list(group_id=1043493394)
+#     '''for i in info:
+#         print(i)'''
+#
+#     if event['message_type']=='group' and event['group_id'] in config.GROUP_ID:
+#         print('=')
+#         print("event is:%s"%event)
+#         print(event['sender']['nickname'])
+#         if event['sender']['nickname']=='genres':
+#             msg_id = await bot.send_group_msg(group_id=1108319335, message='oxo')
+#             await asyncio.sleep(5)
+#             print(msg_id['message_id'])
+#             await bot.delete_msg(message_id=event['message_id'])
+#     '''if event['message_type']=='private':
+#         # msg_id = await bot.send_group_msg(group_id=594524346, message='oxo')
+#         msg_id = await bot.send_private_msg(user_id=3551318424, message='oxo')
+#         await asyncio.sleep(5)
+#         print(msg_id['message_id'])
+#         await bot.delete_msg(message_id=msg_id['message_id'],self_id=3473890852)
+#         # await bot.delete_msg(**event)'''

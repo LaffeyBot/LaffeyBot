@@ -3,8 +3,7 @@ import os
 import time
 from collections import defaultdict
 
-from pcr import util
-from pcr import aiorequests
+from hoshino import aiorequests
 import config
 
 from .. import chara

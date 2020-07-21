@@ -21,7 +21,7 @@ BACKUP_ENABLED = True  # 是否启用数据库备份
 MY_NAME = '威严满满的Laffey酱'  # Bot名字
 SHORT_NAME = 'Laffey酱'
 DO_REFRESH_DATA = True
-PICTURE_QUOTA = 5
+PICTURE_QUOTA = 10
 
 SELF_INTRODUCTION = '各位指挥官好，这里是%s喵~\n' \
                     '%s会通过公会战详情界面自动记录出刀，所以各位指挥官不用手动报刀的喵！记录出击的任务就放心交给%s吧喵~\n' \
