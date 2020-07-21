@@ -12,4 +12,8 @@ if __name__ == '__main__':
         path.join(path.dirname(__file__), 'pcr', 'plugins'),
         'pcr.plugins'
     )
+    nonebot.load_plugins(
+        path.join(path.dirname(__file__), 'pcr/plugins', 'priconne'),
+        'pcr.plugins.priconne'
+    )
     nonebot.run()

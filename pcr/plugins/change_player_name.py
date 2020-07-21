@@ -8,7 +8,7 @@ from data.player_name import qq_to_game_name
 
 @on_command('change_player_name', aliases=['修改游戏名'], only_to_me=False, permission=permission.SUPERUSER)
 async def change_player_name(session: CommandSession):
-    if session.event.group_id != config.GROUP_ID and session.event['message_type'] != 'private':
+    if session.event.group_id != config.PRIMARY_GROUP_ID and session.event['message_type'] != 'private':
         print('NOT IN SELECTED GROUP')
         return
     old_name = session.state['old_name']

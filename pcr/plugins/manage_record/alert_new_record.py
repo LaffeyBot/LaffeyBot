@@ -29,7 +29,7 @@ async def alert_new_record(new_records: list, did_kill: bool):
         message += boss_status_text(remaining_health)
 
     print(message)
-    await nonebot.get_bot().send_group_msg(group_id=config.GROUP_ID, message=message)
+    await nonebot.get_bot().send_group_msg(group_id=config.PRIMARY_GROUP_ID, message=message)
 
 
 def boss_status_text(remaining_health):

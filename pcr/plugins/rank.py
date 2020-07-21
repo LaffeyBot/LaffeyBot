@@ -8,7 +8,7 @@ from pcr.plugins.get_best_name import get_best_name
 
 @on_command('show_rank', aliases=['排名'], only_to_me=False)
 async def show_rank(session: CommandSession):
-    if session.event.group_id != config.GROUP_ID and session.event['message_type'] != 'private':
+    if session.event.group_id != config.PRIMARY_GROUP_ID and session.event['message_type'] != 'private':
         print('NOT IN SELECTED GROUP')
         return
     name: str = get_best_name(session)

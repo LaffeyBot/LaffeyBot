@@ -7,7 +7,7 @@ from data.player_name import qq_to_game_name
 
 @on_command('no_report', aliases=['停止播报', '停止汇报', '停止报告'], only_to_me=False)
 async def no_report(session: CommandSession):
-    if session.event.group_id != config.GROUP_ID and session.event['message_type'] != 'private':
+    if session.event.group_id != config.PRIMARY_GROUP_ID and session.event['message_type'] != 'private':
         print('NOT IN SELECTED GROUP')
         return
     name: str = get_best_name(session)
@@ -18,7 +18,7 @@ async def no_report(session: CommandSession):
 
 @on_command('do_report', aliases=['开始播报', '重新汇报', '开始报告', '开始汇报'], only_to_me=False)
 async def do_report(session: CommandSession):
-    if session.event.group_id != config.GROUP_ID and session.event['message_type'] != 'private':
+    if session.event.group_id != config.PRIMARY_GROUP_ID and session.event['message_type'] != 'private':
         print('NOT IN SELECTED GROUP')
         return
     name: str = get_best_name(session)

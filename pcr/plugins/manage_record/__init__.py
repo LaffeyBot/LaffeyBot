@@ -15,7 +15,7 @@ async def delete_all(session: CommandSession):
 
 @on_command('manual_damage', aliases=['出刀', '报刀'], only_to_me=False)
 async def manual_damage(session: CommandSession):
-    if session.event.group_id != config.GROUP_ID:
+    if session.event.group_id != config.PRIMARY_GROUP_ID:
         print('NOT IN SELECTED GROUP')
         return
     damage = session.get('damage')
@@ -30,7 +30,7 @@ async def manual_damage(session: CommandSession):
 
 @on_command('status', aliases=['状态', 'boss状态'], only_to_me=False)
 async def status(session: CommandSession):
-    if session.event.group_id != config.GROUP_ID and session.event['message_type'] != 'private':
+    if session.event.group_id != config.PRIMARY_GROUP_ID and session.event['message_type'] != 'private':
         print('NOT IN SELECTED GROUP')
         return
     editor = JSONEditor()

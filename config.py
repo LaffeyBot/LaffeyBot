@@ -1,14 +1,17 @@
 from nonebot.default_config import *
 
 HOST = '127.0.0.1'
-PORT = 8081
-SUPERUSERS = {353884697, 3551318424}  # 管理员账号
+PORT = 8082
+SUPERUSERS = {353884697, 3551318424,3473890852}  # 管理员账号
 COMMAND_START = {'', '/', '!', '／', '！'}  # 可作为命令起始符的字符，‘’代表没有也可以
-
+PCRFANS_AUTH_KEY = '4HdSwPJk'
 # GROUP_ID = 967350580  # 会战群
 # GROUP_ID = 1108319335
-GROUP_ID = 967350580  # 会战群
+# GROUP_ID = 967350580  # 会战群
 # GROUP_ID = 1108319335
+GROUP_ID: set = {1043493394, 967350580,1108319335}  # 新公会群
+PRIMARY_GROUP_ID = 1108319335
+enable_group = [1043493394, 967350580, 1108319335]
 BOSS_HEALTH = [6000000, 8000000, 10000000, 12000000, 20000000]  # BOSS的血量
 NAME_FOR_BOSS = ['双足飞龙', '野性狮鹫', '针刺攀缘花', '独眼巨人', '双子魔猪']  # BOSS的名字
 MINIMUM_ATTACK = 1  # TODO
@@ -119,3 +122,5 @@ RES_PROTOCOL = 'file'
 RES_DIR = r'./res/'
 # 使用http协议时需填写，原则上该url应指向RES_DIR目录
 RES_URL = 'http://127.0.0.1:5000/static/'
+
+TEAM_RANK_CHART_PATH = r'C:\Users\david\Documents\酷Q_Pro\data\image' # 公会排名折线图生成地址

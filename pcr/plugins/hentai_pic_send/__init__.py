@@ -8,7 +8,7 @@ import time
 
 @on_command('hentai', aliases=('炼铜', '瑟图', '色图', '本子'), only_to_me=False)
 async def hentai(session: CommandSession):
-    if session.event.group_id == config.GROUP_ID or session.event['message_type'] == 'private':
+    if session.event.group_id in config.GROUP_ID or session.event['message_type'] == 'private':
         if int(time.strftime("%H", time.localtime())) < 14:
             await session.send('指挥官要好好休息喵~')
             return
