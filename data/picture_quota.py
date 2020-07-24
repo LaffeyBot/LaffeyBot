@@ -30,5 +30,5 @@ class PictureQuota:
 
     def clear_quota(self):
         # noinspection SqlWithoutWhere
-        self.c.execute('DELETE FROM picture_quota')
+        self.c.cursor().execute('DELETE FROM picture_quota')
         self.c.commit()
