@@ -10,6 +10,7 @@ DATABASE_URL = ''
 DATABASE_NAME = ''
 DATABASE_PATH = DATABASE_URL + ':' + DATABASE_PORT
 
+SELF_ID = 3473890852
 SUPERUSERS = {353884697, 3551318424,3473890852}  # 管理员账号
 COMMAND_START = {'', '/', '!', '／', '！'}  # 可作为命令起始符的字符，‘’代表没有也可以
 PCRFANS_AUTH_KEY = '4HdSwPJk'
@@ -55,7 +56,7 @@ WELCOME_MESSAGE = f'这里是{MY_NAME}为指挥官提供服务喵~\n' \
                   f'最后，{SHORT_NAME}希望指挥官能跟其他指挥官多商量一下公会战的策略喵~\n' \
                   f'还请多多关照喵~'  # 新增群成员欢迎信息
 SENDER_ADDRESS = "3461372627@qq.com"  # 反馈发送服务器
-SENDER_PWD = "uxoximotyatnciii"  # 邮箱授权码
+SENDER_PWD = ""  # 邮箱授权码
 # RECEIVE_ADDRESS = "3551318424@qq.com"   # 开发者邮箱地址
 RECEIVE_ADDRESS = "zjdavid.2003@gmail.com"
 LAFFEY_MESSAGE = ['本森级驱逐舰拉菲听候您的吩咐……指挥官，这个耳朵不是真的，请不要再盯着看了……',

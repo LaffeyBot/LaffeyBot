@@ -1,12 +1,26 @@
 import json
 from config import BOSS_HEALTH
 from aiocqhttp.event import Event
+import os
 
 
 class JSONEditor:
-    def __init__(self):
-        with open('status.json', 'r') as file:
+    def __init__(self, group_id: int):
+        file_name = 'status/status_' + str(group_id) + '.json'
+        if not os.path.isfile(file_name):
+            self.init_json_for_group(file_name)
+        with open(file_name, 'r') as file:
             self.dict: dict = json.load(file)
+
+    @staticmethod
+    def init_json_for_group(path):
+        init_dict: dict = {"current_generation": 1,
+                           "current_boss_order": 1,
+                           "remaining_health": 600000,
+                           "tree": [], "fetch_status": True,
+                           "no_report": []}
+        with open(path, 'w+') as file:
+            json.dump(init_dict, file)
 
     def save(self):
         with open('status.json', 'w') as file:
@@ -102,7 +116,7 @@ class JSONEditor:
             self.dict['current_generation'] += 1
 
         current_order = self.dict['current_boss_order']
-        self.set_remaining_health(BOSS_HEALTH[current_order-1])  # 将血量设置到下一个boss
+        self.set_remaining_health(BOSS_HEALTH[current_order - 1])  # 将血量设置到下一个boss
 
     def do_repeat(self, cq_event: Event) -> bool:
         do_repeat = False

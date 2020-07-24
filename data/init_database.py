@@ -5,16 +5,16 @@ import config
 def init_database():
     connection = get_connection().cursor()
     connection.execute('CREATE TABLE IF NOT EXISTS group_list ('
-                       'group_id INTEGER NOT NULL '
+                       'group_id BIGINT NOT NULL '
                        ');')
     connection.execute('CREATE TABLE IF NOT EXISTS player_list ('
-                       'group_id INTEGER NOT NULL,'
-                       'qq_id INTEGER NOT NULL,'
+                       'group_id BIGINT NOT NULL,'
+                       'qq_id BIGINT NOT NULL,'
                        'qq_name TEXT,'
                        'player_name TEXT '
                        ');')
     connection.execute('CREATE TABLE IF NOT EXISTS record ('
-                       'group_id INTEGER NOT NULL,'
+                       'group_id BIGINT NOT NULL,'
                        'username TEXT NOT NULL,'
                        'target TEXT NOT NULL,'
                        'damage INTEGER DEFAULT 0,'
@@ -26,7 +26,7 @@ def init_database():
                        'origin TEXT '
                        ');')
     connection.execute('CREATE TABLE IF NOT EXISTS picture_quota ('
-                       'qq_id integer UNIQUE PRIMARY KEY,'
+                       'qq_id BIGINT UNIQUE PRIMARY KEY,'
                        'count integer '
                        ');')
     # connection.execute('CREATE TABLE IF NOT EXISTS message_record ('
@@ -34,7 +34,7 @@ def init_database():
     #                    'date date'
     #                    ');')
     connection.execute('CREATE TABLE IF NOT EXISTS rank_record ('
-                       'group_id INTEGER NOT NULL,'
+                       'group_id BIGINT NOT NULL,'
                        'date INTEGER,'
                        'ranking INTEGER '
                        ');')

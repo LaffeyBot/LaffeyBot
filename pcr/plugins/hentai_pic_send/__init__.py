@@ -7,7 +7,7 @@ import time
 import asyncio
 
 
-@on_command('hentai', aliases=('炼铜', '瑟图', '色图', '本子'), only_to_me=False)
+@on_command('hentai', aliases=('炼铜', '瑟图', '色图', '本子', '涩图', '涩图'), only_to_me=False)
 async def hentai(session: CommandSession):
     if session.event.group_id in config.GROUP_ID or session.event['message_type'] == 'private':
         user_id = session.event.sender['user_id']

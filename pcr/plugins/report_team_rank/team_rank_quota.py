@@ -11,7 +11,7 @@ class TeamRankChart(object):
         self.rank = ranks
         self.file_path = filepath
         # 创建画布
-        self.fig = plt.figure(num='碧蓝咸鱼公会实时排名图', figsize=(8, 6))
+        self.fig = plt.figure(num='公会实时排名图', figsize=(8, 6))
         # 选择子图
         self.ax = self.fig.add_subplot(111)
         # 全局中文显示处理
@@ -42,7 +42,7 @@ class TeamRankChart(object):
         self.ax.tick_params(left=True, direction="in", length=2, width=2, color='b', labelsize="medium")
         self.ax.tick_params(bottom=True, direction="in", length=2, width=2, color='b', labelsize="medium")
         # 设置标题
-        self.ax.set_title(f"{datetime.now().month} 月 公 会 战 碧 蓝 焊 接 公 会 实 时 排 名", fontsize=36, backgroundcolor='#3c7f99',
+        self.ax.set_title(f"{datetime.now().month} 月 公 会 战 公 会 实 时 排 名", fontsize=36, backgroundcolor='#3c7f99',
                           fontweight='bold', color='white', verticalalignment="center", fontproperties="SimHei")
         # 去掉上右边框
         self.ax.spines["left"].set_color("darkblue")

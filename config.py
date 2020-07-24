@@ -10,6 +10,7 @@ DATABASE_PASSWORD = 'ybh261426'
 DATABASE_PATH = 'dd.works'
 DATABASE_NAME = 'production'
 
+SELF_ID = 3473890852
 SUPERUSERS = {353884697, 3551318424,3473890852}  # 管理员账号
 COMMAND_START = {'', '/', '!', '／', '！'}  # 可作为命令起始符的字符，‘’代表没有也可以
 PCRFANS_AUTH_KEY = '4HdSwPJk'

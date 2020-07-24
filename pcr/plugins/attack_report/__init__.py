@@ -10,12 +10,13 @@ import jieba
 async def list_attack_detail(session: CommandSession):
     day = datetime.now()
     day_text = '今天'
+    group_id = session.event.group_id
     if session.state.get('yesterday', False):
         day = datetime.now() - timedelta(days=1)
         day_text = '昨天'
 
     if session.state.get('detail', True):
-        record_list: list = get_list_of_attacks(day)
+        record_list: list = get_list_of_attacks(day, group_id)
         custom = session.state.get('custom', '出击')
         message = '下面是' + day_text + '的' + custom.replace('了', '') + '详情喵：\n'
         for item in record_list:
