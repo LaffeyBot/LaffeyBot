@@ -16,8 +16,9 @@ async def hentai(session: CommandSession):
             await session.send('指挥官要注意身体喵~')
             return
 
-        random_file: (str, str, str) = get_connection()\
-            .execute('SELECT * FROM picture_list ORDER BY RANDOM() LIMIT 1').fetchone()
+        cursor = get_connection().cursor()
+        cursor.execute('SELECT * FROM picture_list ORDER BY RAND() LIMIT 1')
+        random_file: (str, str, str) = cursor.fetchone()
         print(random_file)
         file_name = random_file[1] + '/' + random_file[0]
         print(file_name)
