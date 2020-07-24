@@ -16,3 +16,5 @@ numpy~=1.19.0
 pygtrie~=2.3.3
 fuzzywuzzy~=0.18.0
 lxml~=4.5.2
+PyMySQL~=0.10.0
+python-Levenshtein~=0.12.0
