@@ -30,5 +30,5 @@ async def hentai(session: CommandSession):
         #     return
         result = await session.send(seq)
         if int(time.strftime("%H", time.localtime())) < 14:
-            await asyncio.sleep(60)
+            await asyncio.sleep(30)
             await session.bot.delete_msg(message_id=result['message_id'])

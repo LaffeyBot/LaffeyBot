@@ -66,7 +66,7 @@ async def _arena_query(bot, ev: CQEvent, region: int):
         msg = f'无法识别"{unknown}"' if score < 70 else f'无法识别"{unknown}" {score}%是不是{name}呢喵？'
         await bot.finish(ev, msg)
     if not defen:
-        await bot.finish(ev, '格式"怎么拆[空格]防守队伍"', at_sender=True)
+        await bot.finish(ev, '请使用【怎么拆[空格]防守队伍】这样的格式喵', at_sender=True)
     if len(defen) > 5:
         await bot.finish(ev, '队伍不能多于5名角色喵', at_sender=True)
     if len(defen) != len(set(defen)):
@@ -121,7 +121,7 @@ async def _arena_query(bot, ev: CQEvent, region: int):
     ]
     if region == 1:
         msg.append('※使用"b怎么拆"或"台怎么拆"可按服过滤喵')
-    msg.append('Support by pcrdfans_com')
+    msg.append('本功能数据由 pcrdfans 提供，代码由 HoshinoBot 提供喵！')
 
     sv.logger.debug('Arena sending result...')
     await bot.send(ev, '\n'.join(msg))

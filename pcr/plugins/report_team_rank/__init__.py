@@ -8,7 +8,7 @@ import os
 
 @on_command('query_team_rank', aliases=('实时排名', '公会排名', '公会战排名'), only_to_me=False)
 async def query_team_rank(session: CommandSession):
-    if session.event.group_id == config.PRIMARY_GROUP_ID:
+    if session.event.group_id in config.PRIMARY_GROUP_ID:
         result = get_connection().execute('select * from rank_record').fetchall()
         times = []
         ranks = []

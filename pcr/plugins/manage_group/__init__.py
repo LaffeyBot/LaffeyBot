@@ -20,7 +20,7 @@ async def welcome_new_member(session: NoticeSession):
 @on_command('feedback', aliases=('bug反馈', '功能反馈'), only_to_me=False)
 async def feedback_bugs(session: CommandSession):
     # 反馈bug/建议，会自动向config.py文件中配置的开发者邮箱发送email
-    if session.event.group_id in config.GROUP_ID:
+    if session.event.group_id not in config.GROUP_ID:
         print('NOT IN SELECTED GROUP')
         return
     bug_info = session.get('bug_info', prompt="请问指挥官有什么bug或者新的功能需求需要反馈的喵？>_<")

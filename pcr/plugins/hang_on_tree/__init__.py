@@ -6,7 +6,7 @@ from pcr.plugins.get_best_name import get_best_name
 
 @on_command('hang_on_tree', aliases=['挂树', '上树'], only_to_me=False)
 async def hang_on_tree(session: CommandSession):
-    if session.event.group_id != config.PRIMARY_GROUP_ID:
+    if session.event.group_id not in config.PRIMARY_GROUP_ID:
         print('NOT IN SELECTED GROUP')
         return
     name: str = get_best_name(session)
@@ -16,7 +16,7 @@ async def hang_on_tree(session: CommandSession):
 
 @on_command('release_from_tree', aliases=['下树'], only_to_me=False)
 async def release_from_tree(session: CommandSession):
-    if session.event.group_id != config.PRIMARY_GROUP_ID:
+    if session.event.group_id not in config.PRIMARY_GROUP_ID:
         print('NOT IN SELECTED GROUP')
         return
     name: str = get_best_name(session)
