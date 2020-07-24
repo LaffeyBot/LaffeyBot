@@ -5,7 +5,7 @@ from .calculate_mines import get_mines
 
 @on_command('calculate_mine_jjc', aliases=('挖矿', '竞技场挖矿'), only_to_me=False)
 async def calculate_mine_jjc(session: CommandSession):
-    if config.GROUP_ID == session.event.group_id:
+    if session.event.group_id in config.GROUP_ID:
         ranks = session.get('ranks', prompt='请指挥官给出当前赛季最高排名，历史最高排名，目标排名（不给这项默认登顶）喵~')
         rank_ls = ranks.split(' ')
         print(rank_ls)

@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from pcr import util
 from nonebot import MessageSegment
-from
+
 from pcr.util import DailyNumberLimiter, concat_pic, pic2b64, silence
 from main import logger
 

@@ -6,7 +6,7 @@ import config
 
 @on_command('weather', aliases=('天气', '当前天气'),only_to_me=False)
 async def weather(session: CommandSession):
-    if session.event.group_id == config.GROUP_ID:
+    if session.event.group_id in config.GROUP_ID:
         city = session.get('city', prompt='喵？指挥官要查询哪座城市喵？')
         weather_situation = await get_weather_of_city(city)
         await session.send(weather_situation)
