@@ -2,6 +2,14 @@ from nonebot.default_config import *
 
 HOST = '127.0.0.1'
 PORT = 8082
+
+DATABASE_USERNAME = ''
+DATABASE_PASSWORD = ''
+DATABASE_PORT = ''
+DATABASE_URL = ''
+DATABASE_NAME = ''
+DATABASE_PATH = DATABASE_URL + ':' + DATABASE_PORT
+
 SUPERUSERS = {353884697, 3551318424,3473890852}  # 管理员账号
 COMMAND_START = {'', '/', '!', '／', '！'}  # 可作为命令起始符的字符，‘’代表没有也可以
 PCRFANS_AUTH_KEY = '4HdSwPJk'

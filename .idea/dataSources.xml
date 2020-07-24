@@ -160,5 +160,14 @@
         </library>
       </libraries>
     </data-source>
+    <data-source source="LOCAL" name="dd.works" uuid="f02836b9-c5cd-4bc1-b81e-4a59d2508ab0">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://dd.works:3306</jdbc-url>
+      <driver-properties>
+        <property name="serverTimezone" value="UTC" />
+      </driver-properties>
+    </data-source>
   </component>
 </project>
