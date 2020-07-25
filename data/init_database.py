@@ -1,44 +1,51 @@
-import sqlite3
+import pymysql
+import config
 
 
 def init_database():
-    connection = sqlite3.connect('main.db')
+    connection = get_connection().cursor()
+    connection.execute('CREATE TABLE IF NOT EXISTS group_list ('
+                       'group_id BIGINT NOT NULL '
+                       ');')
+    connection.execute('CREATE TABLE IF NOT EXISTS player_list ('
+                       'group_id BIGINT NOT NULL,'
+                       'qq_id BIGINT NOT NULL,'
+                       'qq_name TEXT,'
+                       'player_name TEXT '
+                       ');')
     connection.execute('CREATE TABLE IF NOT EXISTS record ('
+                       'group_id BIGINT NOT NULL,'
                        'username TEXT NOT NULL,'
                        'target TEXT NOT NULL,'
                        'damage INTEGER DEFAULT 0,'
-                       'date INTEGER NOT NULL'
-                       ');')
-    connection.execute('CREATE TABLE IF NOT EXISTS status ('
-                       'key TEXT PRIMARY KEY,'
-                       'value TEXT NOT NULL'
-                       ');')
-    connection.execute('CREATE TABLE IF NOT EXISTS player_list ('
-                       'qq_name TEXT,'
-                       'player_name TEXT'
+                       'date INTEGER NOT NULL '
                        ');')
     connection.execute('CREATE TABLE IF NOT EXISTS picture_list ('
                        'file_name TEXT,'
                        'sub_directory TEXT,'
-                       'origin TEXT'
+                       'origin TEXT '
                        ');')
     connection.execute('CREATE TABLE IF NOT EXISTS picture_quota ('
-                       'qq_id integer UNIQUE PRIMARY KEY,'
-                       'count integer'
+                       'qq_id BIGINT UNIQUE PRIMARY KEY,'
+                       'count integer '
                        ');')
-    connection.execute('CREATE TABLE IF NOT EXISTS message_record ('
-                       'qq_id integer,'
-                       'date date'
-                       ');')
+    # connection.execute('CREATE TABLE IF NOT EXISTS message_record ('
+    #                    'qq_id integer,'
+    #                    'date date'
+    #                    ');')
     connection.execute('CREATE TABLE IF NOT EXISTS rank_record ('
-                       'date integer UNIQUE PRIMARY KEY,'
-                       'rank integer'
+                       'group_id BIGINT NOT NULL,'
+                       'date INTEGER,'
+                       'ranking INTEGER '
                        ');')
-    connection.commit()
+    connection.close()
 
 
 def get_connection():
-    return sqlite3.connect('main.db')
+    return pymysql.connect(config.DATABASE_PATH,
+                           config.DATABASE_USERNAME,
+                           config.DATABASE_PASSWORD,
+                           config.DATABASE_NAME)
 
 
 if __name__ == '__main__':

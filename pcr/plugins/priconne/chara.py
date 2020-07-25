@@ -5,12 +5,12 @@ from PIL import Image
 from io import BytesIO
 import requests
 
-from pcr import R, util
-from main import logger
+from hoshino import R, log, sucmd, util
+from hoshino.typing import CommandSession
 
-from nonebot import CommandSession
 from . import _pcr_data
 
+logger = log.new_logger('chara')
 UNKNOWN = 1000
 UnavailableChara = {
     1067,  # 穗希
@@ -117,9 +117,10 @@ def download_chara_icon(id_, star):
     logger.info(f'Downloading chara icon from {url}')
     try:
         rsp = requests.get(url, stream=True, timeout=5)
-    except Exception as e:
+    except Exception as exc:
         logger.error(f'Failed to download {url}. {type(e)}')
-        logger.exception(e)
+        logger.exception(exc)
+        return
     if 200 == rsp.status_code:
         img = Image.open(BytesIO(rsp.content))
         img.save(save_path)
@@ -195,3 +196,13 @@ class Chara:
             s = gadget_equip.resize((l, l), Image.LANCZOS)
             pic.paste(s, (a, b, a + l, b + l), s)
         return pic
+
+
+@sucmd('reload-pcr-chara', force_private=False, aliases=('重载角色花名册',))
+async def reload_pcr_chara(session: CommandSession):
+    try:
+        roster.update()
+        await session.send('ok')
+    except Exception as e:
+        logger.exception(e)
+        await session.send(f'Error: {type(e)}')

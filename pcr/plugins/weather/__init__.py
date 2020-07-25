@@ -1,15 +1,16 @@
-from nonebot import on_command,CommandSession
-from .data_source import get_weather_of_city,get_report
+from nonebot import on_command, CommandSession
+from .data_source import get_weather_of_city, get_report
 from .international_city_weather import get_detail_city_weather_report
 import config
 
 
-@on_command('weather', aliases=('天气', '当前天气'),only_to_me=False)
+@on_command('weather', aliases=('天气', '当前天气'), only_to_me=False)
 async def weather(session: CommandSession):
     if session.event.group_id in config.GROUP_ID:
         city = session.get('city', prompt='喵？指挥官要查询哪座城市喵？')
         weather_situation = await get_weather_of_city(city)
         await session.send(weather_situation)
+
 
 # weather.args_parser 装饰器将函数声明为 weather 命令的参数解析器
 # 命令解析器用于将用户输入的参数解析成命令真正需要的数据
@@ -34,11 +35,11 @@ async def _(session: CommandSession):
     # 如果当前正在向用户询问更多信息（例如本例中的要查询的城市），且用户输入有效，则放入会话状态
     session.state[session.current_key] = stripped_arg
 
+
 @on_command('weather_report', aliases=('天气预报',), only_to_me=False)
 async def weather_report(session: CommandSession):
-    if session.event.group_id == config.GROUP_ID:
-        city = session.get('city',prompt='喵？指挥官要查询哪座城市喵？')
+    if session.event.group_id in config.GROUP_ID:
+        city = session.get('city', prompt='喵？指挥官要查询哪座城市喵？')
         # reports = await get_report(city)
         reports = get_detail_city_weather_report(city)
         await session.send(reports)
-

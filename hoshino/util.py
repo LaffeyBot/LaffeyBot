@@ -11,10 +11,9 @@ import zhconv
 from aiocqhttp.exceptions import ActionFailed
 from matplotlib import pyplot as plt
 from PIL import Image
-import config
-from nonebot import get_bot
-from main import logger
-from aiocqhttp import Event as CQEvent
+
+import hoshino
+from hoshino.typing import CQEvent
 
 try:
     import ujson as json
@@ -30,32 +29,33 @@ def load_config(inbuilt_file_var):
     filename = os.path.join(os.path.dirname(inbuilt_file_var), 'config.json')
     try:
         with open(filename, encoding='utf8') as f:
-            loaded_config = json.load(f)
-            return loaded_config
+            config = json.load(f)
+            return config
     except Exception as e:
-        logger.exception(e)
+        hoshino.logger.exception(e)
         return {}
 
 
 async def delete_msg(ev: CQEvent):
     try:
-        if config.USE_CQPRO:
-            await get_bot().delete_msg(message_id=ev.message_id)
+        if hoshino.config.USE_CQPRO:
+            await hoshino.get_bot().delete_msg(self_id=ev.self_id, message_id=ev.message_id)
     except ActionFailed as e:
-        logger.error(f'撤回失败 retcode={e.retcode}')
+        hoshino.logger.error(f'撤回失败 retcode={e.retcode}')
     except Exception as e:
-        logger.exception(e)
+        hoshino.logger.exception(e)
 
 
 async def silence(ev: CQEvent, ban_time, skip_su=True):
     try:
-        if skip_su and ev.user_id in config.SUPERUSERS:
+        if skip_su and ev.user_id in hoshino.config.SUPERUSERS:
             return
-        await get_bot().set_group_ban(self_id=ev.self_id, group_id=ev.group_id, user_id=ev.user_id, duration=ban_time)
+        await hoshino.get_bot().set_group_ban(self_id=ev.self_id, group_id=ev.group_id, user_id=ev.user_id,
+                                              duration=ban_time)
     except ActionFailed as e:
-        logger.error(f'禁言失败 retcode={e.retcode}')
+        hoshino.logger.error(f'禁言失败 retcode={e.retcode}')
     except Exception as e:
-        logger.exception(e)
+        hoshino.logger.exception(e)
 
 
 def pic2b64(pic: Image) -> str:

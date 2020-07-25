@@ -3,9 +3,12 @@ from data.init_database import get_connection
 from data.get_date_int import get_date_int
 
 
-def get_list_of_attacks(date: datetime) -> list:
+def get_list_of_attacks(date: datetime, group_id: int) -> list:
     c = get_connection()
-    player_list = c.execute('SELECT player_name FROM player_list').fetchall()
+    cursor = c.cursor()
+    cursor.execute('SELECT player_name FROM player_list WHERE group_id=%s',
+                   (group_id,))
+    player_list = cursor.fetchall()
 
     attack_times = dict()
     name: tuple
@@ -13,7 +16,9 @@ def get_list_of_attacks(date: datetime) -> list:
         attack_times[name[0]] = 0
 
     today = get_date_int(date)
-    attack_record = c.execute('SELECT username FROM record WHERE date=?', (today, )).fetchall()
+    cursor.execute('SELECT username FROM record '
+                   'WHERE date=%s AND group_id=%s', (today, group_id))
+    attack_record = cursor.fetchall()
 
     record_name: tuple
     for record_name in attack_record:

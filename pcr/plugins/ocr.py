@@ -58,18 +58,31 @@ def recognize_text_to_record_list(img_path: str, crop: (float, float, float, flo
 
     preprocess(img_path=img_path, crop=(0.1, 0.16, 0.225, 0.23), ex_color='BLUE')
     text = recognize_text('output.png')
-    rank_number = int(''.join(filter(str.isdigit, text)))
+    formatted_text = ''.join(filter(str.isdigit, text))
+    if formatted_text.isdigit():
+        rank_number = int(formatted_text)
+        add_rank(rank_number)
+
+    return record_list
+
+
+def add_rank(rank: int):
+    c = get_connection()
+    previous_rank = c.execute('SELECT date, rank FROM rank_record '
+                              'ORDER BY date DESC LIMIT 1').fetchone()
+    if previous_rank is not None \
+            and (previous_rank[1] - 50) / rank > 5 or (previous_rank[1] + 50) / rank < 0.2:
+        # This data is not right
+        return
+
     date = datetime.datetime.now()
     date_int: int = get_date_int(date, with_hour=True)
-    c = get_connection()
+
     c.execute('INSERT INTO rank_record (date, rank)'
               'VALUES (?, ?)'
               'ON CONFLICT(date)'
-              'DO UPDATE SET rank=?', (date_int, rank_number, rank_number))
+              'DO UPDATE SET rank=?', (date_int, rank, rank))
     c.commit()
-    print(rank_number)
-
-    return record_list
 
 
 def recognize_text(img_path) -> str:

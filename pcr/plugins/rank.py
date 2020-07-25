@@ -8,17 +8,15 @@ from pcr.plugins.get_best_name import get_best_name
 
 @on_command('show_rank', aliases=['排名'], only_to_me=False)
 async def show_rank(session: CommandSession):
-    if session.event.group_id != config.GROUP_ID and session.event['message_type'] != 'private':
-        print('NOT IN SELECTED GROUP')
-        return
+    group_id = session.event.group_id
     name: str = get_best_name(session)
-    name_in_game = qq_to_game_name(name)
+    name_in_game = qq_to_game_name(name, group_id=group_id)
     print(name_in_game)
     if name_in_game is None or len(name_in_game) == 0:
         await session.send('没有找到指挥官的排名喵...')
         return
-    position_on_today_rank = position_on_rank(calculate_rank(True), name_in_game)
-    position_on_overall_rank = position_on_rank(calculate_rank(False), name_in_game)
+    position_on_today_rank = position_on_rank(calculate_rank(True, group_id), name_in_game)
+    position_on_overall_rank = position_on_rank(calculate_rank(False, group_id), name_in_game)
     message = '指挥官今日排名第%d，总排名第%d，继续加油喵~' % (position_on_today_rank, position_on_overall_rank)
     await session.send(message)
 
@@ -36,28 +34,36 @@ def position_on_rank(rank: list, name: str) -> int:
     return -1
 
 
-def calculate_rank(is_today: bool) -> list:
+def calculate_rank(is_today: bool, group_id: int) -> list:
     """
 
     :rtype: list format: (player_name, damage)
     """
     c = get_connection()
+    cursor = c.cursor()
     if is_today:
         today = int(datetime.now().strftime("%Y%m%d"))
-        today_records = c.execute('SELECT username, damage FROM record WHERE date=?', (today,)).fetchall()
-        today_rank_list = list_rank(today_records)
+        cursor.execute('SELECT username, damage FROM record '
+                       'WHERE date=? AND group_id=%s', (today, group_id))
+        today_records = cursor.fetchall()
+        today_rank_list = list_rank(today_records, group_id)
         return today_rank_list
     else:
-        records = c.execute('SELECT username, damage FROM record').fetchall()
-        overall_rank = list_rank(records)
+        cursor.execute('SELECT username, damage FROM record '
+                       'WHERE group_id=%s', (group_id,))
+        records = cursor.fetchall()
+        overall_rank = list_rank(records, group_id)
         return overall_rank
 
 
-def list_rank(records) -> list:
+def list_rank(records, group_id: int) -> list:
     c = get_connection()
+    cursor = c.cursor()
     rank_dict = dict()
 
-    list_of_players = c.execute('SELECT player_name FROM player_list').fetchall()
+    cursor.execute('SELECT player_name FROM player_list '
+                   'WHERE group_id=%s', (group_id,))
+    list_of_players = cursor.fetchall()
     for player in list_of_players:
         rank_dict[player[0]] = 0
 

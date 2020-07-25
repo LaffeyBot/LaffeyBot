@@ -1,17 +1,23 @@
 from data.init_database import get_connection
 
 
-def qq_to_game_name(qq_name: str) -> str:
+def qq_to_game_name(qq_name: str, group_id: int) -> str:
     c = get_connection()
-    matching_record = c.execute('SELECT player_name FROM player_list WHERE qq_name=?', (qq_name,)).fetchone()
+    cursor = c.cursor()
+    cursor.execute('SELECT player_name FROM player_list '
+                   'WHERE qq_name=? AND group_id=%s', (qq_name, group_id))
+    matching_record = cursor.fetchone()
     if matching_record is None:
         return qq_name
     else:
         return matching_record[0]
 
 
-def get_closest_player_name(name: str):
-    all_players = get_connection().execute('SELECT player_name FROM player_list').fetchall()
+def get_closest_player_name(name: str, group_id: int):
+    cursor = get_connection().cursor()
+    cursor.execute('SELECT player_name FROM player_list '
+                   'WHERE group_id=%s', (group_id,))
+    all_players = cursor.fetchall()
     all_players_list = list()
     for item in all_players:
         all_players_list.append([item[0], 0])

@@ -11,7 +11,7 @@ class TeamRankChart(object):
         self.rank = ranks
         self.file_path = filepath
         # 创建画布
-        self.fig = plt.figure(num='碧蓝咸鱼公会实时排名图', figsize=(8, 6))
+        self.fig = plt.figure(num='公会实时排名图', figsize=(8, 6))
         # 选择子图
         self.ax = self.fig.add_subplot(111)
         # 全局中文显示处理
@@ -28,17 +28,21 @@ class TeamRankChart(object):
         rmax = self.get_max_rank() // 100 * 100
         time_length = len(self.time)
         # 设置刻度范围
-        self.ax.set_xlim([0.75, time_length + 0.1])  # x轴从1到记录最长时间
+        self.ax.set_xlim([0.5,time_length + 0.1])  # x轴从1到记录最长时间
         self.ax.set_ylim([rmin - 200, rmax + 200])  # y轴从最小rank-100到最大rank+100
         # 设置显示刻度
         self.ax.set_xticks(np.linspace(1, time_length, time_length))
-        self.ax.set_yticks(np.linspace(rmax + 200, rmin - 200, (rmax - rmin + 400) // 500 + 1))
+        gap = (rmax - rmin + 400) // 500 + 1
+        if gap <= 12:
+            self.ax.set_yticks(np.linspace(rmax + 200, rmin - 200, gap))
+        else:
+            self.ax.set_yticks(np.linspace(rmax + 200, rmin - 200, 12))
         self.ax.set_xticklabels(self.time, fontproperties="SimHei", fontsize=12, rotation=-30)
         # 设置刻度线
         self.ax.tick_params(left=True, direction="in", length=2, width=2, color='b', labelsize="medium")
         self.ax.tick_params(bottom=True, direction="in", length=2, width=2, color='b', labelsize="medium")
         # 设置标题
-        self.ax.set_title(f"{datetime.now().month} 月 公 会 战 碧 蓝 焊 接 公 会 实 时 排 名", fontsize=36, backgroundcolor='#3c7f99',
+        self.ax.set_title(f"{datetime.now().month} 月 公 会 战 公 会 实 时 排 名", fontsize=36, backgroundcolor='#3c7f99',
                           fontweight='bold', color='white', verticalalignment="center", fontproperties="SimHei")
         # 去掉上右边框
         self.ax.spines["left"].set_color("darkblue")
@@ -49,9 +53,9 @@ class TeamRankChart(object):
         self.ax.plot(x, self.rank, color='#57faff', marker='.', label='当前排名')
         self.ax.legend(loc=2, handlelength=3, fontsize=14, shadow=True)
         # 添加标签
-        self.ax.text(self.rank.index(self.get_max_rank()) + 1, self.get_max_rank() + 4, f"最低排名:{self.get_max_rank()}",
+        self.ax.text(self.rank.index(self.get_max_rank()) + 1, self.get_max_rank() + 3, f"最低排名:{self.get_max_rank()}",
                      fontsize=14, color='g', alpha=0.75)
-        self.ax.text(self.rank.index(self.get_min_rank()) + 1, self.get_min_rank() + 4, f"最好排名:{self.get_min_rank()}",
+        self.ax.text(self.rank.index(self.get_min_rank()) + 1, self.get_min_rank() - 20, f"最好排名:{self.get_min_rank()}",
                      fontsize=14, color='g',
                      alpha=0.75)
         # plt.show()

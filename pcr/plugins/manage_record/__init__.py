@@ -9,31 +9,27 @@ from pcr.plugins.get_best_name import get_best_name
 
 @on_command('deleteAll', aliases='删除所有记录', only_to_me=True, permission=perm.SUPERUSER)
 async def delete_all(session: CommandSession):
-    delete_all_records()
+    delete_all_records(session.event.group_id)
     await session.send('已经把记录删掉了喵')
 
 
 @on_command('manual_damage', aliases=['出刀', '报刀'], only_to_me=False)
 async def manual_damage(session: CommandSession):
-    if session.event.group_id not in config.GROUP_ID:
-        print('NOT IN SELECTED GROUP')
-        return
+    group_id = session.event.group_id
     damage = session.get('damage')
     if not damage:
         await session.send('请输入伤害喵')
     username = get_best_name(session)
-    game_name = qq_to_game_name(username)
-    target = config.NAME_FOR_BOSS[JSONEditor().get_current_boss_order()-1]
-    new_record, did_kill = add_record([[game_name, target, damage]], force=True)
+    game_name = qq_to_game_name(username, group_id)
+    target = config.NAME_FOR_BOSS[JSONEditor(group_id).get_current_boss_order() - 1]
+    new_record, did_kill = add_record([[game_name, target, damage]],
+                                      force=True, group_id=group_id)
     await alert_new_record(new_record, did_kill)
 
 
 @on_command('status', aliases=['状态', 'boss状态'], only_to_me=False)
 async def status(session: CommandSession):
-    if session.event.group_id not in config.GROUP_ID and session.event['message_type'] != 'private':
-        print('NOT IN SELECTED GROUP')
-        return
-    editor = JSONEditor()
+    editor = JSONEditor(group_id=session.event.group_id)
     message = '现在攻略的是' + str(editor.get_generation()) + '周目的' + \
               str(editor.get_current_boss_order()) + '王喵~\n'
     message += boss_status_text(editor.get_remaining_health())

@@ -4,22 +4,22 @@ from aiocqhttp import MessageSegment
 from data.picture_quota import PictureQuota
 from data.init_database import get_connection
 import time
+import asyncio
+import nonebot
 
 
-@on_command('hentai', aliases=('炼铜', '瑟图', '色图', '本子'), only_to_me=False)
+@on_command('hentai', aliases=('炼铜', '瑟图', '色图', '本子', '涩图', '涩图'), only_to_me=False)
 async def hentai(session: CommandSession):
     if session.event.group_id in config.GROUP_ID or session.event['message_type'] == 'private':
-        if int(time.strftime("%H", time.localtime())) < 14:
-            await session.send('指挥官要好好休息喵~')
-            return
         user_id = session.event.sender['user_id']
         quota = PictureQuota(user_id)
         if not quota.get_one_picture():
             await session.send('指挥官要注意身体喵~')
             return
 
-        random_file: (str, str, str) = get_connection()\
-            .execute('SELECT * FROM picture_list ORDER BY RANDOM() LIMIT 1').fetchone()
+        cursor = get_connection().cursor()
+        cursor.execute('SELECT * FROM picture_list ORDER BY RAND() LIMIT 1')
+        random_file: (str, str, str) = cursor.fetchone()
         print(random_file)
         file_name = random_file[1] + '/' + random_file[0]
         print(file_name)
@@ -30,4 +30,10 @@ async def hentai(session: CommandSession):
         # else:
         #     await hentai(session)
         #     return
-        await session.send(seq)
+        result = await session.send(seq)
+        if int(time.strftime("%H", time.localtime())) < 14:
+            asyncio.sleep(30)
+            await session.bot.delete_msg(message_id=result['message_id'])
+        bot = nonebot.get_bot()
+        await bot.send_group_msg(group_id=session.event.group_id,
+                                 message='[CQ:record,file=Laffey_voice\\Laffey_touch3.mp3]')

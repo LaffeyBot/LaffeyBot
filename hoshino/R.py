@@ -5,14 +5,13 @@ from urllib.request import pathname2url
 from nonebot import MessageSegment, get_bot
 from PIL import Image
 
-from main import logger
-from pcr import util
-import config
+import hoshino
+from hoshino import logger, util
 
 
 class ResObj:
     def __init__(self, res_path):
-        res_dir = os.path.expanduser(config.RES_DIR)
+        res_dir = os.path.expanduser(hoshino.config.RES_DIR)
         fullpath = os.path.abspath(os.path.join(res_dir, res_path))
         if not fullpath.startswith(os.path.abspath(res_dir)):
             raise ValueError('Cannot access outside RESOUCE_DIR')
@@ -21,12 +20,12 @@ class ResObj:
     @property
     def url(self):
         """资源文件的url，供酷Q（或其他远程服务）使用"""
-        return urljoin(config.RES_URL, pathname2url(self.__path))
+        return urljoin(hoshino.config.RES_URL, pathname2url(self.__path))
 
     @property
     def path(self):
         """资源文件的路径，供bot内部使用"""
-        return os.path.join(config.RES_DIR, self.__path)
+        return os.path.join(hoshino.config.RES_DIR, self.__path)
 
     @property
     def exist(self):
@@ -36,22 +35,22 @@ class ResObj:
 class ResImg(ResObj):
     @property
     def cqcode(self) -> MessageSegment:
-        if config.RES_PROTOCOL == 'http':
+        if hoshino.config.RES_PROTOCOL == 'http':
             return MessageSegment.image(self.url)
-        elif config.RES_PROTOCOL == 'file':
+        elif hoshino.config.RES_PROTOCOL == 'file':
             return MessageSegment.image(f'file:///{os.path.abspath(self.path)}')
         else:
             try:
                 return MessageSegment.image(util.pic2b64(self.open()))
             except Exception as e:
-                logger.exception(e)
+                hoshino.logger.exception(e)
                 return MessageSegment.text('[图片出错]')
 
     def open(self) -> Image:
         try:
             return Image.open(self.path)
         except FileNotFoundError:
-            logger.error(f'缺少图片资源：{self.path}')
+            hoshino.logger.error(f'缺少图片资源：{self.path}')
             raise
 
 
