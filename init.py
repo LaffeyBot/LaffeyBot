@@ -9,7 +9,7 @@ from data.update_picture_list import update_picture_list
 
 init_database()
 
-update_picture_list()
+# update_picture_list()
 
 # if os.path.isfile('player_list.csv'):
 #     with open('player_list.csv', 'r', encoding='UTF-8') as file:

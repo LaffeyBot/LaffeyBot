@@ -66,3 +66,9 @@ async def feedback_bugs(session: CommandSession):
 #         print(msg_id['message_id'])
 #         await bot.delete_msg(message_id=msg_id['message_id'],self_id=3473890852)
 #         # await bot.delete_msg(**event)'''
+bot= nonebot.get_bot()
+@bot.on_message()
+async def demo(event):
+    if event['message_type'] == 'group' and event['group_id'] in config.GROUP_ID:
+        print("demo2")
+        # await bot.send_group_msg(group_id=1108319335, message='[CQ:record,file=Laffey_introduce.mp3]')

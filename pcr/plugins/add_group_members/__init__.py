@@ -23,8 +23,11 @@ async def list_attack_detail(session: CommandSession):
         if len(qq_name) == 0:
             qq_name = member['nickname']
             member_str += qq_name + ', '
-            cursor.execute('INSERT INTO player_list (group_id, qq_id, qq_name, player_name) '
-                           'VALUES (%s, %s, %s, %s)', (group_id, qq_id, qq_name, qq_name))
+
+        role = member.get('role', 'member')
+        cursor.execute('INSERT INTO player_list (group_id, qq_id, qq_name, player_name, role) '
+                       'VALUES (%s, %s, %s, %s, %s)',
+                       (group_id, qq_id, qq_name, qq_name, role))
     print(group_member_list)
     c.commit()
     await session.send('公会成员更新完成了喵~\n'

@@ -1,6 +1,7 @@
 import nonebot
 import config
 import random as r
+import os
 import pytz
 from datetime import datetime
 from aiocqhttp.exceptions import Error as e
@@ -23,6 +24,10 @@ async def send_hour_message():
         except e:
             print(e)
             await bot.send_group_msg(group_id=group, message="唔……嗯……糟了，站着睡着了")
+        rls = os.listdir(r'C:\Users\david\Documents\酷Q_Pro\data\record\Laffey_voice')
+        record_file= os.path.join(r'\Laffey_voice',
+                                  rls[r.randint(0, len(rls) - 1)])
+        await bot.send_group_msg(group_id=group,message=f'[CQ:record,file={record_file}]')
 
 
 
@@ -47,13 +52,3 @@ async def hint_message():
         except e:
             await bot.send_group_msg(group_id=group, message=e)
 
-
-@nonebot.scheduler.scheduled_job('cron', month=6, year=2020, day=21, hour=12, minute=20)
-async def temp_message():
-    bot = nonebot.get_bot()
-    msg = "指挥官，根据天文台发来的报道，今天下午14点以后会发生十年一遇的eclipse，虽然Laffey过去习惯一个人了……和指挥官一起观看的话，总觉得这样更好"
-    for group in config.GROUP_ID:
-        try:
-            await bot.send_group_msg(group_id=group, message=msg)
-        except e:
-            await bot.send_group_msg(group_id=group, message=e)

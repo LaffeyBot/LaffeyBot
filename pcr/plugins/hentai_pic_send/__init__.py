@@ -5,6 +5,7 @@ from data.picture_quota import PictureQuota
 from data.init_database import get_connection
 import time
 import asyncio
+import nonebot
 
 
 @on_command('hentai', aliases=('炼铜', '瑟图', '色图', '本子', '涩图', '涩图'), only_to_me=False)
@@ -30,6 +31,9 @@ async def hentai(session: CommandSession):
         #     await hentai(session)
         #     return
         result = await session.send(seq)
+        bot = nonebot.get_bot()
+        await bot.send_group_msg(group_id=session.event.group_id,
+                                 message='[CQ:record,file=Laffey_voice\\Laffey_touch3.mp3]')
         if int(time.strftime("%H", time.localtime())) < 14:
             await asyncio.sleep(30)
             await session.bot.delete_msg(message_id=result['message_id'])

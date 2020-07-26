@@ -215,5 +215,5 @@ cython_debug/
 
 main.db
 player_list.csv
-!/config.py
-!/status/
+/config.py
+/status/

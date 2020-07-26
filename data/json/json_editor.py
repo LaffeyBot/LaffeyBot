@@ -6,11 +6,20 @@ import os
 
 class JSONEditor:
     def __init__(self, group_id: int):
+        if not os.path.isdir('status'):
+            os.mkdir('status')
         file_name = 'status/status_' + str(group_id) + '.json'
         if not os.path.isfile(file_name):
             self.init_json_for_group(file_name)
+        self.load_json(file_name)
+
+    def load_json(self, file_name):
         with open(file_name, 'r') as file:
-            self.dict: dict = json.load(file)
+            try:
+                self.dict: dict = json.load(file)
+            except:
+                self.init_json_for_group(file_name)
+                self.load_json()
 
     @staticmethod
     def init_json_for_group(path):

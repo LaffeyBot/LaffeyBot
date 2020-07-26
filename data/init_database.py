@@ -11,6 +11,8 @@ def init_database():
                        'group_id BIGINT NOT NULL,'
                        'qq_id BIGINT NOT NULL,'
                        'qq_name TEXT,'
+                       'role TEXT,'
+                       'password TEXT,'
                        'player_name TEXT '
                        ');')
     connection.execute('CREATE TABLE IF NOT EXISTS record ('
@@ -37,6 +39,11 @@ def init_database():
                        'group_id BIGINT NOT NULL,'
                        'date INTEGER,'
                        'ranking INTEGER '
+                       ');')
+    connection.execute('CREATE TABLE IF NOT EXISTS api_keys ('
+                       'group_id BIGINT NOT NULL,'
+                       'qq_id BIGINT NOT NULL,'
+                       'api_key TEXT NOT NULL '
                        ');')
     connection.close()
 

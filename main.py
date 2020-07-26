@@ -59,4 +59,5 @@ from hoshino.service import Service, sucmd
 
 if __name__ == '__main__':
     bot = init()
+    from server_app import report_damage, do_fetch
     bot.run()
