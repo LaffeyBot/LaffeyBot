@@ -35,5 +35,8 @@ async def hentai(session: CommandSession):
         await bot.send_group_msg(group_id=session.event.group_id,
                                  message='[CQ:record,file=Laffey_voice\\Laffey_touch3.mp3]')
         if int(time.strftime("%H", time.localtime())) < 14:
-            await asyncio.sleep(30)
+            asyncio.sleep(30)
             await session.bot.delete_msg(message_id=result['message_id'])
+        bot = nonebot.get_bot()
+        await bot.send_group_msg(group_id=session.event.group_id,
+                                 message='[CQ:record,file=Laffey_voice\\Laffey_touch3.mp3]')
