@@ -23,20 +23,22 @@ async def add_rank():
 
     c = get_connection()
     cursor = c.cursor()
-    cursor.execute('SELECT date, rank FROM rank_record '
+    cursor.execute('SELECT date, ranking FROM rank_record '
                    'ORDER BY date DESC LIMIT 1')
-    previous_rank = cursor.fetchone()
-    if previous_rank is not None \
-            and (previous_rank[1] - 50) / rank > 5 or (previous_rank[1] + 50) / rank < 0.2:
-        # This data is not right
-        return
+    previous_rank_record = cursor.fetchone()
+    previous_rank = int(previous_rank_record[1])
+    rank_int = int(rank)
+    if previous_rank is not None:
+        if (previous_rank - 50) / rank_int > 5 or (previous_rank + 50) / rank_int < 0.2:
+            # This data is not right
+            return
 
     date = datetime.datetime.now()
     date_int: int = get_date_int(date, with_hour=True)
 
     cursor.execute('DELETE FROM rank_record WHERE group_id=%s AND date=%s',
-                   (group_id, date))
-    cursor.execute('INSERT INTO rank_record (date, rank)'
-                   'VALUES (%s, %s)', (date_int, rank))
+                   (group_id, date_int))
+    cursor.execute('INSERT INTO rank_record (date, ranking, group_id)'
+                   'VALUES (%s, %s, %s)', (date_int, rank, group_id))
     c.commit()
     return 'Success!'

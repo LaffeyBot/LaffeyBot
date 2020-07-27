@@ -11,7 +11,7 @@ from nonebot import on_natural_language, NLPSession, IntentCommand
 @on_command('change_character', aliases=('更换声源', '换声', '修改声源', '选择声源'), only_to_me=False, permission=perm.SUPERUSER)
 async def change_character(session: CommandSession):
     group_id = session.event.group_id
-    file_name = r'C:\Users\david\PycharmProjects\PCRBot\pcr\plugins\record_send\recording.json'
+    file_name = os.path.join(os.path.dirname(__file__), 'recording.json').replace('\\', '/')
     # print(os.path.isfile(file_name))
     if not os.path.isfile(file_name):
         print('-')
@@ -58,14 +58,16 @@ async def change_character(session: CommandSession):
         if not flag:
             current_data = {'group_id': group_id, 'character': 'Laffey'}
             # data['record'].append(current_data)
-            await session.send(f'指挥官，现在有如下声源可以供选择的喵：\n')
-            index = 1
-            for cname in config.RECORD_ORIGIN:
-                await session.send(f'{index}. {cname}\n')
-                index += 1
-            await session.send('当前声源是' + current_data['character'] + '酱为指挥官服务喵~\n'
-                                                                     '请在30s内做出选择喵！')
-            new_name = session.get('new_name',arg_filters=[extractors.extract_text])
+            if 'new_name' not in session.state:
+                message = '指挥官，现在有如下声源可以供选择的喵：\n'
+                index = 1
+                for cname in config.RECORD_ORIGIN:
+                    message += f'{index}. {cname}\n'
+                    index += 1
+                message += '当前声源是' + current_data['character'] + '酱为指挥官服务喵~\n' + '请在30s内做出选择喵！'
+                await session.send(message)
+                session.get('new_name', arg_filters=[extractors.extract_text])
+            new_name = session.state['new_name']
             print(new_name)
             is_exist = False
             for i2 in config.RECORD_ORIGIN.items():
@@ -83,36 +85,74 @@ async def change_character(session: CommandSession):
             else:
                 await session.send('修改的名称不存在喵，请重试命令~')
                 return
+
     else:
         await session.send('出故障了喵QAQ，请重试命令')
 
 
-@on_command('send_record',aliases=('发语音'), only_to_me=False)
-async def send_record(session:CommandSession):
+@on_command('send_record', aliases=('发语音'), only_to_me=False)
+async def send_record(session: CommandSession):
     if session.event.group_id in config.PRIMARY_GROUP_ID:
-        file = r'C:\Users\david\PycharmProjects\PCRBot\pcr\plugins\record_send\recording.json'
+        print('1')
+        file = os.path.join(os.path.dirname(__file__), 'recording.json').replace('\\', '/')
         if not os.path.isfile(file):
             await session.send('请指挥官先执行一遍[选择声源]命令喵~')
             return
-        with open(file,'r') as f:
+        with open(file, 'r') as f:
             data = json.load(f)
+        print('2')
+        print(data)
         if data:
             for record in data['record']:
+                is_find_group = False
                 if record['group_id'] == session.event.group_id:
-                    dir_name = record['character']+'_voice'
+                    is_find_group = True
+                    dir_name = record['character'] + '_voice'
                     bot = nonebot.get_bot()
                     try:
-                        rls = os.listdir(f'C:\\Users\\david\\Documents\\酷Q_Pro\\data\\record\\{dir_name}')
+                        rls = os.listdir(os.path.join(config.CQ_SOURCE_PATH, 'record', dir_name))
                     except:
                         await session.send('指挥官要找的语音资源暂时不存在的喵~请尝试使用[更换声源]命令进行操作喵')
                     record_file = os.path.join(f'\{dir_name}',
                                                rls[r.randint(0, len(rls) - 1)])
+                    print(session.event.group_id)
 
                     await bot.send_group_msg(group_id=session.event.group_id,
-                                       message=f'[CQ:record,file={record_file}]')
+                                             message=f'[CQ:record,file={record_file}]')
+            if not is_find_group:
+                await session.send('指挥官,请使用[更换声源]命令对该群语音状态初始化喵~')
+        else:
+            await session.send('指挥官,请使用[更换声源]命令对该群语音状态初始化喵~')
 
 
-@on_natural_language(keywords={'语音'})
+@on_natural_language(keywords={'语音'}, only_to_me=False)
 async def _(session: NLPSession):
     # 返回意图命令，前两个参数必填，分别表示置信度和意图命令名
     return IntentCommand(95.0, 'send_record')
+
+
+@on_command('qielu', aliases=('切噜', 'qielu'), only_to_me=False)
+async def qielu(session: CommandSession):
+    if session.event.group_id in config.PRIMARY_GROUP_ID:
+        print(session.event)
+        sender_id = session.event['sender']['user_id']
+        print(sender_id)
+        image_dir = os.path.join(config.CQ_SOURCE_PATH, 'image', 'qielu')
+        print(os.listdir(image_dir))
+        print(r.randint(0, len(os.listdir(image_dir)) - 1))
+        file = os.listdir(image_dir)[r.randint(0, len(os.listdir(image_dir)) - 1)]
+        file_path = os.path.join('qielu', file)
+        message = f'[CQ:at,qq={sender_id}]切噜噜~♫~(=^･ω･^)ﾉ\n' \
+                  f'[CQ:image,file={file_path}]'
+        await session.send(message)
+        await session.send('[CQ:record,file=切噜~.mp3]')
+
+
+@on_natural_language(keywords={"切噜", "qielu"}, only_to_me=False)
+async def _(session: NLPSession):
+    return IntentCommand(90.0, 'qielu')
+
+
+if __name__ == '__main__':
+    print(os.path.join(os.path.dirname(__file__), 'recording.json').replace('\\', '/'))
+    print(os.path.join(config.CQ_SOURCE_PATH, 'record', '123.mp3'))

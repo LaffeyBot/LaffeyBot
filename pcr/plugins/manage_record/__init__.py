@@ -24,7 +24,7 @@ async def manual_damage(session: CommandSession):
     target = config.NAME_FOR_BOSS[JSONEditor(group_id).get_current_boss_order() - 1]
     new_record, did_kill = add_record([[game_name, target, damage]],
                                       force=True, group_id=group_id)
-    await alert_new_record(new_record, did_kill)
+    await alert_new_record(new_record, did_kill, group_id=group_id)
 
 
 @on_command('status', aliases=['状态', 'boss状态'], only_to_me=False)

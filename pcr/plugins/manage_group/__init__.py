@@ -11,7 +11,7 @@ import asyncio
 @on_notice('group_increase')
 async def welcome_new_member(session: NoticeSession):
     # 群成员增加时自动触发欢迎信息功能
-    if session.event.group_id == config.PRIMARY_GROUP_ID:
+    if session.event.group_id in config.:
         print(session.event)
         await session.send(f"欢迎新的指挥官@{session.event.user_id}加入群喵~\n"
                            + config.WELCOME_MESSAGE)

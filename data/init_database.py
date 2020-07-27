@@ -1,5 +1,7 @@
 import pymysql
 import config
+from functools import wraps
+from quart import g
 
 
 def init_database():
@@ -13,14 +15,16 @@ def init_database():
                        'qq_name TEXT,'
                        'role TEXT,'
                        'password TEXT,'
-                       'player_name TEXT '
+                       'player_name TEXT,'
+                       'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT'
                        ');')
     connection.execute('CREATE TABLE IF NOT EXISTS record ('
                        'group_id BIGINT NOT NULL,'
                        'username TEXT NOT NULL,'
                        'target TEXT NOT NULL,'
                        'damage INTEGER DEFAULT 0,'
-                       'date INTEGER NOT NULL '
+                       'date INTEGER NOT NULL,'
+                       'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT'
                        ');')
     connection.execute('CREATE TABLE IF NOT EXISTS picture_list ('
                        'file_name TEXT,'
@@ -53,6 +57,15 @@ def get_connection():
                            config.DATABASE_USERNAME,
                            config.DATABASE_PASSWORD,
                            config.DATABASE_NAME)
+
+
+def db_connection_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        g.db = get_connection()
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 
 if __name__ == '__main__':

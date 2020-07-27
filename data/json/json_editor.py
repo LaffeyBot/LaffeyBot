@@ -12,6 +12,7 @@ class JSONEditor:
         if not os.path.isfile(file_name):
             self.init_json_for_group(file_name)
         self.load_json(file_name)
+        self.file_name = file_name
 
     def load_json(self, file_name):
         with open(file_name, 'r') as file:
@@ -32,7 +33,7 @@ class JSONEditor:
             json.dump(init_dict, file)
 
     def save(self):
-        with open('status.json', 'w') as file:
+        with open(self.file_name, 'w') as file:
             json.dump(self.dict, file)
 
     def get_fetch_status(self) -> bool:

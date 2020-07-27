@@ -25,14 +25,15 @@ def add_record(records: list, group_id: int, force=False) -> (list, bool):
         record[0] = get_closest_player_name(record[0], group_id)
 
         existing_count = cursor.execute('SELECT * FROM record '
-                                        'WHERE damage=? AND group_id = %s',
+                                        'WHERE damage=%s AND group_id = %s',
                                         (record[2], group_id))
         if not force and existing_count > 0:
             continue  # 如果不是强制记录并且 Record 已存在
         added_records.append(record)
         record.append(today)
-        cursor.execute("INSERT INTO record (username, target, damage, date) VALUES "
-                       "(%s, %s, %s, %s)", tuple(record))
+        record.append(group_id)
+        cursor.execute("INSERT INTO record (username, target, damage, date, group_id) VALUES "
+                       "(%s, %s, %s, %s, %s)", tuple(record))
         print('DAMAGE ' + str(int(record[2])))
         did_kill = json_editor.add_damage(damage=int(record[2]))
         if did_kill:
