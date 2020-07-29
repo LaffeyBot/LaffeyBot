@@ -27,11 +27,11 @@ async def add_rank():
                    'ORDER BY date DESC LIMIT 1')
     previous_rank_record = cursor.fetchone()
     previous_rank = int(previous_rank_record[1])
-    rank_int = int(rank)
+    current_rank = int(rank)
     if previous_rank is not None:
-        if (previous_rank - 50) / rank_int > 5 or (previous_rank + 50) / rank_int < 0.2:
+        if (previous_rank - 50) / current_rank > 5 or (previous_rank + 50) / current_rank < 0.3:
             # This data is not right
-            return
+            return 'Failed!'
 
     date = datetime.datetime.now()
     date_int: int = get_date_int(date, with_hour=True)

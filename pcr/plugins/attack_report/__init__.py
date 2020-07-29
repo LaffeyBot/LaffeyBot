@@ -1,5 +1,4 @@
 from nonebot import on_command, CommandSession, on_natural_language, NLPSession, IntentCommand
-from data.damage import delete_all_records, add_record
 from data.attack_history import get_list_of_attacks
 from datetime import datetime, timedelta
 import jieba.posseg as psg
@@ -24,7 +23,7 @@ async def list_attack_detail(session: CommandSession):
         message += '还请多多' + custom.replace('了', '') + '喵！勤劳才会致富喵！'
         await session.send(message)
     else:
-        record_list: list = get_list_of_attacks(day)
+        record_list: list = get_list_of_attacks(day, group_id)
         count_list = count_attack_times(record_list)
         message = '已经有: \n'
         custom = session.state.get('custom', '出击')

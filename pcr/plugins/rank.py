@@ -44,7 +44,7 @@ def calculate_rank(is_today: bool, group_id: int) -> list:
     if is_today:
         today = int(datetime.now().strftime("%Y%m%d"))
         cursor.execute('SELECT username, damage FROM record '
-                       'WHERE date=? AND group_id=%s', (today, group_id))
+                       'WHERE date=%s AND group_id=%s', (today, group_id))
         today_records = cursor.fetchall()
         today_rank_list = list_rank(today_records, group_id)
         return today_rank_list

@@ -11,10 +11,9 @@ import asyncio
 @on_notice('group_increase')
 async def welcome_new_member(session: NoticeSession):
     # 群成员增加时自动触发欢迎信息功能
-    if session.event.group_id in config.:
-        print(session.event)
-        await session.send(f"欢迎新的指挥官@{session.event.user_id}加入群喵~\n"
-                           + config.WELCOME_MESSAGE)
+    print(session.event)
+    await session.send(f"欢迎新的指挥官@{session.event.user_id}加入群喵~\n"
+                       + config.WELCOME_MESSAGE)
 
 
 @on_command('feedback', aliases=('bug反馈', '功能反馈'), only_to_me=False)
@@ -42,6 +41,7 @@ async def feedback_bugs(session: CommandSession):
         else:
             await session.send("QAQ喵，发送失败了喵，重新试试喵")
 
+
 # bot = nonebot.get_bot()
 # @bot.on_message()
 # async def demo(event):
@@ -66,7 +66,9 @@ async def feedback_bugs(session: CommandSession):
 #         print(msg_id['message_id'])
 #         await bot.delete_msg(message_id=msg_id['message_id'],self_id=3473890852)
 #         # await bot.delete_msg(**event)'''
-bot= nonebot.get_bot()
+bot = nonebot.get_bot()
+
+
 @bot.on_message()
 async def demo(event):
     if event['message_type'] == 'group' and event['group_id'] in config.GROUP_ID:

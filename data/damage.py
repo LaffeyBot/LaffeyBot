@@ -29,15 +29,19 @@ def add_record(records: list, group_id: int, force=False) -> (list, bool):
                                         (record[2], group_id))
         if not force and existing_count > 0:
             continue  # 如果不是强制记录并且 Record 已存在
-        added_records.append(record)
         record.append(today)
         record.append(group_id)
-        cursor.execute("INSERT INTO record (username, target, damage, date, group_id) VALUES "
-                       "(%s, %s, %s, %s, %s)", tuple(record))
-        print('DAMAGE ' + str(int(record[2])))
+
+        remaining_health = json_editor.get_remaining_health()
         did_kill = json_editor.add_damage(damage=int(record[2]))
         if did_kill:
             killed_boss = True
+            record[2] = remaining_health
+
+        cursor.execute("INSERT INTO record (username, target, damage, date, group_id) VALUES "
+                       "(%s, %s, %s, %s, %s)", tuple(record))
+        added_records.append(record)
+        print('DAMAGE ' + str(int(record[2])))
 
     c.commit()
     return added_records, killed_boss

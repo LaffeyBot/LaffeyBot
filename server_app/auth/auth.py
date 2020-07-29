@@ -41,7 +41,7 @@ def sign_up():
 @auth_blueprint.route('/login', methods=['POST'])
 def login():
     try:
-        username = request.form["username"]
+        username = request.form["qq_id"]
         password: str = request.form["password"]
     except KeyError:
         return jsonify({"msg": "Username or Password is incorrect"}), 403

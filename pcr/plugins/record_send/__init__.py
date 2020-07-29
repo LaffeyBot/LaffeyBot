@@ -8,7 +8,7 @@ from nonebot.command.argfilter import extractors, validators
 from nonebot import on_natural_language, NLPSession, IntentCommand
 
 
-@on_command('change_character', aliases=('更换声源', '换声', '修改声源', '选择声源'), only_to_me=False, permission=perm.SUPERUSER)
+@on_command('change_character', aliases=('更换声源', '换声', '修改声源', '选择声源'), only_to_me=False)
 async def change_character(session: CommandSession):
     group_id = session.event.group_id
     file_name = os.path.join(os.path.dirname(__file__), 'recording.json').replace('\\', '/')
@@ -92,37 +92,39 @@ async def change_character(session: CommandSession):
 
 @on_command('send_record', aliases=('发语音'), only_to_me=False)
 async def send_record(session: CommandSession):
-    if session.event.group_id in config.PRIMARY_GROUP_ID:
-        print('1')
-        file = os.path.join(os.path.dirname(__file__), 'recording.json').replace('\\', '/')
-        if not os.path.isfile(file):
-            await session.send('请指挥官先执行一遍[选择声源]命令喵~')
-            return
-        with open(file, 'r') as f:
-            data = json.load(f)
-        print('2')
-        print(data)
-        if data:
-            for record in data['record']:
-                is_find_group = False
-                if record['group_id'] == session.event.group_id:
-                    is_find_group = True
-                    dir_name = record['character'] + '_voice'
-                    bot = nonebot.get_bot()
-                    try:
-                        rls = os.listdir(os.path.join(config.CQ_SOURCE_PATH, 'record', dir_name))
-                    except:
-                        await session.send('指挥官要找的语音资源暂时不存在的喵~请尝试使用[更换声源]命令进行操作喵')
-                    record_file = os.path.join(f'\{dir_name}',
-                                               rls[r.randint(0, len(rls) - 1)])
-                    print(session.event.group_id)
+    print('1')
+    file = os.path.join(os.path.dirname(__file__), 'recording.json').replace('\\', '/')
+    if not os.path.isfile(file):
+        await session.send('请指挥官先执行一遍[选择声源]命令喵~')
+        return
+    with open(file, 'r') as f:
+        data = json.load(f)
+    print('2')
+    print(data)
+    if data:
+        is_find_group = False
+        for record in data['record']:
 
-                    await bot.send_group_msg(group_id=session.event.group_id,
-                                             message=f'[CQ:record,file={record_file}]')
-            if not is_find_group:
-                await session.send('指挥官,请使用[更换声源]命令对该群语音状态初始化喵~')
-        else:
+            if record['group_id'] == session.event.group_id:
+                is_find_group = True
+                dir_name = record['character'] + '_voice'
+                bot = nonebot.get_bot()
+                try:
+                    rls = os.listdir(os.path.join(config.CQ_SOURCE_PATH, 'record', dir_name))
+                except:
+                    await session.send('指挥官要找的语音资源暂时不存在的喵~请尝试使用[更换声源]命令进行操作喵')
+                record_file = os.path.join(f'\{dir_name}',
+                                           rls[r.randint(0, len(rls) - 1)])
+                print(session.event.group_id)
+
+                await bot.send_group_msg(group_id=session.event.group_id,
+                                         message=f'[CQ:record,file={record_file}]')
+        if not is_find_group:
+            print('3')
             await session.send('指挥官,请使用[更换声源]命令对该群语音状态初始化喵~')
+    else:
+        print('4')
+        await session.send('指挥官,请使用[更换声源]命令对该群语音状态初始化喵~')
 
 
 @on_natural_language(keywords={'语音'}, only_to_me=False)
@@ -133,19 +135,18 @@ async def _(session: NLPSession):
 
 @on_command('qielu', aliases=('切噜', 'qielu'), only_to_me=False)
 async def qielu(session: CommandSession):
-    if session.event.group_id in config.PRIMARY_GROUP_ID:
-        print(session.event)
-        sender_id = session.event['sender']['user_id']
-        print(sender_id)
-        image_dir = os.path.join(config.CQ_SOURCE_PATH, 'image', 'qielu')
-        print(os.listdir(image_dir))
-        print(r.randint(0, len(os.listdir(image_dir)) - 1))
-        file = os.listdir(image_dir)[r.randint(0, len(os.listdir(image_dir)) - 1)]
-        file_path = os.path.join('qielu', file)
-        message = f'[CQ:at,qq={sender_id}]切噜噜~♫~(=^･ω･^)ﾉ\n' \
-                  f'[CQ:image,file={file_path}]'
-        await session.send(message)
-        await session.send('[CQ:record,file=切噜~.mp3]')
+    print(session.event)
+    sender_id = session.event['sender']['user_id']
+    print(sender_id)
+    image_dir = os.path.join(config.CQ_SOURCE_PATH, 'image', 'qielu')
+    print(os.listdir(image_dir))
+    print(r.randint(0, len(os.listdir(image_dir)) - 1))
+    file = os.listdir(image_dir)[r.randint(0, len(os.listdir(image_dir)) - 1)]
+    file_path = os.path.join('qielu', file)
+    message = f'[CQ:at,qq={sender_id}]切噜噜~♫~(=^･ω･^)ﾉ\n' \
+              f'[CQ:image,file={file_path}]'
+    await session.send(message)
+    await session.send('[CQ:record,file=切噜~.mp3]')
 
 
 @on_natural_language(keywords={"切噜", "qielu"}, only_to_me=False)

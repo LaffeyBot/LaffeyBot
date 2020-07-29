@@ -37,12 +37,12 @@ class TeamRankChart(object):
             self.ax.set_yticks(np.linspace(rmax + 200, rmin - 200, gap))
         else:
             self.ax.set_yticks(np.linspace(rmax + 200, rmin - 200, 12))
-        self.ax.set_xticklabels(self.time, fontproperties="SimHei", fontsize=12, rotation=-30)
+        # self.ax.set_xticklabels(self.time, fontproperties="SimHei", fontsize=12, rotation=-30)
         # 设置刻度线
         self.ax.tick_params(left=True, direction="in", length=2, width=2, color='b', labelsize="medium")
         self.ax.tick_params(bottom=True, direction="in", length=2, width=2, color='b', labelsize="medium")
         # 设置标题
-        self.ax.set_title(f"{datetime.now().month} 月 公 会 战 公 会 实 时 排 名", fontsize=36, backgroundcolor='#3c7f99',
+        self.ax.set_title(f"{datetime.now().month} 月 公 会 战 公 会 实 时 排 名", fontsize=14, backgroundcolor='#3c7f99',
                           fontweight='bold', color='white', verticalalignment="center", fontproperties="SimHei")
         # 去掉上右边框
         self.ax.spines["left"].set_color("darkblue")
