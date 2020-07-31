@@ -1,6 +1,7 @@
 from data.json.json_editor import JSONEditor
 import nonebot
 import config
+from data.init_database import get_connection
 
 
 async def alert_new_record(new_records: list, did_kill: bool, group_id: int):
@@ -42,3 +43,9 @@ def boss_status_text(remaining_health):
     else:
         message += '可以合刀了喵！'
     return message
+
+
+def get_record_of_current_boss():
+    c = get_connection()
+    cursor = c.cursor()
+    cursor.execute('')
