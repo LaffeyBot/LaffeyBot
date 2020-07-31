@@ -35,7 +35,7 @@ async def report_member_daily_damage(session: CommandSession):
         m = MemberDamageChart(title_name=f'{date}公会成员伤害统计', player_name=player_name, damage=sdamage,
                               file_path=file_path)
         m.get_chart()
-        percent = round(max(sdamage)/sum(sdamage),4)*100
+        percent = round(max(sdamage) / sum(sdamage),4) * 100
         max_player_name = m.sort_damage()[max(sdamage)]
         message = f'以下是今日各位指挥官伤害统计喵~\n' \
                   f'其中伤害最高的指挥官{max_player_name}贡献了今日全队的{percent}%输出喵~\n' \
