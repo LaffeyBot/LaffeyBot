@@ -14,6 +14,7 @@ from PIL import Image
 
 import hoshino
 from hoshino.typing import CQEvent
+from nonebot import MessageSegment
 
 try:
     import ujson as json
@@ -63,6 +64,20 @@ def pic2b64(pic: Image) -> str:
     pic.save(buf, format='PNG')
     base64_str = base64.b64encode(buf.getvalue()).decode()
     return 'base64://' + base64_str
+
+
+def load_image_as_cqimage(path: str) -> str:
+    img = Image.open(path)
+    b64_img: str = pic2b64(pic=img)
+    cq_image: str = str(MessageSegment.image(b64_img))
+    return cq_image
+
+
+def load_recording_as_cqrecord(path: str) -> str:
+    file = open(path, 'rb')
+    b64_record: str = base64.b64encode(file.read())
+    cq_record: str = str(MessageSegment.record(b64_record))
+    return cq_record
 
 
 def fig2b64(plt: plt) -> str:

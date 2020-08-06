@@ -6,6 +6,7 @@ import nonebot
 import random as r
 from nonebot.command.argfilter import extractors, validators
 from nonebot import on_natural_language, NLPSession, IntentCommand
+from hoshino.util import load_image_as_cqimage
 
 
 @on_command('change_character', aliases=('更换声源', '换声', '修改声源', '选择声源'), only_to_me=False)
@@ -138,15 +139,15 @@ async def qielu(session: CommandSession):
     print(session.event)
     sender_id = session.event['sender']['user_id']
     print(sender_id)
-    image_dir = os.path.join(config.CQ_SOURCE_PATH, 'image', 'qielu')
+    image_dir = os.path.join('images/qielu')
     print(os.listdir(image_dir))
     print(r.randint(0, len(os.listdir(image_dir)) - 1))
     file = os.listdir(image_dir)[r.randint(0, len(os.listdir(image_dir)) - 1)]
-    file_path = os.path.join('qielu', file)
-    message = f'[CQ:at,qq={sender_id}]切噜噜~♫~(=^･ω･^)ﾉ\n' \
-              f'[CQ:image,file={file_path}]'
+    file_path = 'images/qielu/' + file
+    cqimage = load_image_as_cqimage(file_path)
+    message = f'[CQ:at,qq={sender_id}]切噜噜~♫~(=^･ω･^)ﾉ\n' + cqimage
     await session.send(message)
-    await session.send('[CQ:record,file=切噜~.mp3]')
+    # await session.send('[CQ:record,file=切噜~.mp3]')
 
 
 @on_natural_language(keywords={"切噜", "qielu"}, only_to_me=False)
