@@ -43,7 +43,7 @@ class Users(db.Model):
 
 
 class Groups(db.Model):
-    __tablename__ = 'groups'
+    __tablename__ = 'group'
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
     # 群聊号，可以通过群聊号找到公会，也可以在公会找到群号，会长可修改
     group_chat_id = db.Column(db.Integer, nullable=True)
@@ -53,13 +53,15 @@ class Groups(db.Model):
     description = db.Column(db.Text, nullable=False)
     # 公会所有人
     owner_id = db.Column(db.Integer, nullable=False)
-    # 当前Boss，每次公会战刷新
-    current_boss = db.Column(db.Integer)
-    # 剩余血量
+    # 当前Boss代目，每次公会战刷新
+    current_boss_gen = db.Column(db.Integer)
+    # 当前是第几个Boss，每次公会战刷新
+    current_boss_order = db.Column(db.Integer)
+    # 剩余血量，每次公会战刷新
     boss_remaining_health = db.Column(db.Integer)
 
     def __repr__(self):
-        return '<groups %r' % self.id
+        return '<group %r' % self.id
 
 
 class Records(db.Model):

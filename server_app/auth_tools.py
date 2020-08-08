@@ -46,13 +46,13 @@ def current_user_is_owner() -> bool:
 def get_user_with(username: str = None, email: str = None,
                   phone: str = None, id_: int = None) -> Optional[Users]:
     if username is not None:
-        return Users.query.filter_by(username=username).first
+        return Users.query.filter_by(username=username).first()
     elif email is not None:
-        return Users.query.filter_by(email=email).first
+        return Users.query.filter_by(email=email).first()
     elif phone is not None:
-        return Users.query.filter_by(phone=phone).first
+        return Users.query.filter_by(phone=phone).first()
     elif id_ is not None:
-        return Users.query.filter_by(id=id_).first
+        return Users.query.filter_by(id=id_).first()
     else:
         return None
 
