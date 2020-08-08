@@ -1,8 +1,5 @@
 from quart import Blueprint, request, jsonify, g
-import jwt
 import datetime
-import bcrypt
-import config
 from ..auth_tools import login_required
 from data.model import *
 from ..group_tools import get_group_of_user

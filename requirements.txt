@@ -1,8 +1,5 @@
-pytesseract~=0.3.4
-opencv-python~=4.3.0.36
 Pillow~=7.2.0
 nonebot~=1.6.0
-APScheduler
 requests~=2.24.0
 xlrd~=1.2.0
 
@@ -15,11 +12,11 @@ beautifulsoup4~=4.9.1
 numpy~=1.19.0
 pygtrie~=2.3.3
 fuzzywuzzy~=0.18.0
-lxml~=4.5.2
 PyMySQL~=0.10.0
-python-Levenshtein~=0.12.0
-ujson~=3.0.0
-Quart~=0.11.5
+ujson~=3.1.0
+Quart~=0.13.0
 PyJWT~=1.7.1
 bcrypt~=3.1.7
-mypy~=0.782
+Flask-SQLAlchemy~=2.4.4
+Flask-Script~=2.0.6
+APScheduler~=3.6.3
