@@ -66,7 +66,7 @@ async def report_member_total_damage(session: CommandSession):
         else:
             await session.send('暂时还没有成员伤害数据喵~')
         file_name = f'{date}_{group_id}_member_total_damage_statistic.jpg'
-        file_path = os.path.join(config.CQ_SOURCE_PATH, 'image', file_name)
+        file_path = os.path.join(config.CQ_SOURCE_PATH, 'images', file_name)
         m = MemberDamageChart(title_name=f'{date}月公会战成员总伤害统计', player_name=player_name, damage=sdamage,
                               file_path=file_path)
         m.get_chart()
@@ -132,9 +132,10 @@ async def damage_report(session: CommandSession):
             else:
                 await session.send('暂时还没有成员伤害数据喵~')
             file_name = f'{group_id}_{player_name}_member_damage_statistic.jpg'
-            file_path = os.path.join(config.CQ_SOURCE_PATH, 'image', file_name)
+            file_path = os.path.join(config.CQ_SOURCE_PATH, 'images', file_name)
             m = MemberDamageChart(title_name=f'{player_name}公会战伤害统计', player_name=target, damage=damage,
                                   file_path=file_path)
+            print(file_path)
             m.get_chart()
             await session.send(f'[CQ:image,file={file_name}]')
             if os.path.exists(file_path):
