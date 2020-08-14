@@ -147,7 +147,7 @@ async def qielu(session: CommandSession):
     cqimage = load_image_as_cqimage(file_path)
     message = f'[CQ:at,qq={sender_id}]切噜噜~♫~(=^･ω･^)ﾉ\n' + cqimage
     await session.send(message)
-    # await session.send('[CQ:record,file=切噜~.mp3]')
+    await session.send('[CQ:record,file=切噜~.mp3]')
 
 
 @on_natural_language(keywords={"切噜", "qielu"}, only_to_me=False)

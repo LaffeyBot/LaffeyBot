@@ -46,7 +46,7 @@ async def query_team_rank(session: CommandSession):
         os.remove(file_path)
 
 
-@on_command('report_rank', aliases=('上报排名', '更新公会排名'))
+@on_command('report_rank', aliases=('上报排名', '更新公会排名'), only_to_me=False)
 async def report_rank(session: CommandSession):
     group_id = session.event.group_id
     month = '%02d' % datetime.now().month
@@ -77,12 +77,16 @@ async def report_rank(session: CommandSession):
         await session.send('该群还不是公会群，请先设置为公会群再执行本命令喵~')
 
 
-@on_command('modify_rank', aliases=('修改排名', '更改公会排名'))
+@on_command('modify_rank', aliases=('修改公会排名', '更改公会排名'),only_to_me=False)
 async def report_rank(session: CommandSession):
     group_id = session.event.group_id
     # month = '%02d' % datetime.now().month
     # day = '%02d' % datetime.now().day
     # date = f'{datetime.now().year}{month}{day}'
+    current_info = session.get('current_info', prompt='请指挥官给出日期(格式为2020070117这种)和当前公会排名')
+    info = current_info.split()
+    date = int(info[0])
+    print(date)
     # 判断是否在公会群
     c = get_connection()
     cursor = c.cursor()
@@ -92,18 +96,18 @@ async def report_rank(session: CommandSession):
         # 判断是否有这个记录了
         cursor.execute('select * from rank_record WHERE group_id=%s and date=%s', (group_id, date))
         rank_result = cursor.fetchone()
+        print(rank_result)
         if rank_result:
             await session.send(f'当前已经存在公会排名数据为{rank_result[2]}')
             while True:
-                current_info = session.get('current_info', prompt='请指挥官给出日期(格式为20200701这种)和当前公会排名')
-                info = current_info.split()
+
                 if int(info[1]) != rank_result[2]:
                     break
                 else:
                     await session.send('不能和当前排名一样喵~')
             try:
                 cursor.execute(
-                    f'update rank_record set date={int(info[0])},rank={int(info[1])} where group_id = {group_id}')
+                    f'update rank_record set date={int(info[0])},ranking={int(info[1])} where group_id = {group_id}')
                 c.commit()
             except Exception as e:
                 print(e)

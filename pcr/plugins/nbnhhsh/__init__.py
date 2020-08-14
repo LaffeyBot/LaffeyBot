@@ -1,6 +1,9 @@
 from nbnhhsh.nbnhhsh import suo
-
+import urllib
 from nonebot import on_command, CommandSession
+import requests
+import hashlib
+import random
 import config
 
 
@@ -10,9 +13,15 @@ async def nbnhhsh(session: CommandSession):
     try:
         decoded: str = suo(encoded_text)
         message = '可能的翻译是：\n' + decoded
-        await session.send(message)
-    except UnboundLocalError:
-        await session.send('翻译不能喵...')
+        print(message)
+        await session.send(message,at_sender=True)
+        print(message)
+        return
+    except:
+        result = translate(encoded_text)
+        message = '可能的翻译是：\n' + result
+        await session.send(message, at_sender=True)
+        return
 
 
 @nbnhhsh.args_parser
@@ -29,3 +38,23 @@ async def _(session: CommandSession):
         session.pause('格式：【翻译 y1s1】')
 
     session.state[session.current_key] = stripped_arg
+
+
+def translate(srcString, appid=config.BAIDU_APP_ID, secret_key=config.BAIDU_SECRET_KEY, fromLang='auto', toLang='zh'):
+    myurl = '/api/trans/vip/translate'
+    q = srcString
+    salt = random.randint(32768, 65536)
+
+    sign = appid + q + str(salt) + secret_key
+    m1 = hashlib.md5()
+    print(sign)
+    m1.update(sign.encode('utf-8'))
+    sign = m1.hexdigest()
+    myurl = '?appid=' + appid + '&q=' + urllib.parse.quote(q) + '&from=' \
+            + fromLang + '&to=' + toLang + '&salt=' + str(salt) + '&sign=' + sign
+
+    r = requests.get('https://fanyi-api.baidu.com/api/trans/vip/translate' + myurl)
+    json_ = r.json()
+    result = json_['trans_result'][0]['dst']
+    return result
+    return ''
