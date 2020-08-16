@@ -49,6 +49,7 @@ def init_database():
                        'qq_id BIGINT NOT NULL,'
                        'api_key TEXT NOT NULL '
                        ');')
+
     connection.close()
 
 
