@@ -23,7 +23,7 @@ async def query_team_rank_by_tname(session: CommandSession):
             item['rank']) + ',会员数为' + \
                    str(item['member_num'])
         count += 1
-        if count > 1:
+        if count >= 1:
             message += '\n==========\n'
 
     await session.send(message, at_sender=True)
@@ -65,7 +65,7 @@ async def query_team_rank_by_rank(session: CommandSession):
             item['rank']) + ',会员数为' + \
                    str(item['member_num'])
         count += 1
-        if count > 1:
+        if count >= 1:
             message += '\n==========\n'
 
     await session.send(message, at_sender=True)
