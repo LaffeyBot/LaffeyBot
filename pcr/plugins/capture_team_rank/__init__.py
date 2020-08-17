@@ -16,9 +16,15 @@ async def query_team_rank_by_tname(session: CommandSession):
         await session.send(message, at_sender=True)
         return
     data = result['data']
+    count = 0
     for item in data:
-        message += item['clan_name'] + ':\n' + '会长是为' + item['leader_name'] + ',' + '当前排名为' + item['rana'] + ',会员数为' + \
-                   item['member_num'] + '\n' + '==========\n'
+        print(item)
+        message += item['clan_name'] + ':\n' + '会长是为' + item['leader_name'] + ',' + '当前排名为' + str(
+            item['rank']) + ',会员数为' + \
+                   str(item['member_num'])
+        count += 1
+        if count > 1:
+            message += '\n==========\n'
 
     await session.send(message, at_sender=True)
 
@@ -52,11 +58,18 @@ async def query_team_rank_by_rank(session: CommandSession):
         await session.send(message, at_sender=True)
         return
     data = result['data']
+    count = 0
     for item in data:
-        message += item['clan_name'] + ':\n' + '会长是为' + item['leader_name'] + ',' + '当前排名为' + item['rana'] + ',会员数为' + \
-                   item['member_num'] + '\n' + '==========\n'
+        print(item)
+        message += item['clan_name'] + ':\n' + '会长是为' + item['leader_name'] + ',' + '当前排名为' + str(
+            item['rank']) + ',会员数为' + \
+                   str(item['member_num'])
+        count += 1
+        if count > 1:
+            message += '\n==========\n'
 
     await session.send(message, at_sender=True)
+
 
 @query_team_rank_by_rank.args_parser
 async def _(session: CommandSession):
