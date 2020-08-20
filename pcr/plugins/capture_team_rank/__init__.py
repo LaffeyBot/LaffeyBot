@@ -12,23 +12,22 @@ async def query_team_rank_by_tname(session: CommandSession):
     if result:
         message = '已经为指挥官查到如下结果：\n'
     else:
-        message = f'没有查询到{rank}公会的消息喵QAQ~'
+        message = f'没有查询到{tname}公会的消息喵QAQ~'
         await session.send(message, at_sender=True)
         return
     data = result['data']
     if not data:
-        message = f'没有查询到{rank}公会的消息喵QAQ~'
+        message = f'没有查询到{tname}公会的消息喵QAQ~'
         await session.send(message, at_sender=True)
         return
     count = 0
     for item in data:
+        message += '\n==========\n'
         print(item)
         count += 1
-        message += count+'.'+item['clan_name'] + ':\n' + '会长是:' + item['leader_name'] + ',' + '当前排名:' + str(
+        message += count + '.' + item['clan_name'] + ':\n' + '会长是:' + item['leader_name'] + ',' + '当前排名:' + str(
             item['rank']) + ',会员数:' + \
                    str(item['member_num'])
-        if count >= 1:
-            message += '\n==========\n'
     await session.send(message, at_sender=True)
 
 
@@ -53,27 +52,30 @@ async def query_team_rank_by_rank(session: CommandSession):
     rank = session.get('rank', prompt='请指挥官给出要查询的排名喵~')
     # message = ''
     s = SpiderTeamRank()
-    result = s.get_team_rank_info_by_rank(int(rank))
+    try:
+        rank = int(rank)
+    except Exception as e:
+        await session.send('指挥官好像输入了奇怪的东西nya~', at_sender=True)
+    result = s.get_team_rank_info_by_rank(rank)
     if result:
         message = '已经为指挥官查到如下结果：\n'
     else:
-        message = f'没有查询到{rank}公会的消息喵QAQ~'
+        message = f'没有查询到排名为{rank}公会的消息喵QAQ~'
         await session.send(message, at_sender=True)
         return
     data = result['data']
     if not data:
-        message = f'没有查询到{rank}公会的消息喵QAQ~'
+        message = f'没有查询到排名为{rank}公会的消息喵QAQ~'
         await session.send(message, at_sender=True)
         return
     count = 0
     for item in data:
+        message += '\n==========\n'
         print(item)
         count += 1
-        message += count+'.'+item['clan_name'] + ':\n' + '会长是:' + item['leader_name'] + ',' + '当前排名:' + str(
+        message += count + '.' + item['clan_name'] + ':\n' + '会长是:' + item['leader_name'] + ',' + '当前排名:' + str(
             item['rank']) + ',会员数:' + \
                    str(item['member_num'])
-        if count >= 1:
-            message += '\n==========\n'
 
     await session.send(message, at_sender=True)
 
