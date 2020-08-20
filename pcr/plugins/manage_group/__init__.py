@@ -49,6 +49,8 @@ async def create_group(session: CommandSession):
     current_user: User = User.query.filter_by(qq=session.event.user_id).first()
     if not current_user:
         await session.send('公会创建者必须有一个账号喵...')
+    if current_user.group_id:
+        await session.send('公会创建者已经在一个公会里面了喵...')
 
     group_name = session.get('group_name', prompt='公会的名称是什么呢喵？',
                              arg_filters=[
@@ -62,6 +64,8 @@ async def create_group(session: CommandSession):
     db.session.refresh(new_group)
     current_user.group_id = new_group.id
     current_user.role = 2
+    db.session.commit()
+    await session.send('公会创建成功了喵!')
 
 
 bot = nonebot.get_bot()
