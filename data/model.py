@@ -38,7 +38,7 @@ class User(db.Model):
     # 查询个人出刀记录
     personal_records = db.relationship('PersonalRecord', backref='user', lazy='dynamic')
 
-    qq = db.Column(db.Integer)
+    qq = db.Column(db.BigInteger)
 
     def __repr__(self):
         return '<users %r' % self.id
