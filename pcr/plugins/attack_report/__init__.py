@@ -3,19 +3,25 @@ from data.attack_history import get_list_of_attacks
 from datetime import datetime, timedelta
 import jieba.posseg as psg
 import jieba
+from data.model import *
+from nonebot import get_bot
 
 
 @on_command('list_attack_detail', aliases=['出刀详情', '出击详情'], only_to_me=False)
 async def list_attack_detail(session: CommandSession):
+    db.init_app(get_bot().server_app)
     day = datetime.now()
     day_text = '今天'
     group_id = session.event.group_id
+    group = Group.query.filter_by(group_chat_id=group_id).first()
+    if not group:
+        await session.send('没有找到公会喵...')
     if session.state.get('yesterday', False):
         day = datetime.now() - timedelta(days=1)
         day_text = '昨天'
 
     if session.state.get('detail', True):
-        record_list: list = get_list_of_attacks(day, group_id)
+        record_list: list = get_list_of_attacks(day, group)
         custom = session.state.get('custom', '出击')
         message = '下面是' + day_text + '的' + custom.replace('了', '') + '详情喵：\n'
         for item in record_list:
@@ -23,7 +29,7 @@ async def list_attack_detail(session: CommandSession):
         message += '还请多多' + custom.replace('了', '') + '喵！勤劳才会致富喵！'
         await session.send(message)
     else:
-        record_list: list = get_list_of_attacks(day, group_id)
+        record_list: list = get_list_of_attacks(day, group)
         count_list = count_attack_times(record_list)
         message = '已经有: \n'
         custom = session.state.get('custom', '出击')
