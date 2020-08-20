@@ -5,27 +5,23 @@ from data.picture_quota import PictureQuota
 from data.init_database import get_connection
 import time
 import asyncio
-import nonebot
+from nonebot import get_bot
 from hoshino.util import load_image_as_cqimage, load_recording_as_cqrecord
+from  sqlalchemy.sql.expression import func
+from data.model import *
 
 
 @on_command('hentai', aliases=('炼铜', '瑟图', '色图', '本子', '涩图', '涩图'), only_to_me=False)
 async def hentai(session: CommandSession):
-    user_id = session.event.sender['user_id']
-    quota = PictureQuota(user_id)
-    if not quota.get_one_picture():
-        await session.send('指挥官要注意身体喵~')
-        return
+    db.init_app(get_bot().server_app)
 
-    cursor = get_connection().cursor()
-    cursor.execute('SELECT * FROM picture_list ORDER BY RAND() LIMIT 1')
-    random_file: (str, str, str) = cursor.fetchone()
+    random_file: PictureList = PictureQuota.query.order_by(func.rand()).first()
     print(random_file)
-    file_name = 'images/' + random_file[1] + '/' + random_file[0]
+    file_name = 'images/' + random_file.sub_directory + '/' + random_file.file_name
     print(file_name)
     cq_image = load_image_as_cqimage(file_name)
-    if len(random_file[2]) > 0:
-        cq_image += '\n出处: ' + random_file[2]
+    if len(random_file.origin) > 0:
+        cq_image += '\n出处: ' + random_file.origin
     # else:
     #     await hentai(session)
     #     return
