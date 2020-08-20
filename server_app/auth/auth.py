@@ -22,7 +22,8 @@ def sign_up():
     @apiGroup Users
     @apiParam {String}  username   (必须)    用户名（3字以上）
     @apiParam {String}  password   (必须)    密码（8字以上）
-    @apiParam {String}  email      (可选)    邮箱
+    @apiParam {String}  email      (必须)    邮箱
+    @apiParam {String}  otp        (必须)    邮箱验证码
     @apiParam {String}  phone      (可选)    手机号
     @apiParamExample {json} Request-Example:
         {
