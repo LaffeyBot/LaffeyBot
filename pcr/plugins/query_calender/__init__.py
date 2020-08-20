@@ -21,7 +21,7 @@ async def calender(session: CommandSession):
             end_time = target['end_time']
             if parse(start_time) <= check_date <= parse(end_time):
                 events.append(target['name'])
-        message += f'========{check_date.strftime("%Y{y}%m{m}%d{d}").format(y = "年",m = "月",d = "日")}========\n'
+        message += f'===={check_date.strftime("%Y{y}%m{m}%d{d}").format(y = "年",m = "月",d = "日")}====\n'
         if len(events) > 0:
             for event in events:
                 message += f'>>{event}\n'
