@@ -7,6 +7,7 @@ import nonebot
 import asyncio
 from nonebot.command.argfilter import extractors, validators
 from data.model import *
+from nonebot import get_bot
 
 
 # group_id = [1104038724, 1108319335]
@@ -43,6 +44,7 @@ async def feedback_bugs(session: CommandSession):
 
 @on_command('create_group', aliases=('创建公会', '创立公会'), only_to_me=False)
 async def create_group(session: CommandSession):
+    db.init_app(get_bot().server_app)
     if Group.query.filter_by(group_chat_id=str(session.event.group_id)).first():
         await session.send('本群已经有一个公会了喵...')
         return
@@ -58,7 +60,9 @@ async def create_group(session: CommandSession):
                                  str.strip,  # 去掉两边空白字符
                              ])
     new_group = Group(group_chat_id=str(session.event.group_id),
-                      name=group_name)
+                      name=group_name,
+                      description='',
+                      must_request=False)
     db.session.add(new_group)
     db.session.commit()
     db.session.refresh(new_group)

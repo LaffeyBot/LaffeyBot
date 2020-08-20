@@ -1,15 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
-from quart import Quart
 import quart.flask_patch
 import os
-import config
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app = Quart(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
-app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-db = SQLAlchemy(app)
+
+db = SQLAlchemy()
 
 
 class User(db.Model):
@@ -38,10 +33,12 @@ class User(db.Model):
     # 外键关联Groups
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=True)
     # 查询挂树信息
-    hang_on_trees = db.relationship('HangOnTree',backref=db.backref('user',lazy='dynamic'))
+    hang_on_trees = db.relationship('HangOnTree',backref='user', lazy='dynamic')
 
     # 查询个人出刀记录
-    personal_records = db.relationship('PersonalRecord', backref=db.backref('user', lazy='dynamic'))
+    personal_records = db.relationship('PersonalRecord', backref='user', lazy='dynamic')
+
+    qq = db.Column(db.Integer)
 
     def __repr__(self):
         return '<users %r' % self.id
@@ -59,11 +56,11 @@ class Group(db.Model):
     # 必须申请出刀
     must_request = db.Column(db.Boolean, nullable=False)
     # 查询挂树信息
-    hang_on_trees = db.relationship('HangOnTree',backref=db.backref('group',lazy='dynamic'))
+    hang_on_trees = db.relationship('HangOnTree',backref='group', lazy='dynamic')
     # 查询小组个人出刀记录
-    personal_records = db.relationship('PersonalRecord', backref=db.backref('group', lazy='dynamic'))
+    personal_records = db.relationship('PersonalRecord', backref='group', lazy='dynamic')
     # 查询小组成员
-    users = db.relationship('User', backref=db.backref('group',lazy='dynamic'))
+    users = db.relationship('User', backref='group', lazy='dynamic')
     def __repr__(self):
         return '<group %r' % self.id
 
@@ -158,14 +155,13 @@ class HangOnTree(db.Model):
     # 说明信息，可空
     info = db.Column(db.Text, nullable=True)
     # 开始挂树时间信息
-    start_time = db.Column(db.DateTime,nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False)
     # 状态（是否挂树）
-    status = db.Column(db.Boolean,nullable=False)
+    status = db.Column(db.Boolean, nullable=False)
     # 关联公会
     group_id = db.Column(db.Integer,db.ForeignKey('group.id'))
     # 关联用户
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
 
     def __repr__(self):
         return f'{self.id} is hanging on the tree'

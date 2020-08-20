@@ -7,10 +7,12 @@ from nonebot.command.argfilter import extractors, validators
 from data.model import *
 from pcr.plugins.auth_tools import password_for
 from datetime import datetime
+from nonebot import get_bot
 
 
 @on_command('add_group_members', aliases=['添加成员', '添加群成员', '更新群成员'], only_to_me=False)
 async def add_group_members(session: CommandSession):
+    db.init_app(get_bot().server_app)
     group_id = session.event.group_id
     group = Group.query.filter_by(group_chat_id=group_id).first()
     if not group:
@@ -40,7 +42,7 @@ async def add_group_members(session: CommandSession):
     exclusions = exclusion_list.split()
 
     member_str = ''
-    for index, member in group_member_list:
+    for index, member in enumerate(group_member_list):
         qq_id, qq_name = get_id_and_name(member)
         if qq_id == config.SELF_ID or str(index) in exclusions:
             continue
@@ -60,7 +62,7 @@ async def add_group_members(session: CommandSession):
         await session.send('取消添加成员了喵...')
         return
     else:
-        for index, member in group_member_list:
+        for index, member in enumerate(group_member_list):
             qq_id, qq_name = get_id_and_name(member)
             if qq_id == config.SELF_ID or str(index) in exclusions:
                 continue

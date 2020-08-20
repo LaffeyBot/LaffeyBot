@@ -2,6 +2,8 @@ import nonebot
 import config
 import os
 from log import new_logger
+import quart
+from quart import flask_patch
 from nonebot import Message, MessageSegment, message_preprocessor
 from nonebot.message import CanceledException
 
@@ -18,6 +20,12 @@ def init() -> HoshinoBot:
     nonebot.init(config)
     _bot = nonebot.get_bot()
     _bot.finish = _finish
+
+    app = _bot.server_app
+    app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
+    app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
 
     from hoshino.log import error_handler, critical_handler
     nonebot.logger.addHandler(error_handler)
