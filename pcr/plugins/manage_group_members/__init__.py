@@ -64,6 +64,9 @@ async def add_group_members(session: CommandSession):
             qq_id, qq_name = get_id_and_name(member)
             if qq_id == config.SELF_ID or str(index) in exclusions:
                 continue
+            existing_user = User.query.filter_by(qq=qq_id).first()
+            if existing_user and existing_user.role >= 0:
+                continue
             new_user: User = User(username=('temp_qq_' + str(qq_id)),
                                   nickname=qq_name,
                                   role=-1,
@@ -73,7 +76,8 @@ async def add_group_members(session: CommandSession):
                                   email_verified=False,
                                   phone_verified=False,
                                   valid_since=datetime.now(),
-                                  group_id=group.id)
+                                  group_id=group.id,
+                                  qq=qq_id)
             db.session.add(new_user)
         db.session.commit()
 
