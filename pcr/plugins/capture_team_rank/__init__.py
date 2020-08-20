@@ -12,20 +12,23 @@ async def query_team_rank_by_tname(session: CommandSession):
     if result:
         message = '已经为指挥官查到如下结果：\n'
     else:
-        message = f'没有查询到{tname}公会的消息喵QAQ~'
+        message = f'没有查询到{rank}公会的消息喵QAQ~'
         await session.send(message, at_sender=True)
         return
     data = result['data']
+    if not data:
+        message = f'没有查询到{rank}公会的消息喵QAQ~'
+        await session.send(message, at_sender=True)
+        return
     count = 0
     for item in data:
         print(item)
-        message += item['clan_name'] + ':\n' + '会长是为' + item['leader_name'] + ',' + '当前排名为' + str(
-            item['rank']) + ',会员数为' + \
-                   str(item['member_num'])
         count += 1
+        message += count+'.'+item['clan_name'] + ':\n' + '会长是:' + item['leader_name'] + ',' + '当前排名:' + str(
+            item['rank']) + ',会员数:' + \
+                   str(item['member_num'])
         if count >= 1:
             message += '\n==========\n'
-
     await session.send(message, at_sender=True)
 
 
@@ -58,13 +61,17 @@ async def query_team_rank_by_rank(session: CommandSession):
         await session.send(message, at_sender=True)
         return
     data = result['data']
+    if not data:
+        message = f'没有查询到{rank}公会的消息喵QAQ~'
+        await session.send(message, at_sender=True)
+        return
     count = 0
     for item in data:
         print(item)
-        message += item['clan_name'] + ':\n' + '会长是为' + item['leader_name'] + ',' + '当前排名为' + str(
-            item['rank']) + ',会员数为' + \
-                   str(item['member_num'])
         count += 1
+        message += count+'.'+item['clan_name'] + ':\n' + '会长是:' + item['leader_name'] + ',' + '当前排名:' + str(
+            item['rank']) + ',会员数:' + \
+                   str(item['member_num'])
         if count >= 1:
             message += '\n==========\n'
 
