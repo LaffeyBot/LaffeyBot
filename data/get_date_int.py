@@ -1,5 +1,6 @@
 from datetime import timedelta, datetime
 import time
+import pytz
 
 
 def get_date_int(date: datetime, with_hour: bool = False) -> int:
@@ -12,3 +13,10 @@ def get_date_int(date: datetime, with_hour: bool = False) -> int:
     if current_time < 5 and not with_hour:
         today = int((date - timedelta(days=1)).strftime("%Y%m%d"))
     return today
+
+
+def get_date_start_end(of_date: datetime) -> (datetime, datetime):
+    start = of_date.replace(hour=5, minute=0, second=0, microsecond=0)
+    end = start + timedelta(1)
+
+    return start, end

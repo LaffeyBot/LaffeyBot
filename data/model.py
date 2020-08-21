@@ -38,7 +38,7 @@ class User(db.Model):
     # 查询个人出刀记录
     personal_records = db.relationship('PersonalRecord', backref='user', lazy='dynamic')
 
-    qq = db.Column(db.Integer)
+    qq = db.Column(db.BigInteger)
 
     def __repr__(self):
         return '<users %r' % self.id
@@ -165,3 +165,15 @@ class HangOnTree(db.Model):
 
     def __repr__(self):
         return f'{self.id} is hanging on the tree'
+
+
+class PictureList(db.Model):
+    __tablename__ = 'picture_list'
+    id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
+    # 说明信息，可空
+    file_name = db.Column(db.Text, nullable=True)
+    sub_directory = db.Column(db.Text, nullable=True)
+    origin = db.Column(db.Text, nullable=True)
+
+    def __repr__(self):
+        return '<picture_list %r' % self.id
