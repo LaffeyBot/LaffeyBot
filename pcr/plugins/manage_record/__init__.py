@@ -5,6 +5,8 @@ from data.json.json_editor import JSONEditor
 from data.player_name import qq_to_game_name
 import config
 from pcr.plugins.get_best_name import get_best_name
+from data.model import *
+from nonebot import get_bot
 
 
 @on_command('deleteAll', aliases='删除所有记录', only_to_me=True, permission=perm.SUPERUSER)
@@ -15,13 +17,14 @@ async def delete_all(session: CommandSession):
 
 @on_command('manual_damage', aliases=['出刀', '报刀'], only_to_me=False)
 async def manual_damage(session: CommandSession):
+    db.init_app(get_bot().server_app)
     group_id = session.event.group_id
+    user: User = User.query.filter_by(qq=session.event.user_id).first()
+
     damage = session.get('damage')
     if not damage:
         await session.send('请输入伤害喵')
-    username = get_best_name(session)
-    game_name = qq_to_game_name(username, group_id)
-    target = config.NAME_FOR_BOSS[JSONEditor(group_id).get_current_boss_order() - 1]
+
     new_record, did_kill = add_record([[game_name, target, damage]],
                                       force=True, group_id=group_id)
     await alert_new_record(new_record, did_kill, group_id=group_id)

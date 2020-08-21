@@ -5,7 +5,7 @@ import json
 def calender_info() -> list:
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0',
                'Content-Type': 'application/json;charset=utf-8',
-               'Host':'tools.yobot.win',
+               'Host': 'tools.yobot.win',
                }
     url = 'https://tools.yobot.win/calender/cn.json'
     try:

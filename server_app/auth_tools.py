@@ -1,10 +1,12 @@
-from quart import request, current_app, jsonify, g
+from quart import request, jsonify, g
 from functools import wraps
 import jwt
-from data.init_database import db_connection_required
 import config
 from data.model import *
 from typing import Optional
+import base64
+import time
+from nonebot import get_bot
 
 
 def login_required(f):
@@ -13,16 +15,17 @@ def login_required(f):
         auth_header = request.headers.get('auth')
         try:
             decode_jwt = jwt.decode(auth_header,
-                                    current_app.secret_key,
+                                    config.SECRET_KEY,
                                     algorithms=['HS256'],
                                     audience=config.DOMAIN_NAME)
         except jwt.exceptions.InvalidTokenError:
-            return jsonify({"msg": "Auth sign does not verify", "code": 301}), 400
-        user: Users = get_user_with(id_=decode_jwt.get("sub"))
+            return jsonify({"msg": "Auth sign does not verify"}), 401
+        db.init_app(get_bot().server_app)
+        user: User = get_user_with(id_=decode_jwt.get("sub"))
         if user is None:
-            return jsonify({"msg": "Can not find user data"}), 403
-        if decode_jwt["iat"] < user.valid_since.timestamp():
-            return jsonify({"msg": "This session has been revoked", "code": 302}), 403
+            return jsonify({"msg": "Can not find user data"}), 401
+        if decode_jwt["iat"] < time.mktime(user.valid_since.timetuple()):
+            return jsonify({"msg": "This session has been revoked"}), 401
         g.user = user
         return f(*args, **kwargs)
 
@@ -30,31 +33,40 @@ def login_required(f):
 
 
 def current_user_is_admin() -> bool:
-    user: Users = g.user
+    user: User = g.user
     if user is None:
         return False
     return user.role >= 1
 
 
 def current_user_is_owner() -> bool:
-    user: Users = g.user
+    user: User = g.user
     if user is None:
         return False
     return user.role >= 2
 
 
 def get_user_with(username: str = None, email: str = None,
-                  phone: str = None, id_: int = None) -> Optional[Users]:
+                  phone: str = None, id_: int = None) -> Optional[User]:
     if username is not None:
-        return Users.query.filter_by(username=username).first()
+        return User.query.filter_by(username=username).first()
     elif email is not None:
-        return Users.query.filter_by(email=email).first()
+        return User.query.filter_by(email=email).first()
     elif phone is not None:
-        return Users.query.filter_by(phone=phone).first()
+        return User.query.filter_by(phone=phone).first()
     elif id_ is not None:
-        return Users.query.filter_by(id=id_).first()
+        return User.query.filter_by(id=id_).first()
     else:
         return None
+
+
+def get_user_with_any(identifier: str) -> Optional[User]:
+    user = User.query.filter_by(username=identifier).first()
+    if user is None:
+        user = User.query.filter_by(email=identifier).first()
+    if user is None:
+        user = User.query.filter_by(phone=identifier).first()
+    return user
 
 
 def sign(json_: dict) -> str:
@@ -68,3 +80,22 @@ def verify_sing(signed: str) -> dict:
 
 def is_username_exist(username: str) -> bool:
     return get_user_with(username=username) is not None
+
+
+def is_email_exist(email: str) -> bool:
+    return get_user_with(email=email) is not None
+
+
+def generate_user_dict(user: User, for_oneself: bool) -> dict:
+    user_data = {
+        "username": user.username,
+        "id": user.id,
+        "nickname": user.nickname,
+        "role": user.role,
+        "email": user.email
+    }
+    if user.group_id:
+        user_data["group_id"] = user.group_id
+    if user.qq:
+        user_data["qq"] = user.qq
+    return user_data
