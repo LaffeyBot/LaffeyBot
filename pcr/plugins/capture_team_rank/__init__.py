@@ -28,8 +28,8 @@ async def query_team_rank_by_tname(session: CommandSession):
         print(type(str(item['rank'])))
         count += 1
         message += str(count) + '.' + item['clan_name'] + ':\n' + '会长是:' + item['leader_name'] + ',' + '当前排名:' + str(item['rank']) + ',会员数:' + str(item['member_num'])+'\n'
-        p = Progress
-        message += p.get_result(item['damage'])
+        p = Progress()
+        message += p.get_result(int(item['damage']))
     await session.send(message, at_sender=True)
 
 
@@ -77,7 +77,7 @@ async def query_team_rank_by_rank(session: CommandSession):
         count += 1
         message += str(count) + '.' + item['clan_name'] + ':\n' + '会长是:' + item['leader_name'] + ',' + '当前排名:' + str(item['rank']) + ',会员数:' + str(item['member_num'])+'\n'
         p = Progress()
-        message += p.get_result(item['damage'])
+        message += p.get_result(int(item['damage']))
     await session.send(message, at_sender=True)
 
 

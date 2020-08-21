@@ -1,16 +1,19 @@
 import requests
 import json
+import traceback
+import logging
 
 
 def calender_info() -> list:
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0',
                'Content-Type': 'application/json;charset=utf-8',
-               'Host':'tools.yobot.win',
+               'Host':'tools.yobot.win'
                }
     url = 'https://tools.yobot.win/calender/cn.json'
     try:
         r = requests.get(url=url, headers=headers)
-    except:
+    except Exception as e:
+        logging.error(traceback.format_exc())
         return ['指挥官您请求速度太快了，请稍后重试喵~']
     return json.loads(r.content.decode(), encoding='utf-8')
 
