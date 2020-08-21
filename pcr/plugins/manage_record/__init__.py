@@ -17,17 +17,25 @@ async def delete_all(session: CommandSession):
 
 @on_command('manual_damage', aliases=['出刀', '报刀'], only_to_me=False)
 async def manual_damage(session: CommandSession):
-    db.init_app(get_bot().server_app)
-    group_id = session.event.group_id
-    user: User = User.query.filter_by(qq=session.event.user_id).first()
-
     damage = session.get('damage')
     if not damage:
         await session.send('请输入伤害喵')
 
-    new_record, did_kill = add_record([[game_name, target, damage]],
-                                      force=True, group_id=group_id)
-    await alert_new_record(new_record, did_kill, group_id=group_id)
+    add_record(qq=session.event.user_id, damage=int(damage), type_='normal')
+
+
+@on_command('last_damage', aliases=['尾刀'], only_to_me=False)
+async def last_damage(session: CommandSession):
+    add_record(qq=session.event.user_id, type_='last')
+
+
+@on_command('compensation_damage', aliases=['补偿刀'], only_to_me=False)
+async def compensation_damage(session: CommandSession):
+    damage = session.get('damage')
+    if not damage:
+        await session.send('请输入伤害喵')
+
+    add_record(qq=session.event.user_id, damage=int(damage), type_='compensation')
 
 
 @on_command('status', aliases=['状态', 'boss状态'], only_to_me=False)

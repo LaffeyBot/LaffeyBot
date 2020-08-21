@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy.model import Model
 import quart.flask_patch
 import os
 
@@ -6,8 +7,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 db = SQLAlchemy()
 
+BaseModel = db.make_declarative_base(Model)
 
-class User(db.Model):
+
+class User(BaseModel):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
     # 用户名，不可修改，唯一
@@ -44,7 +47,7 @@ class User(db.Model):
         return '<users %r' % self.id
 
 
-class Group(db.Model):
+class Group(BaseModel):
     __tablename__ = 'group'
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
     # 群聊号，可以通过群聊号找到公会，也可以在公会找到群号，会长可修改
@@ -65,7 +68,7 @@ class Group(db.Model):
         return '<group %r' % self.id
 
 
-class TeamRecord(db.Model):
+class TeamRecord(BaseModel):
     __tablename__ = 'team_record'
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
     record = db.Column(db.Integer)
@@ -87,7 +90,7 @@ class TeamRecord(db.Model):
         return '<team_record %r' % self.id
 
 
-class DeletionHistory(db.Model):
+class DeletionHistory(BaseModel):
     __tablename__ = 'deletion_history'
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
     deleted_date = db.Column(db.DateTime, nullable=False)
@@ -95,7 +98,7 @@ class DeletionHistory(db.Model):
     deleted_id = db.Column(db.Integer, nullable=False)
 
 
-class TeamBattleEpoch(db.Model):
+class TeamBattleEpoch(BaseModel):
     __tablename__ = 'team_battle_epoch'
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
     name = db.Column(db.VARCHAR(255))
@@ -103,7 +106,7 @@ class TeamBattleEpoch(db.Model):
     end_date = db.Column(db.DateTime)
 
 
-class PersonalRecord(db.Model):
+class PersonalRecord(BaseModel):
     __tablename__ = 'personal_record'
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
     # 对应的 Group ID
@@ -134,7 +137,7 @@ class PersonalRecord(db.Model):
 
 
 # 存放入会申请和邀请的地方
-class RequestsAndInvites(db.Model):
+class RequestsAndInvites(BaseModel):
     __tablename__ = 'requests_and_invites'
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
     # 公会ID
@@ -148,7 +151,7 @@ class RequestsAndInvites(db.Model):
         return '<requests_and_invites %r' % self.id
 
 
-class HangOnTree(db.Model):
+class HangOnTree(BaseModel):
     '''记录挂树的信息'''
     __tablename__ = 'hang_on_Tree'
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
@@ -167,7 +170,7 @@ class HangOnTree(db.Model):
         return f'{self.id} is hanging on the tree'
 
 
-class PictureList(db.Model):
+class PictureList(BaseModel):
     __tablename__ = 'picture_list'
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
     # 说明信息，可空
