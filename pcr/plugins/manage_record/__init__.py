@@ -1,12 +1,8 @@
 from nonebot import on_command, CommandSession, permission as perm
 from data.damage import delete_all_records, add_record
-from pcr.plugins.manage_record.alert_new_record import alert_new_record, boss_status_text
+from pcr.plugins.manage_record.alert_new_record import boss_status_text
 from data.json.json_editor import JSONEditor
-from data.player_name import qq_to_game_name
-import config
-from pcr.plugins.get_best_name import get_best_name
-from data.model import *
-from nonebot import get_bot
+from pcr.plugins.direct_send_message import send_from_dict
 
 
 @on_command('deleteAll', aliases='删除所有记录', only_to_me=True, permission=perm.SUPERUSER)
@@ -21,12 +17,16 @@ async def manual_damage(session: CommandSession):
     if not damage:
         await session.send('请输入伤害喵')
 
-    add_record(qq=session.event.user_id, damage=int(damage), type_='normal')
+    await send_from_dict(
+        add_record(qq=session.event.user_id, damage=int(damage), type_='normal')
+    )
 
 
 @on_command('last_damage', aliases=['尾刀'], only_to_me=False)
 async def last_damage(session: CommandSession):
-    add_record(qq=session.event.user_id, type_='last')
+    await send_from_dict(
+        add_record(qq=session.event.user_id, type_='last')
+    )
 
 
 @on_command('compensation_damage', aliases=['补偿刀'], only_to_me=False)
@@ -35,7 +35,9 @@ async def compensation_damage(session: CommandSession):
     if not damage:
         await session.send('请输入伤害喵')
 
-    add_record(qq=session.event.user_id, damage=int(damage), type_='compensation')
+    await send_from_dict(
+        add_record(qq=session.event.user_id, damage=int(damage), type_='compensation')
+    )
 
 
 @on_command('status', aliases=['状态', 'boss状态'], only_to_me=False)
