@@ -42,6 +42,7 @@ class User(BaseModel):
     personal_records = db.relationship('PersonalRecord', backref='user', lazy='dynamic')
 
     qq = db.Column(db.BigInteger)
+    is_temp = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return '<users %r' % self.id
