@@ -33,5 +33,13 @@ def sign(json_: dict) -> str:
     return jwt.encode(json_, config.SECRET_KEY, algorithm='HS256').decode()
 
 
+def link_account_with(qq: int, account: str):
+    header = get_auth_header(for_qq=qq)
+    url = config.BACKEND_URL + '/v1/account/link_account'
+    json = dict(username=account)
+    r = requests.post(url=url, header=header, json=json)
+    print(r.text)
+
+
 if __name__ == '__main__':
     print(password_for(12123123))
