@@ -8,8 +8,8 @@ from data.get_date_int import get_date_int
 bot = nonebot.get_bot()  # 在此之前必须已经 init
 
 
-@bot.server_app.route('/add_rank', methods=['GET'])
-async def add_rank():
+@bot.server_app.route('/api/add_rank', methods=['GET'])
+async def api_add_rank():
     api_key = request.args.get('api_key', None)
     group_id = request.args.get('group_id', None)
     rank = request.args.get('rank', None)
