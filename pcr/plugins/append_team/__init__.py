@@ -20,7 +20,7 @@ async def add_new_group(session: CommandSession):
             count = 1
             for group in result['data']:
                 message += '=========\n'
-                message += f'{count.}' + group['clan_name'] + ':\n'
+                message += f'{count}.' + group['clan_name'] + ':\n'
                 message += '会长是：' + group['leader_name'] + '会长游戏id是：' + group['leader_viewer_id'] + '\n'
                 count += 1
             message += '请使用前面的编号进行选择\n'
@@ -37,6 +37,7 @@ async def add_new_group(session: CommandSession):
                 g = Group()
                 r1 = Group.query.filter(Group.name == result['data'][index - 1]['clan_name'],
                                         Group.leader_id == result['data'][index - 1]['leader_viewer_id']).first()
+                # FIXME: 对于已经通过QQ创建但是没有 leader_id 的公会，仍然会创建一个不同的新公会以记录排名。
                 if not r1:
                     g.name = result['data'][index - 1]['clan_name']
                     g.description = '这是拉菲bot添加的公会记录喵！'
@@ -50,6 +51,7 @@ async def add_new_group(session: CommandSession):
 
         else:
             try:
+                # FIXME: 第38行的查重filter命令在这里也应该被执行
                 g = Group()
                 g.name = result['data'][0]['clan_name']
                 g.description = '这是拉菲bot添加的公会记录喵！'
@@ -71,6 +73,7 @@ async def get_team_rank_per_half_hour():
     db.init_app(get_bot().server_app)
     groups = Group.query.filter(Group.name).all()
     for g in groups:
+        # TODO: 可能需要加几秒的sleep，否则容易被ban。
         result = s.get_team_rank_info_by_tname(g.name)
         g_name = g.name
         g_leader_id = g.leader_id
@@ -78,7 +81,7 @@ async def get_team_rank_per_half_hour():
         if result:
             if not result['data']:
                 await bot.send_group_msg(group_id=1108319335,
-                                         message=f'{g.name}公会已经查不到排名了，可能是查询网站问题或者是该公会已经改名,请去https://kengxxiao.github.io/Kyouka/查看')
+                                         message=f'{g.name}公会已经查不到排名了，可能是查询网站问题或者是该公会已经改名,请去 https://kengxxiao.github.io/Kyouka/ 查看')
                 return
             for data in result['data']:
                 if data['clan_name'] == g_name and data['leader_viewer_id'] == g_leader_id:
@@ -87,6 +90,8 @@ async def get_team_rank_per_half_hour():
                         return
                     p = Progress()
                     p.get_result(result['damage'])
+                    # TODO: 注意 boss_hp 存储的是boss最大生命值List, 这可能不是你想要的数据。
+                    # FIXME: 没有提供 group_id。无法判断这是属于哪一个group的。
                     t2 = TeamRecord(
                         record=data['rank'],
                         detail_date=datetime.now(),
@@ -121,7 +126,7 @@ async def delete_group_record(session: CommandSession):
         message = f'以下是数据库中所有关于{delete_group}公会信息：\n'
         for group in groups:
             message += '=========\n'
-            message += f'{count.}' + group.name + ':\n'
+            message += f'{count}' + '. ' + group.name + ':\n'
             message += '会长游戏id是：' + group.leader_id + '\n'
             count += 1
         message += '请使用前面的编号进行选择\n'

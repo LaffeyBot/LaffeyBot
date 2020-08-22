@@ -15,6 +15,7 @@ class Progress(object):
 
     def get_result(self, score: int = 0) -> str:
         while True:
+            # TODO: 写成 = 0 if self.epoch == 1 else 1 可读性会高一些？
             now_rate = 2 - 1 if self.epoch > 2 else self.epoch - 1
             # 先按一个boss计算
             self.current_score += self.boss_hp[self.boss - 1] * self.score_rate[now_rate][self.boss - 1]
@@ -22,6 +23,7 @@ class Progress(object):
                 # 说明加多了
                 self.current_score -= self.boss_hp[self.boss - 1] * self.score_rate[now_rate][self.boss - 1]
                 damage_health = (score - self.current_score) / self.score_rate[now_rate][self.boss - 1]
+                # TODO: 注意此处将 damage 从 int 转为了 float。Make sure this is expected.
                 self.damage += damage_health
                 remain_health = self.boss_hp[self.boss - 1] - damage_health
                 remain_percent = round((1 - damage_health / self.boss_hp[self.boss - 1]) * 100, 2)
