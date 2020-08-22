@@ -11,11 +11,11 @@ from  sqlalchemy.sql.expression import func
 from data.model import *
 
 
-@on_command('hentai', aliases=('炼铜', '瑟图', '色图', '本子', '涩图', '涩图'), only_to_me=False)
+@on_command('hentai', aliases=('炼铜', '瑟图', '色图', '本子', '涩图'), only_to_me=False)
 async def hentai(session: CommandSession):
     db.init_app(get_bot().server_app)
 
-    random_file: PictureList = PictureQuota.query.order_by(func.rand()).first()
+    random_file: PictureList = PictureList.query.order_by(func.rand()).first()
     print(random_file)
     file_name = 'images/' + random_file.sub_directory + '/' + random_file.file_name
     print(file_name)
