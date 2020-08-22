@@ -8,7 +8,7 @@ bot = nonebot.get_bot()  # 在此之前必须已经 init
 
 @bot.server_app.route('/send_message', methods=['POST'])
 @login_required
-async def add_rank():
+async def send_message():
     json = request.get_json(force=True)
     message = json.get('message', None)
     id_ = json.get('id', None)
@@ -22,8 +22,8 @@ async def add_rank():
     if type_ == 'group':
         if group.group_chat_id != user.group_id:
             return jsonify({'You can only send message to your group.'}), 403
-        await bot.send_group_msg(group_id=int(id_), message=message)
+        await nonebot.get_bot().send_group_msg(group_id=int(id_), message=message)
     elif type_ == 'private':
         if not group.users.filter_by(qq=int(id_)).first():
             return jsonify({'You can only send message to your group members.'}), 403
-        await bot.send_private_msg(user_id=int(id_), message=message)
+        await nonebot.get_bot().send_private_msg(user_id=int(id_), message=message)

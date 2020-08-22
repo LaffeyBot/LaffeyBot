@@ -16,6 +16,7 @@ def add_record(qq: int, type_: str, damage: int = None):
         json['damage'] = damage
     r = requests.post(url, json=json, headers=headers)
     print(r.text)
+    return r.json()
 
 
 # noinspection SqlWithoutWhere

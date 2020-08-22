@@ -50,9 +50,11 @@ async def status(session: CommandSession):
 
 
 @manual_damage.args_parser
+@compensation_damage.args_parser
 async def _(session: CommandSession):
     # 去掉消息首尾的空白符
-    stripped_arg = session.current_arg_text.strip().replace('出刀', '')
+    stripped_arg = session.current_arg_text.strip().replace('出刀 ', '')\
+        .replace('报刀 ', '')
 
     if stripped_arg and stripped_arg.isdigit():
         session.state['damage'] = int(stripped_arg)
