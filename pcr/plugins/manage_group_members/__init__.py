@@ -137,6 +137,7 @@ async def delete_group_members(session: CommandSession):
     c.commit()
     member_str = ''
 
+
 @delete_group_members.args_parser
 async def _(session: CommandSession):
     stripped_arg = session.current_arg_text.strip()
