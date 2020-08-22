@@ -2,7 +2,6 @@ from nonebot import on_command, CommandSession
 from data import init_database
 import nonebot
 import config
-from data.user import User
 from nonebot.command.argfilter import extractors, validators
 from data.model import *
 from pcr.plugins.auth_tools import password_for
@@ -30,6 +29,7 @@ async def add_group_members(session: CommandSession):
 
         member_list_msg += str(index) + '. '
         member_list_msg += qq_name + '\n'
+
     member_list_msg += '请输入不需要加入公会的成员序号，以空格隔开。如果没有请回复【无】喵。'
     exclusion_list: str = session.get(
         'exclusion_list', prompt=member_list_msg,
@@ -71,7 +71,7 @@ async def add_group_members(session: CommandSession):
                 continue
             new_user: User = User(username=('temp_qq_' + str(qq_id)),
                                   nickname=qq_name,
-                                  role=-1,
+                                  role=0,
                                   password=password_for(qq_id),
                                   created_at=datetime.now(),
                                   email='',
@@ -79,7 +79,8 @@ async def add_group_members(session: CommandSession):
                                   phone_verified=False,
                                   valid_since=datetime.now(),
                                   group_id=group.id,
-                                  qq=qq_id)
+                                  qq=qq_id,
+                                  is_temp=True)
             db.session.add(new_user)
         db.session.commit()
 
