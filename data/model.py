@@ -19,7 +19,7 @@ class User(db.Model):
     # 密码，hashed using bcrypt
     password = db.Column(db.Text, nullable=False)
     # 创建时间，自动生成
-    created_at = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(db.Date, nullable=False)
     # 绑定的邮箱，可空
     email = db.Column(db.Text)
     # 邮箱已验证
@@ -29,16 +29,14 @@ class User(db.Model):
     # 手机号已验证
     phone_verified = db.Column(db.Boolean, nullable=False)
     # 在此日期之前的 token 都会失效（比如更改密码时之类的）
-    valid_since = db.Column(db.DateTime, nullable=False)
+    valid_since = db.Column(db.Date, nullable=False)
     # 外键关联Groups
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=True)
     # 查询挂树信息
-    hang_on_trees = db.relationship('HangOnTree',backref='user', lazy='dynamic')
+    hang_on_trees = db.relationship('HangOnTree', backref=db.backref('user'), lazy='dynamic')
 
     # 查询个人出刀记录
-    personal_records = db.relationship('PersonalRecord', backref='user', lazy='dynamic')
-
-    qq = db.Column(db.BigInteger)
+    personal_records = db.relationship('PersonalRecord', backref=db.backref('user'), lazy='dynamic')
 
     def __repr__(self):
         return '<users %r' % self.id
@@ -55,12 +53,17 @@ class Group(db.Model):
     description = db.Column(db.Text, nullable=False)
     # 必须申请出刀
     must_request = db.Column(db.Boolean, nullable=False)
+    # 会长id区分重名公会
+    leader_id = db.Column(db.String(25), nullable=False, unique=True)
     # 查询挂树信息
-    hang_on_trees = db.relationship('HangOnTree',backref='group', lazy='dynamic')
+    hang_on_trees = db.relationship('HangOnTree', backref=db.backref('group'), lazy='dynamic')
     # 查询小组个人出刀记录
-    personal_records = db.relationship('PersonalRecord', backref='group', lazy='dynamic')
+    personal_records = db.relationship('PersonalRecord', backref=db.backref('group'), lazy='dynamic')
     # 查询小组成员
-    users = db.relationship('User', backref='group', lazy='dynamic')
+    users = db.relationship('User', backref=db.backref('group'), lazy='dynamic')
+    # 查询公会排名信息
+    team_records = db.relationship('TeamRecord', backref=db.backref('group'), lazy='dynamic')
+
     def __repr__(self):
         return '<group %r' % self.id
 
@@ -73,10 +76,10 @@ class TeamRecord(db.Model):
     # 公会代数ID
     epoch_id = db.Column(db.Integer, db.ForeignKey('team_battle_epoch.id'))
     # 对应的 Epoch Object
-    epoch = db.relationship('TeamBattleEpoch', backref=db.backref('team_records', lazy='dynamic'))
+    # epoch = db.relationship('TeamBattleEpoch', backref=db.backref('team_records', lazy='dynamic'),lazy='dynamic')
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=True)
     # 方便关联查询
-    group = db.relationship('Group', backref=db.backref('team_records', lazy='dynamic'))
+    # group = db.relationship('Group', backref=db.backref('team_records', lazy='dynamic'),lazy='dynamic')
     current_boss_gen = db.Column(db.Integer, nullable=False)
     current_boss_order = db.Column(db.Integer, nullable=False)
     boss_remaining_health = db.Column(db.Integer, nullable=False)
@@ -101,6 +104,8 @@ class TeamBattleEpoch(db.Model):
     name = db.Column(db.VARCHAR(255))
     from_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
+    # 查询多类team_record记录
+    team_records = db.relationship('TeamRecord', backref=db.backref('team_battle_epoch'), lazy='dynamic')
 
 
 class PersonalRecord(db.Model):
@@ -159,21 +164,9 @@ class HangOnTree(db.Model):
     # 状态（是否挂树）
     status = db.Column(db.Boolean, nullable=False)
     # 关联公会
-    group_id = db.Column(db.Integer,db.ForeignKey('group.id'))
+    group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
     # 关联用户
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return f'{self.id} is hanging on the tree'
-
-
-class PictureList(db.Model):
-    __tablename__ = 'picture_list'
-    id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
-    # 说明信息，可空
-    file_name = db.Column(db.Text, nullable=True)
-    sub_directory = db.Column(db.Text, nullable=True)
-    origin = db.Column(db.Text, nullable=True)
-
-    def __repr__(self):
-        return '<picture_list %r' % self.id

@@ -13,7 +13,7 @@ class Progress(object):
         self.boss = 1
         self.current_score = 0
 
-    def get_result(self, score: int = 0)->str:
+    def get_result(self, score: int = 0) -> str:
         while True:
             now_rate = 2 - 1 if self.epoch > 2 else self.epoch - 1
             # 先按一个boss计算
@@ -24,7 +24,7 @@ class Progress(object):
                 damage_health = (score - self.current_score) / self.score_rate[now_rate][self.boss - 1]
                 self.damage += damage_health
                 remain_health = self.boss_hp[self.boss - 1] - damage_health
-                remain_percent = round((1 - damage_health/self.boss_hp[self.boss - 1])*100,2)
+                remain_percent = round((1 - damage_health / self.boss_hp[self.boss - 1]) * 100, 2)
                 print(remain_percent)
                 break
             if self.boss + 1 > 5:
@@ -36,9 +36,6 @@ class Progress(object):
                f'{int(remain_health)}/{self.boss_hp[self.boss-1]},剩余血量占比{remain_percent}%\n'
 
 
-
-
 if __name__ == '__main__':
     p = Progress()
-    print(p.get_result(	800577184))
-
+    print(p.get_result(800577184))
