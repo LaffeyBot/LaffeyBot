@@ -13,8 +13,8 @@ async def link_account(session: CommandSession):
     db.init_app(get_bot().server_app)
     account = session.state['account']
 
-    current_account = User.query.filter_by(qq=session.event.user_id).first()
-    if current_account:
+    current_account: User = User.query.filter_by(qq=session.event.user_id).first()
+    if current_account and not current_account.is_temp:
         session.finish(message='本QQ号已经绑定了一个账户了喵...')
 
     account_to_link = get_user_with(username=account)
@@ -23,7 +23,7 @@ async def link_account(session: CommandSession):
     if account_to_link.qq is not None:
         session.finish(message=account + '已经绑定了一个QQ了喵...')
 
-    confirm_message = '确定要绑定账户 ' + account + '吗？此操作将不能撤回喔。请回复【确认/取消】'
+    confirm_message = '确定要绑定账户 ' + account + ' 吗？此操作将不能撤回喔。请回复【确认/取消】'
     confirmation: str = session.get(
         'confirmation', prompt=confirm_message,
         arg_filters=[

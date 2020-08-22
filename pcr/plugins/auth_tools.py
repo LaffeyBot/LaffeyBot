@@ -7,6 +7,7 @@ from nonebot import get_bot
 import datetime
 import config
 import jwt
+import requests
 
 
 def password_for(qq: int):
@@ -37,7 +38,7 @@ def link_account_with(qq: int, account: str):
     header = get_auth_header(for_qq=qq)
     url = config.BACKEND_URL + '/v1/account/link_account'
     json = dict(username=account)
-    r = requests.post(url=url, header=header, json=json)
+    r = requests.post(url=url, headers=header, json=json)
     print(r.text)
 
 

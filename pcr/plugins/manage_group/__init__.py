@@ -58,7 +58,7 @@ async def create_group(session: CommandSession):
             qq_name = session.event.sender['nickname']
         current_user = User(username=('temp_qq_' + str(qq_id)),
                             nickname=qq_name,
-                            role=0,
+                            role=2,
                             password=password_for(qq_id),
                             created_at=datetime.now(),
                             email='',
@@ -67,6 +67,8 @@ async def create_group(session: CommandSession):
                             valid_since=datetime.now(),
                             qq=qq_id,
                             is_temp=True)
+        db.session.add(current_user)
+
     if current_user.group_id:
         await session.send('公会创建者已经在一个公会里面了喵...')
 
@@ -78,10 +80,12 @@ async def create_group(session: CommandSession):
     new_group = Group(group_chat_id=str(session.event.group_id),
                       name=group_name,
                       description='',
-                      must_request=False)
+                      must_request=False,
+                      leader_id='0')
     db.session.add(new_group)
     db.session.commit()
     db.session.refresh(new_group)
+    db.session.refresh(current_user)
 
     current_user.group_id = new_group.id
     current_user.role = 2
