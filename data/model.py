@@ -65,8 +65,10 @@ class Group(db.Model):
     personal_records = db.relationship('PersonalRecord', backref=db.backref('group'), lazy='dynamic')
     # 查询小组成员
     users = db.relationship('User', backref=db.backref('group'), lazy='dynamic')
+    # 查询公会Boss状态，一对一
+    team_record = db.relationship('TeamRecord', backref=db.backref('group'), lazy='dynamic')
     # 查询公会排名信息
-    team_records = db.relationship('TeamRecord', backref=db.backref('group'), lazy='dynamic')
+    team_ranks = db.relationship('TeamRank', backref='group', lazy='dynamic')
 
     def __repr__(self):
         return '<group %r' % self.id
@@ -102,7 +104,7 @@ class TeamRank(db.Model):
     # 公会排名
     rank = db.Column(db.Integer, nullable=False)
     # 总伤害
-    total_ = db.Column(db.BigInteger, nullable=False)
+    total_score = db.Column(db.BigInteger, nullable=False)
     # 记录时间
     record_date = db.Column(db.DateTime, nullable=False)
 
