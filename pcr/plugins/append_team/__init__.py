@@ -5,6 +5,7 @@ from pcr.plugins.capture_team_rank.get_team_rank import *
 from pcr.plugins.capture_team_rank.calculate_progress import *
 from nonebot.command.argfilter import extractors, validators
 from datetime import datetime
+from data.init_database import get_connection
 import nonebot
 
 
@@ -93,14 +94,18 @@ async def _(session: CommandSession):
 async def get_team_rank_per_half_hour():
     bot = get_bot()
     s = SpiderTeamRank()
-    db.init_app(get_bot().server_app)
-    groups = Group.query.filter(Group.name).all()
+    # db.init_app(get_bot().server_app)
+    # groups = Group.query.filter(Group.name).all()
+    c = get_connection()
+    cursor = c.cursor()
+    cursor.execute('select * from produce.group')
+    groups = cursor.fetchall()
     for g in groups:
         # TODO: 可能需要加几秒的sleep，否则容易被ban。
-        result = s.get_team_rank_info_by_tname(g.name)
-        g_name = g.name
-        g_leader_id = g.leader_id
-        g_id = g.id
+        result = s.get_team_rank_info_by_tname(g[2])
+        g_name = g[2]
+        g_leader_id = g[5]
+        g_id = g[0]
         if result:
             if not result['data']:
                 await bot.send_group_msg(group_id=1108319335,
@@ -108,28 +113,36 @@ async def get_team_rank_per_half_hour():
                 return
             for data in result['data']:
                 if data['clan_name'] == g_name and data['leader_viewer_id'] == g_leader_id:
-                    t1 = TeamRank.query.filter(TeamRank.group_id == g_id).last()
-                    if t1 and t1.rank == data['rank']:
+                    # t1 = TeamRank.query.filter(TeamRank.group_id == g_id).last()
+                    cursor.execute(f'select * from team_rank where group_id = {g_id};')
+                    t1 = cursor.fetchall()[-1]
+                    if t1 and t1[3] == data['rank']:
                         return
                     # p = Progress()
                     # p.get_result(result['damage'])
                     # TODO: 注意 boss_hp 存储的是boss最大生命值List, 这可能不是你想要的数据。
                     # FIXME: 没有提供 group_id。无法判断这是属于哪一个group的。
-                    epoch = TeamBattleEpoch.query.filter(datetime.now() > TeamBattleEpoch.from_date,
-                                                         datetime.now() < TeamBattleEpoch.end_date).first()
+                    # epoch = TeamBattleEpoch.query.filter(datetime.now() > TeamBattleEpoch.from_date,
+                    #                                      datetime.now() < TeamBattleEpoch.end_date).first()
+                    cursor.execute(
+                        f'select * from team_battle_epoch where from_date<{datetime.now()} and end_date>{datetime.now()};')
+                    epoch = cursor.fetchall()
                     if not epoch:
                         print('非会战期间，不进行更新操作')
                         return
 
-                    t2 = TeamRank(
-                        rank=data['rank'],
-                        total_score=data['damage'],
-                        record_date=datetime.now(),
-                        group_id=g_id,
-                        epoch_id=epoch.id
-                    )
-                    db.session.add(t2)
-                    db.session.commit()
+                    # t2 = TeamRank(
+                    #     rank=data['rank'],
+                    #     total_score=data['damage'],
+                    #     record_date=datetime.now(),
+                    #     group_id=g_id,
+                    #     epoch_id=epoch.id
+                    # )
+                    #
+                    cursor.execute(
+                        'insert into team_rank (rank,total_score,record_date,group_id,epoch_id) values (%s,%s,%s,%s,%s)',
+                        (data['rank'], data['damage'], datetime.now(), g_id, epoch.id))
+                    c.commit()
                     await bot.send_group_msg(group_id=1108319335,
                                              message=f'{g.name}公会排名更新完毕')
                     break
