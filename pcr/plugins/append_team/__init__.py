@@ -114,8 +114,6 @@ async def get_team_rank_per_half_hour():
                         return
                     # p = Progress()
                     # p.get_result(result['damage'])
-                    # TODO: 注意 boss_hp 存储的是boss最大生命值List, 这可能不是你想要的数据。
-                    # FIXME: 没有提供 group_id。无法判断这是属于哪一个group的。
                     epoch = TeamBattleEpoch.query.filter(datetime.now() > TeamBattleEpoch.from_date,
                                                          datetime.now() < TeamBattleEpoch.end_date).first()
                     if not epoch:
