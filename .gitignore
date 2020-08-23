@@ -218,3 +218,6 @@ player_list.csv
 /config.py
 /status/
 !/doc/
+
+node_modules/
+temp_test.py
