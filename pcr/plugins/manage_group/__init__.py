@@ -10,6 +10,7 @@ from data.model import *
 from nonebot import get_bot
 from pcr.plugins.auth_tools import password_for
 from datetime import datetime
+from pcr.plugins.capture_team_rank.get_team_rank import SpiderTeamRank
 
 
 # group_id = [1104038724, 1108319335]
@@ -91,13 +92,33 @@ async def create_group(session: CommandSession):
     current_user.role = 2
 
     db.session.commit()
-    await session.send('公会创建成功了喵!')
+    await session.send('公会创建成功了喵! 现在开始绑定排名数据。')
 
-
-bot = nonebot.get_bot()
-
-
-# @bot.on_message()
-# async def demo(event):
-#     if event['message_type'] == 'group' and event['group_id'] in config.GROUP_ID:
-#         print("demo2")
+    s = SpiderTeamRank()
+    result = s.get_team_rank_info_by_tname(group_name)
+    if not result['data']:
+        if len(result['data']) > 1:
+            message = f'现在有如下多个名叫{group_name}的公会：\n'
+            count = 1
+            for group in result['data']:
+                message += '=========\n'
+                message += f'{count}.' + group['clan_name'] + ':\n'
+                message += '会长是：' + group['leader_name'] + '会长游戏id是：' + group['leader_viewer_id'] + '\n'
+                count += 1
+            message += '请使用前面的编号进行选择\n'
+            index = session.get(
+                'rank_index',
+                prompt=message,
+                arg_filters=[
+                    extractors.extract_text,  # 取纯文本部分
+                    str.strip,  # 去掉两边空白字符
+                ]
+            )
+            try:
+                index = int(index)
+                new_group.leader_id = result['data'][index - 1]['leader_viewer_id']
+            except ValueError as e:
+                await session.send('输入非数字的字符拉菲理解不了QAQ')
+    else:
+        await session.send(f'{group_name}公会并不存在喵，请重试喵QAQ，若是新改名公会，请半小时后重试', at_sender=True)
+        return
