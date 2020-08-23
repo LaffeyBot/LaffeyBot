@@ -21,7 +21,7 @@ async def add_new_group(session: CommandSession):
             for group in result['data']:
                 message += '=========\n'
                 message += f'{count}.' + group['clan_name'] + ':\n'
-                message += '会长是：' + group['leader_name'] + '会长游戏id是：' + group['leader_viewer_id'] + '\n'
+                message += '会长是：' + group['leader_name'] + '\n会长游戏id是：' + str(group['leader_viewer_id']) + '\n'
                 count += 1
             message += '请使用前面的编号进行选择\n'
             index = session.get(
@@ -37,14 +37,15 @@ async def add_new_group(session: CommandSession):
                 g = Group()
                 r1 = Group.query.filter(Group.name == result['data'][index - 1]['clan_name'],
                                         Group.leader_id == result['data'][index - 1]['leader_viewer_id']).first()
-                # FIXME: 对于已经通过QQ创建但是没有 leader_id 的公会，仍然会创建一个不同的新公会以记录排名。
                 if not r1:
                     g.name = result['data'][index - 1]['clan_name']
                     g.description = '这是拉菲bot添加的公会记录喵！'
                     g.must_request = True
                     g.leader_id = result['data'][index - 1]['leader_viewer_id']
                     g.is_temp = True
+                    db.session.add(g)
                     db.session.commit()
+                    await session.send('添加成功了喵！')
                 else:
                     await session.send('该公会记录已经存在了', at_sender=True)
             except ValueError as e:
@@ -196,3 +197,7 @@ async def _(session: CommandSession):
         session.pause('格式：【删除记录公会 xxx】')
 
     session.state[session.current_key] = stripped_arg
+
+
+if __name__ == '__main__':
+    get_team_rank_per_half_hour()
