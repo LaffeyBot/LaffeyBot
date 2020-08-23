@@ -60,13 +60,15 @@ class Group(db.Model):
     # 区分是否是机器人添加的临时公会
     is_temp = db.Column(db.Boolean,nullable=False)
     # 查询挂树信息
-    hang_on_trees = db.relationship('HangOnTree', backref=db.backref('group'), lazy='dynamic')
+    hang_on_trees = db.relationship('HangOnTree', backref='group', lazy='dynamic', cascade="all,delete")
     # 查询小组个人出刀记录
-    personal_records = db.relationship('PersonalRecord', backref=db.backref('group'), lazy='dynamic')
+    personal_records = db.relationship('PersonalRecord', backref='group', lazy='dynamic')
     # 查询小组成员
     users = db.relationship('User', backref=db.backref('group'), lazy='dynamic')
+    # 查询公会Boss状态，一对一
+    team_record = db.relationship('TeamRecord', backref='group', lazy='dynamic', cascade="all,delete")
     # 查询公会排名信息
-    team_records = db.relationship('TeamRecord', backref=db.backref('group'), lazy='dynamic')
+    team_ranks = db.relationship('TeamRank', backref='group', lazy='dynamic', cascade="all,delete")
 
     def __repr__(self):
         return '<group %r' % self.id
@@ -102,7 +104,7 @@ class TeamRank(db.Model):
     # 公会排名
     rank = db.Column(db.Integer, nullable=False)
     # 总伤害
-    total_ = db.Column(db.BigInteger, nullable=False)
+    total_score = db.Column(db.BigInteger, nullable=False)
     # 记录时间
     record_date = db.Column(db.DateTime, nullable=False)
 
@@ -190,3 +192,15 @@ class HangOnTree(db.Model):
 
     def __repr__(self):
         return f'{self.id} is hanging on the tree'
+
+
+class PictureList(db.Model):
+    __tablename__ = 'picture_list'
+    id = db.Column(db.Integer, primary_key=True, index=True, unique=True, autoincrement=True)
+    # 说明信息，可空
+    file_name = db.Column(db.Text, nullable=True)
+    sub_directory = db.Column(db.Text, nullable=True)
+    origin = db.Column(db.Text, nullable=True)
+
+    def __repr__(self):
+        return '<picture_list %r' % self.id

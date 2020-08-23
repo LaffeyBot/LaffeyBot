@@ -219,3 +219,6 @@ player_list.csv
 /status/
 .idea
 !/doc/
+
+node_modules/
+temp_test.py
