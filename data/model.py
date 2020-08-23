@@ -57,6 +57,8 @@ class Group(db.Model):
     must_request = db.Column(db.Boolean, nullable=False)
     # 会长id区分重名公会
     leader_id = db.Column(db.String(25), nullable=False, unique=True)
+    # 区分是否是机器人添加的临时公会
+    is_temp = db.Column(db.Boolean,nullable=False)
     # 查询挂树信息
     hang_on_trees = db.relationship('HangOnTree', backref=db.backref('group'), lazy='dynamic')
     # 查询小组个人出刀记录
@@ -100,7 +102,7 @@ class TeamRank(db.Model):
     # 公会排名
     rank = db.Column(db.Integer, nullable=False)
     # 总伤害
-    total_damage = db.Column(db.BigInteger, nullable=False)
+    total_ = db.Column(db.BigInteger, nullable=False)
     # 记录时间
     record_date = db.Column(db.DateTime, nullable=False)
 

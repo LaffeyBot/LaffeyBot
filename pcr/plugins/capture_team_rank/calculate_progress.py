@@ -16,7 +16,7 @@ class Progress(object):
     def get_result(self, score: int = 0) -> str:
         while True:
             # TODO: 写成 = 0 if self.epoch == 1 else 1 可读性会高一些？
-            now_rate = 2 - 1 if self.epoch > 2 else self.epoch - 1
+            now_rate = 0 if self.epoch == 1 else 1
             # 先按一个boss计算
             self.current_score += self.boss_hp[self.boss - 1] * self.score_rate[now_rate][self.boss - 1]
             if score <= self.current_score:
