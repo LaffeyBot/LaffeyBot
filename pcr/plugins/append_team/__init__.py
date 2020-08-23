@@ -6,6 +6,7 @@ from pcr.plugins.capture_team_rank.calculate_progress import *
 from nonebot.command.argfilter import extractors, validators
 from datetime import datetime
 import nonebot
+import config
 
 
 @on_command('add_new_group', aliases=('添加记录公会', '追加记录公会', '记录公会排名'), only_to_me=False)
@@ -94,8 +95,9 @@ async def _(session: CommandSession):
 async def get_team_rank_per_half_hour():
     bot = get_bot()
     s = SpiderTeamRank()
-    db.init_app(get_bot().server_app)
-    groups = Group.query.filter(Group.name).all()
+    nonebot.init(config)
+    app = nonebot.get_bot().server_app
+    groups = Group.query.all()
     for g in groups:
         # TODO: 可能需要加几秒的sleep，否则容易被ban。
         result = s.get_team_rank_info_by_tname(g.name)
