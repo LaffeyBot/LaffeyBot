@@ -217,4 +217,5 @@ main.db
 player_list.csv
 /config.py
 /status/
+.idea
 !/doc/
