@@ -8,7 +8,7 @@ from datetime import datetime
 import nonebot
 
 
-@on_command('add_new_group', aliases=('添加公会', '追加公会', '记录公会排名'), only_to_me=False)
+@on_command('add_new_group', aliases=('添加记录公会', '追加记录公会', '记录公会排名'), only_to_me=False)
 async def add_new_group(session: CommandSession):
     group_name = session.get('group_name', prompt='请给出添加的公会名称')
     db.init_app(get_bot().server_app)
@@ -43,6 +43,7 @@ async def add_new_group(session: CommandSession):
                     g.description = '这是拉菲bot添加的公会记录喵！'
                     g.must_request = True
                     g.leader_id = result['data'][index - 1]['leader_viewer_id']
+                    g.is_temp = True
                     db.session.commit()
                 else:
                     await session.send('该公会记录已经存在了', at_sender=True)
@@ -50,20 +51,42 @@ async def add_new_group(session: CommandSession):
                 await session.send('输入非数字的字符拉菲理解不了QAQ')
 
         else:
-            try:
-                # FIXME: 第38行的查重filter命令在这里也应该被执行
-                g = Group()
-                g.name = result['data'][0]['clan_name']
-                g.description = '这是拉菲bot添加的公会记录喵！'
-                g.must_request = True
-                g.leader_id = result['data'][0]['leader_viewer_id']
-                db.session.commit()
-            except Exception as e:
-                await session.send('添加失败了喵，请重试', at_sender=True)
-                return
+            r2 = Group.query.filter(Group.name == result['data'][0]['clan_name'],
+                                    Group.leader_id == result['data'][0]['leader_viewer_id']).first()
+            if not r2:
+                try:
+                    # FIXME: 第38行的查重filter命令在这里也应该被执行
+                    g = Group()
+                    g.name = result['data'][0]['clan_name']
+                    g.description = '这是拉菲bot添加的公会记录喵！'
+                    g.must_request = True
+                    g.leader_id = result['data'][0]['leader_viewer_id']
+                    g.is_temp = True
+                    db.session.commit()
+                except Exception as e:
+                    await session.send('添加失败了喵，请重试', at_sender=True)
+                    return
+            else:
+                await session.send('该公会记录已经存在了', at_sender=True)
     else:
         await session.send(f'{group_name}公会并不存在喵，请重试喵QAQ，若是新改名公会，请半小时后重试', at_sender=True)
         return
+
+
+@add_new_group.args_parser
+async def _(session: CommandSession):
+    # 去掉消息首尾的空白符
+    stripped_arg = session.current_arg_text.strip()
+
+    if session.is_first_run:
+        if stripped_arg:
+            session.state['group_name'] = stripped_arg
+        return
+
+    if not stripped_arg:
+        session.pause('格式：【添加记录公会 xxx】')
+
+    session.state[session.current_key] = stripped_arg
 
 
 @nonebot.scheduler.scheduled_job('cron', minute='*/30')
@@ -85,20 +108,25 @@ async def get_team_rank_per_half_hour():
                 return
             for data in result['data']:
                 if data['clan_name'] == g_name and data['leader_viewer_id'] == g_leader_id:
-                    t1 = TeamRecord.query.filter(TeamRecord.group_id == g_id).last()
-                    if t1 and t1.record == data['rank']:
+                    t1 = TeamRank.query.filter(TeamRank.group_id == g_id).last()
+                    if t1 and t1.rank == data['rank']:
                         return
-                    p = Progress()
-                    p.get_result(result['damage'])
+                    # p = Progress()
+                    # p.get_result(result['damage'])
                     # TODO: 注意 boss_hp 存储的是boss最大生命值List, 这可能不是你想要的数据。
                     # FIXME: 没有提供 group_id。无法判断这是属于哪一个group的。
-                    t2 = TeamRecord(
-                        record=data['rank'],
-                        detail_date=datetime.now(),
-                        current_boss_gen=p.epoch,
-                        current_boss_order=p.boss,
-                        boss_remaining_health=p.boss_hp,
-                        last_modified=datetime.now(),
+                    epoch = TeamBattleEpoch.query.filter(datetime.now() > TeamBattleEpoch.from_date,
+                                                         datetime.now() < TeamBattleEpoch.end_date).first()
+                    if not epoch:
+                        print('非会战期间，不进行更新操作')
+                        return
+
+                    t2 = TeamRank(
+                        rank=data['rank'],
+                        total_score=data['damage'],
+                        record_date=datetime.now(),
+                        group_id=g_id,
+                        epoch_id=epoch.id
                     )
                     db.session.add(t2)
                     db.session.commit()
@@ -152,3 +180,19 @@ async def delete_group_record(session: CommandSession):
 def delete_item(group: Group):
     db.session.delete(group)
     db.session.commit()
+
+
+@delete_group_record.args_parser
+async def _(session: CommandSession):
+    # 去掉消息首尾的空白符
+    stripped_arg = session.current_arg_text.strip()
+
+    if session.is_first_run:
+        if stripped_arg:
+            session.state['delete_group'] = stripped_arg
+        return
+
+    if not stripped_arg:
+        session.pause('格式：【删除记录公会 xxx】')
+
+    session.state[session.current_key] = stripped_arg
