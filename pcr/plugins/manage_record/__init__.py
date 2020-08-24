@@ -1,8 +1,9 @@
-from nonebot import on_command, CommandSession, permission as perm
+from nonebot import on_command, CommandSession, get_bot, permission as perm
 from data.damage import delete_all_records, add_record
 from pcr.plugins.manage_record.alert_new_record import boss_status_text
 from data.json.json_editor import JSONEditor
 from pcr.plugins.direct_send_message import send_from_dict
+from data.model import *
 
 
 @on_command('deleteAll', aliases='删除所有记录', only_to_me=True, permission=perm.SUPERUSER)
@@ -84,10 +85,14 @@ async def compensation_damage(session: CommandSession):
 
 @on_command('status', aliases=['状态', 'boss状态'], only_to_me=False)
 async def status(session: CommandSession):
-    editor = JSONEditor(group_id=session.event.group_id)
-    message = '现在攻略的是' + str(editor.get_generation()) + '周目的' + \
-              str(editor.get_current_boss_order()) + '王喵~\n'
-    message += boss_status_text(editor.get_remaining_health())
+    group: Group = Group.query.filter(Group.group_chat_id == session.event.group_id).first()
+    if not group:
+        await session.send('公会不存在')
+    boss_status: TeamRecord = TeamRecord.query.filter(TeamRecord.group_id == group.id)\
+        .order_by(TeamRecord.last_modified.desc()).first()
+    message = '现在攻略的是' + str(boss_status.current_boss_gen) + '周目的' + \
+              str(boss_status.current_boss_order) + '王喵~\n'
+    message += 'Boss 血量还剩' + str(boss_status.boss_remaining_health) + '。'
     await session.send(message=message)
 
 
