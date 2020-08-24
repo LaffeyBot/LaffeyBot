@@ -20,6 +20,7 @@ class SpiderTeamRank(object):
             self.data = {'history': time_stamp, 'clanName': team_name}
         url = self.base_url + '/name/0'
         re = requests.post(url=url, headers=self.headers, json=self.data)
+        print(re.json())
         return json.loads(re.content.decode(), encoding='utf-8')
 
     def get_team_rank_info_by_rank(self, team_rank: int = 1, time_stamp: int = 0) -> dict:

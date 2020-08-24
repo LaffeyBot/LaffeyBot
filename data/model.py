@@ -34,6 +34,7 @@ class User(db.Model):
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=True)
     # 查询挂树信息
     hang_on_trees = db.relationship('HangOnTree', backref=db.backref('user'), lazy='dynamic')
+    is_temp = db.Column(db.Boolean, default=False)
 
     # 查询个人出刀记录
     personal_records = db.relationship('PersonalRecord', backref=db.backref('user'), lazy='dynamic')
@@ -58,7 +59,7 @@ class Group(db.Model):
     # 会长id区分重名公会
     leader_id = db.Column(db.String(25), nullable=False, unique=True)
     # 区分是否是机器人添加的临时公会
-    is_temp = db.Column(db.Boolean,nullable=False)
+    is_temp = db.Column(db.Boolean,nullable=False, default=False)
     # 查询挂树信息
     hang_on_trees = db.relationship('HangOnTree', backref='group', lazy='dynamic', cascade="all,delete")
     # 查询小组个人出刀记录

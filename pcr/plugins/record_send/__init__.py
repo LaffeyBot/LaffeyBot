@@ -111,7 +111,7 @@ async def send_record(session: CommandSession):
                 dir_name = record['character'] + '_voice'
                 bot = nonebot.get_bot()
                 try:
-                    rls = os.listdir(os.path.join(config.CQ_SOURCE_PATH, 'record', dir_name))
+                    rls = os.listdir(os.path.join(config.CQ_SOURCE_PATH, 'voices', dir_name))
                 except:
                     await session.send('指挥官要找的语音资源暂时不存在的喵~请尝试使用[更换声源]命令进行操作喵')
                 record_file = os.path.join(f'\{dir_name}',
