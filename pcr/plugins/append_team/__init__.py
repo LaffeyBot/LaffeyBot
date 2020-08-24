@@ -91,7 +91,7 @@ async def _(session: CommandSession):
     session.state[session.current_key] = stripped_arg
 
 
-@nonebot.scheduler.scheduled_job('cron', minute='*/1')
+@nonebot.scheduler.scheduled_job('cron', minute='*/30')
 # @nonebot.scheduler.scheduled_job('cron', second='*/15')
 async def get_team_rank_per_half_hour():
     bot = get_bot()
