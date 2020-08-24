@@ -93,10 +93,11 @@ async def status(session: CommandSession):
 
 @manual_damage.args_parser
 @compensation_damage.args_parser
+@last_damage.args_parser
 async def _(session: CommandSession):
     # 去掉消息首尾的空白符
     stripped_arg = session.current_arg_text.strip().replace('出刀 ', '')\
-        .replace('报刀 ', '')
+        .replace('报刀 ', '').replace('尾刀 ', '').replace('补偿刀 ', '').strip()
 
     submit_tuple = stripped_arg.split()
     if len(submit_tuple) == 1:

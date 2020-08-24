@@ -32,7 +32,7 @@ async def add_group_members(session: CommandSession):
 
     member_list_msg += '请输入不需要加入公会的成员序号，以空格隔开。如果没有请回复【无】喵。'
     exclusion_list: str = session.get(
-        'exclusion_list', prompt=member_list_msg,
+        'exclusion_list_', prompt=member_list_msg,
         arg_filters=[
             extractors.extract_text,  # 取纯文本部分
             str.strip,  # 去掉两边空白字符
