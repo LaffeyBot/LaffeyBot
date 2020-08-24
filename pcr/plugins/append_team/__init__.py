@@ -2,8 +2,7 @@ from nonebot import on_command, CommandSession
 from nonebot import get_bot
 from data.model import *
 from pcr.plugins.capture_team_rank.get_team_rank import *
-from pcr.plugins.capture_team_rank.calculate_progress import *
-from nonebot.command.argfilter import extractors, validators
+from nonebot.command.argfilter import extractors
 from datetime import datetime
 import nonebot
 

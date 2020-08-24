@@ -1,3 +1,5 @@
+from typing import Dict
+
 from data.init_database import get_connection
 import requests
 import config
@@ -6,7 +8,7 @@ from nonebot import get_bot
 from pcr.plugins.auth_tools import get_auth_header
 
 
-def add_record(qq: int, type_: str, damage: int = None):
+def add_record(qq: int, type_: str, damage: int = None, boss_gen: int = None, boss_order: int = None):
     url = config.BACKEND_URL + '/v1/record/add_record'
     db.init_app(get_bot().server_app)
     headers = get_auth_header(qq)
@@ -14,6 +16,10 @@ def add_record(qq: int, type_: str, damage: int = None):
     json = dict(type=type_, origin='QQ')
     if damage:
         json['damage'] = damage
+    if boss_gen:
+        json['boss_gen'] = boss_gen
+    if boss_order:
+        json['boss_order'] = boss_order
     r = requests.post(url, json=json, headers=headers)
     print(r.text)
     return r.json()

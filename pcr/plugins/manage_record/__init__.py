@@ -13,31 +13,73 @@ async def delete_all(session: CommandSession):
 
 @on_command('manual_damage', aliases=['出刀', '报刀'], only_to_me=False)
 async def manual_damage(session: CommandSession):
-    damage = session.get('damage')
+    damage = session.state.get('damage', None)
+    boss_gen = session.state.get('boss_gen', None)
+    boss_order = session.state.get('boss_order', None)
+
     if not damage:
         await session.send('请输入伤害喵')
 
-    await send_from_dict(
-        add_record(qq=session.event.user_id, damage=int(damage), type_='normal')
-    )
+    if not boss_gen or not boss_order:
+        await send_from_dict(
+            add_record(qq=session.event.user_id, damage=int(damage), type_='normal')
+        )
+    else:
+        await send_from_dict(
+            add_record(qq=session.event.user_id,
+                       damage=int(damage),
+                       type_='normal',
+                       boss_gen=boss_gen,
+                       boss_order=boss_order)
+        )
 
 
 @on_command('last_damage', aliases=['尾刀'], only_to_me=False)
 async def last_damage(session: CommandSession):
-    await send_from_dict(
-        add_record(qq=session.event.user_id, type_='last')
-    )
+    damage = session.state.get('damage', None)
+    boss_gen = session.state.get('boss_gen', None)
+    boss_order = session.state.get('boss_order', None)
+
+    if not damage:
+        await send_from_dict(
+            add_record(qq=session.event.user_id, type_='last')
+        )
+
+    if not boss_gen or not boss_order:
+        await send_from_dict(
+            add_record(qq=session.event.user_id, damage=int(damage), type_='last')
+        )
+    else:
+        await send_from_dict(
+            add_record(qq=session.event.user_id,
+                       damage=int(damage),
+                       type_='last',
+                       boss_gen=boss_gen,
+                       boss_order=boss_order)
+        )
 
 
 @on_command('compensation_damage', aliases=['补偿刀'], only_to_me=False)
 async def compensation_damage(session: CommandSession):
-    damage = session.get('damage')
+    damage = session.state.get('damage', None)
+    boss_gen = session.state.get('boss_gen', None)
+    boss_order = session.state.get('boss_order', None)
+
     if not damage:
         await session.send('请输入伤害喵')
 
-    await send_from_dict(
-        add_record(qq=session.event.user_id, damage=int(damage), type_='compensation')
-    )
+    if not boss_gen or not boss_order:
+        await send_from_dict(
+            add_record(qq=session.event.user_id, damage=int(damage), type_='compensation')
+        )
+    else:
+        await send_from_dict(
+            add_record(qq=session.event.user_id,
+                       damage=int(damage),
+                       type_='compensation',
+                       boss_gen=boss_gen,
+                       boss_order=boss_order)
+        )
 
 
 @on_command('status', aliases=['状态', 'boss状态'], only_to_me=False)
@@ -56,6 +98,10 @@ async def _(session: CommandSession):
     stripped_arg = session.current_arg_text.strip().replace('出刀 ', '')\
         .replace('报刀 ', '')
 
-    if stripped_arg and stripped_arg.isdigit():
-        session.state['damage'] = int(stripped_arg)
-        return
+    submit_tuple = stripped_arg.split()
+    if len(submit_tuple) == 1:
+        session.state['damage'] = submit_tuple[0]
+    elif len(submit_tuple) == 3:
+        session.state['boss_gen'] = submit_tuple[0]
+        session.state['boss_order'] = submit_tuple[1]
+        session.state['damage'] = submit_tuple[2]
