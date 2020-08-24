@@ -11,7 +11,13 @@ import os
 async def query_team_rank(session: CommandSession):
     cursor = get_connection().cursor()
     group_id: int = session.event.group_id
-    cursor.execute('select * from rank_record WHERE group_id=%s', (group_id,))
+    group_name = session.state.get('group_name', None)
+    if not group_name:
+        group_name = ''
+    print(group_name)
+    cursor.execute('SELECT * FROM team_rank '
+                   'where group_id '
+                   'in (select group_id from production.`group`where name= %s or group_chat_id=%s) ;', (group_name, group_id))
     result = cursor.fetchall()
     times = []
     ranks = []
@@ -19,11 +25,11 @@ async def query_team_rank(session: CommandSession):
         """times = [t[0] for t in result]
         ranks = [r[1] for r in result]"""
         for row in result:
-            if len(ranks) > 0 and (
-                    row[2] > sum(ranks) // len(ranks) + 20000 or row[2] < sum(ranks) // len(ranks) - 5000):
-                continue
-            times.append(row[1])
-            ranks.append(row[2])
+            # if len(ranks) > 0 and (
+            #         row[2] > sum(ranks) // len(ranks) + 20000 or row[2] < sum(ranks) // len(ranks) - 5000):
+            #     continue
+            times.append(row[5])
+            ranks.append(row[3])
     else:
         await session.send('暂时还没有公会排名记录的喵！>_<')
         return
