@@ -1,6 +1,5 @@
 from nonebot import on_command, CommandSession
 from data.init_database import get_connection
-from datetime import datetime
 import datetime
 from .bar_chart import MemberDamageChart
 from nonebot.command.argfilter import extractors, validators
@@ -12,15 +11,15 @@ import time as t
 @on_command('report_member_daily_damage', aliases=("每日伤害", '成员每日伤害统计'), only_to_me=False)
 async def report_member_daily_damage(session: CommandSession):
     group_id = session.event.group_id
-    month = '%02d' % datetime.now().month
-    day = '%02d' % datetime.now().day
-    tomorrow = datetime.now()+datetime.timedelta(day=1)
+    month = '%02d' % datetime.datetime.now().month
+    day = '%02d' % datetime.datetime.now().day
+    tomorrow = datetime.datetime.now()+datetime.timedelta(days=1)
     pro_year = tomorrow.year
     pro_month = '%02d'%tomorrow.month
     pro_day = '%02d'% tomorrow.day
-    begin_date = f'{datetime.now().year}-{month}-{day} 05:00:00'
+    begin_date = f'{datetime.datetime.now().year}-{month}-{day} 05:00:00'
     end_date = f'{pro_year}-{pro_month}-{pro_day} 05:00:00'
-    # date = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+    date = datetime.datetime.today().strftime('%Y_%m_%d')
     if group_id:
         cursor = get_connection().cursor()
         cursor.execute(
@@ -36,7 +35,7 @@ async def report_member_daily_damage(session: CommandSession):
         else:
             await session.send('暂时还没有成员伤害数据喵~')
         file_name = f'{date}_{group_id}_member_damage_statistic.jpg'
-        file_path = os.path.join(config.CQ_SOURCE_PATH, 'image', file_name)
+        file_path = os.path.join(config.CQ_SOURCE_PATH, 'images', file_name)
         m = MemberDamageChart(title_name=f'{date}公会成员伤害统计', player_name=player_name, damage=sdamage,
                               file_path=file_path)
         m.get_chart()
@@ -53,9 +52,9 @@ async def report_member_daily_damage(session: CommandSession):
 @on_command('report_member_total_damage', aliases=("伤害统计", '成员伤害统计'), only_to_me=False)
 async def report_member_total_damage(session: CommandSession):
     group_id = session.event.group_id
-    month = '%02d' % datetime.now().month
-    day = '%02d' % datetime.now().day
-    date = f'{datetime.now().year}{month}'
+    month = '%02d' % datetime.datetime.now().month
+    day = '%02d' % datetime.datetime.now().day
+    date = f'{datetime.datetime.now().year}{month}'
     if group_id:
         cursor = get_connection().cursor()
         cursor.execute(
@@ -89,14 +88,15 @@ async def report_member_total_damage(session: CommandSession):
 @on_command('damage_report', aliases=('伤害报告',), only_to_me=False)
 async def damage_report(session: CommandSession):
     group_id = session.event.group_id
-    month = '%02d' % datetime.now().month
-    day = '%02d' % datetime.now().day
-    tomorrow = datetime.now() + datetime.timedelta(day=1)
+    month = '%02d' % datetime.datetime.now().month
+    day = '%02d' % datetime.datetime.now().day
+    tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
     pro_year = tomorrow.year
     pro_month = '%02d' % tomorrow.month
     pro_day = '%02d' % tomorrow.day
-    begin_date = f'{datetime.now().year}-{month}-{day} 05:00:00'
+    begin_date = f'{datetime.datetime.now().year}-{month}-{day} 05:00:00'
     end_date = f'{pro_year}-{pro_month}-{pro_day} 05:00:00'
+    date = datetime.datetime.today().strftime('%Y_%m_%d')
     '''if 'pname' not in session.state:
         await session.send('请给出要查询的报告的指挥官名字喵~')
         session.get('pname', arg_filters=[extractors.extract_text])

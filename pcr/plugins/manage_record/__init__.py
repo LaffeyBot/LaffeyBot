@@ -85,6 +85,7 @@ async def compensation_damage(session: CommandSession):
 
 @on_command('status', aliases=['状态', 'boss状态'], only_to_me=False)
 async def status(session: CommandSession):
+    db.init_app(get_bot().server_app)
     group: Group = Group.query.filter(Group.group_chat_id == session.event.group_id).first()
     if not group:
         await session.send('公会不存在')
