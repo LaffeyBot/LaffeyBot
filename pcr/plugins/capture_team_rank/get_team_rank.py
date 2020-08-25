@@ -56,7 +56,7 @@ if __name__ == '__main__':
     r = s.get_team_rank_info_by_rank(2333, 1591945200)
     r1 = s.get_team_rank_info_by_tname('碧蓝航线天下第一', 1591945200)
     r2 = s.get_team_rank_info_by_leader('^雨宫$')
-    r3 = s.get_team_rank_info_by_tname('雨落的农场')
+    r3 = s.get_team_rank_info_by_leader('2@@龟龟')
     print(r)
     print(r1)
     print(r2)

@@ -1,6 +1,7 @@
 from nonebot import on_command, CommandSession
 from data.init_database import get_connection
 from datetime import datetime
+import datetime
 from .bar_chart import MemberDamageChart
 from nonebot.command.argfilter import extractors, validators
 import os
@@ -13,15 +14,18 @@ async def report_member_daily_damage(session: CommandSession):
     group_id = session.event.group_id
     month = '%02d' % datetime.now().month
     day = '%02d' % datetime.now().day
-    date = f'{datetime.now().year}{month}{day}'
-    print(group_id, date)
-    print('select username,sum(damage) as sdamage from record where group_id=%s and date=%s group by username;'
-          % (group_id, date))
+    tomorrow = datetime.now()+datetime.timedelta(day=1)
+    pro_year = tomorrow.year
+    pro_month = '%02d'%tomorrow.month
+    pro_day = '%02d'% tomorrow.day
+    begin_date = f'{datetime.now().year}-{month}-{day} 05:00:00'
+    end_date = f'{pro_year}-{pro_month}-{pro_day} 05:00:00'
+    # date = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     if group_id:
         cursor = get_connection().cursor()
         cursor.execute(
-            'select username,sum(damage) as sdamage from record where group_id=%s and date=%s group by username;',
-            (group_id, date))
+            'select nickname,sum(damage) as sdamage from personal_record where group_id in (select id from `group` where group_chat_id=%s) and (last_modified>=%s and last_modified<=%s) group by nickname;',
+            (group_id, begin_date, end_date))
         result = cursor.fetchall()
         player_name = []
         sdamage = []
@@ -54,8 +58,9 @@ async def report_member_total_damage(session: CommandSession):
     date = f'{datetime.now().year}{month}'
     if group_id:
         cursor = get_connection().cursor()
-        cursor.execute('select username,sum(damage) as sdamage from record where group_id=%s group by username;',
-                       (group_id,))
+        cursor.execute(
+            'select nickname,sum(damage) as sdamage from personal_record where group_id in (select id from `group` where group_chat_id=%s) group by nickname;',
+            (group_id,))
         result = cursor.fetchall()
         player_name = []
         sdamage = []
@@ -86,7 +91,12 @@ async def damage_report(session: CommandSession):
     group_id = session.event.group_id
     month = '%02d' % datetime.now().month
     day = '%02d' % datetime.now().day
-    date = f'{datetime.now().year}{month}{day}'
+    tomorrow = datetime.now() + datetime.timedelta(day=1)
+    pro_year = tomorrow.year
+    pro_month = '%02d' % tomorrow.month
+    pro_day = '%02d' % tomorrow.day
+    begin_date = f'{datetime.now().year}-{month}-{day} 05:00:00'
+    end_date = f'{pro_year}-{pro_month}-{pro_day} 05:00:00'
     '''if 'pname' not in session.state:
         await session.send('请给出要查询的报告的指挥官名字喵~')
         session.get('pname', arg_filters=[extractors.extract_text])
@@ -104,29 +114,29 @@ async def damage_report(session: CommandSession):
     if group_id:
         if date != '*':
             cursor = get_connection().cursor()
-            cursor.execute('select username,target,damage from record where group_id=%s and date=%s and username=%s;',
-                           (group_id, date, player_name))
+            cursor.execute('select nickname,boss_gen,boss_order,damage from  personal_record where nickname=%s and group_id in (select id from `group` where group_chat_id=%s) and (last_modified>%s and last_modified<%s);',
+                           (player_name, group_id, begin_date, end_date))
             result = cursor.fetchall()
             message = f'以下是{player_name}指挥官{date}出刀报告：\n'
             if result:
                 for row in result:
-                    message += f'- 出刀{row[1]} 造成了{row[2]}点伤害\n'
+                    message += f'- 出刀{row[1]}周目{row[2]}王 造成了{row[3]}点伤害\n'
                 await session.send(message)
             else:
                 await session.send('没有查询到相关指挥官的出刀信息喵QAQ')
         else:
             cursor = get_connection().cursor()
-            cursor.execute('select username,target,damage,date from record where group_id=%s and username=%s;',
-                           (group_id, player_name))
+            cursor.execute('select nickname,boss_gen,boss_order,damage,last_modified from  personal_record where nickname=%s and group_id in (select id from `group` where group_chat_id=%s);',
+                           (player_name, group_id))
             result = cursor.fetchall()
             message = f'以下是{player_name}指挥官会战期间出刀报告：\n'
             target = []
             damage = []
             if result:
                 for row in result:
-                    message += f'{row[3]}日 出刀{row[1]} 造成了{row[2]}点伤害\n'
-                    target.append(f'{row[3]}的{row[1]}')
-                    damage.append(row[2])
+                    message += f'{row[4]} 出刀{row[1]}周目{row[2]}王 造成了{row[3]}点伤害\n'
+                    target.append(f'{row[4]}的{row[1]}周目{row[2]}王')
+                    damage.append(row[3])
                 message += f'该指挥官会战期间累计造成了{sum(damage)}点伤害喵~'
                 await session.send(message)
             else:
