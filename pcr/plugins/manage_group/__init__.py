@@ -74,10 +74,10 @@ async def create_group(session: CommandSession):
         await session.send('公会创建者已经在一个公会里面了喵...')
 
     group_name = session.get('group_name', prompt='公会的名称是什么呢喵？',
-                                    arg_filters=[
-                                        extractors.extract_text,  # 取纯文本部分
-                                        str.strip,  # 去掉两边空白字符
-                                    ])
+                             arg_filters=[
+                                 extractors.extract_text,  # 取纯文本部分
+                                 str.strip,  # 去掉两边空白字符
+                             ])
     new_group = Group(group_chat_id=str(session.event.group_id),
                       name=group_name,
                       description='',

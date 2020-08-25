@@ -1,3 +1,5 @@
+from typing import Dict
+
 from nonebot import on_command, CommandSession, on_natural_language, NLPSession, IntentCommand
 from data.attack_history import get_list_of_attacks
 from datetime import datetime, timedelta
@@ -70,12 +72,12 @@ async def _(session: CommandSession):
 
 
 @on_natural_language(keywords={'详情', '报告'}, only_to_me=False)
-async def _(session: NLPSession):
+async def view_more(session: NLPSession):
     return IntentCommand(90.0, 'list_attack_detail')
 
 
 def count_attack_times(record: list) -> list:
-    count_dict = dict()
+    count_dict: Dict[str, int] = dict()
     for element in record:
         if str(element[1]) in count_dict:
             count_dict[str(element[1])] += 1

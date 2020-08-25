@@ -11,24 +11,33 @@ import os
 async def query_team_rank(session: CommandSession):
     cursor = get_connection().cursor()
     group_id: int = session.event.group_id
-    cursor.execute('select * from rank_record WHERE group_id=%s', (group_id,))
+    group_name = session.state.get('group_name', None)
+    if not group_name:
+        group_name = ''
+    print(group_name)
+    print(f'SELECT * FROM production.team_rank where group_id in (select id from production.`group` where name= {group_name} or group_chat_id={group_id})')
+    cursor.execute('SELECT * FROM production.team_rank '
+                   'where group_id '
+                   'in (select id from production.`group`where name= %s or group_chat_id=%s) ;', (group_name, group_id))
+
     result = cursor.fetchall()
+    print(result)
     times = []
     ranks = []
     if result:
         """times = [t[0] for t in result]
         ranks = [r[1] for r in result]"""
         for row in result:
-            if len(ranks) > 0 and (
-                    row[2] > sum(ranks) // len(ranks) + 20000 or row[2] < sum(ranks) // len(ranks) - 5000):
-                continue
-            times.append(row[1])
-            ranks.append(row[2])
+            # if len(ranks) > 0 and (
+            #         row[2] > sum(ranks) // len(ranks) + 20000 or row[2] < sum(ranks) // len(ranks) - 5000):
+            #     continue
+            times.append(row[5])
+            ranks.append(row[3])
     else:
         await session.send('暂时还没有公会排名记录的喵！>_<')
         return
 
-    file_name = f'{times[-1]}_team_rank_{str(group_id)}.jpg'
+    file_name = f'team_rank_{str(group_id)}.jpg'
     file_path = os.path.join(config.TEAM_RANK_CHART_PATH, file_name)
     tc = TeamRankChart(times, ranks, file_path)
     tc.get_chart()
@@ -44,6 +53,15 @@ async def query_team_rank(session: CommandSession):
         await session.send(seq)
     if os.path.exists(file_path):
         os.remove(file_path)
+
+
+@query_team_rank.args_parser
+async def _(session: CommandSession):
+    # 去掉消息首尾的空白符
+    stripped_arg = session.current_arg_text.strip().replace('公会排名 ', '').replace('实时排名', '').strip()
+
+    if stripped_arg:
+        session.state['group_name'] = stripped_arg
 
 
 @on_command('report_rank', aliases=('上报排名', '更新公会排名'), only_to_me=False)

@@ -2,8 +2,7 @@ from nonebot import on_command, CommandSession
 from nonebot import get_bot
 from data.model import *
 from pcr.plugins.capture_team_rank.get_team_rank import *
-from pcr.plugins.capture_team_rank.calculate_progress import *
-from nonebot.command.argfilter import extractors, validators
+from nonebot.command.argfilter import extractors
 from datetime import datetime
 from data.init_database import get_connection
 import nonebot
@@ -91,7 +90,7 @@ async def _(session: CommandSession):
     session.state[session.current_key] = stripped_arg
 
 
-@nonebot.scheduler.scheduled_job('cron', minute='*/1')
+@nonebot.scheduler.scheduled_job('cron', minute='*/30')
 # @nonebot.scheduler.scheduled_job('cron', second='*/15')
 async def get_team_rank_per_half_hour():
     bot = get_bot()
