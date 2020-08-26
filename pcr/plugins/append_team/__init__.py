@@ -21,7 +21,7 @@ async def add_new_group(session: CommandSession):
             for group in result['data']:
                 message += '=========\n'
                 message += f'{count}.' + group['clan_name'] + ':\n'
-                message += '会长是：' + group['leader_name'] + '会长游戏id是：' + group['leader_viewer_id'] + '\n'
+                message += '会长是：' + group['leader_name'] + ' 会长游戏id是：' + str(group['leader_viewer_id'])+' 当前该公会排名为：' +str(group['rank'])+ '\n'
                 count += 1
             message += '请使用前面的编号进行选择\n'
             index = session.get(
@@ -39,12 +39,14 @@ async def add_new_group(session: CommandSession):
                                         Group.leader_id == result['data'][index - 1]['leader_viewer_id']).first()
                 # FIXME: 对于已经通过QQ创建但是没有 leader_id 的公会，仍然会创建一个不同的新公会以记录排名。
                 if not r1:
-                    g.name = result['data'][index - 1]['clan_name']
-                    g.description = '这是拉菲bot添加的公会记录喵！'
-                    g.must_request = True
-                    g.leader_id = result['data'][index - 1]['leader_viewer_id']
-                    print(g.leader_id)
-                    g.is_temp = True
+                    g = Group(
+                        name=result['data'][0]['clan_name'],
+                        description='这是拉菲bot添加的公会记录喵！',
+                        must_request=True,
+                        leader_id=result['data'][0]['leader_viewer_id'],
+                        is_temp=True
+                    )
+                    db.session.add(g)
                     db.session.commit()
                 else:
                     await session.send('该公会记录已经存在了', at_sender=True)
@@ -57,13 +59,16 @@ async def add_new_group(session: CommandSession):
             if not r2:
                 try:
                     # FIXME: 第38行的查重filter命令在这里也应该被执行
-                    g = Group()
-                    g.name = result['data'][0]['clan_name']
-                    g.description = '这是拉菲bot添加的公会记录喵！'
-                    g.must_request = True
-                    g.leader_id = result['data'][0]['leader_viewer_id']
-                    g.is_temp = True
+                    g = Group(
+                        name=result['data'][0]['clan_name'],
+                        description='这是拉菲bot添加的公会记录喵！',
+                        must_request= True,
+                        leader_id=result['data'][0]['leader_viewer_id'],
+                        is_temp= True
+                    )
+                    db.session.add(g)
                     db.session.commit()
+                    await session.send(f'{g.name}公会添加成功！')
                 except Exception as e:
                     await session.send('添加失败了喵，请重试', at_sender=True)
                     return
