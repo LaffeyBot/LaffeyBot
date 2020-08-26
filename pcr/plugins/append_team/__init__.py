@@ -13,7 +13,7 @@ async def add_new_group(session: CommandSession):
     group_name = session.get('group_name', prompt='请给出添加的公会名称')
     db.init_app(get_bot().server_app)
     s = SpiderTeamRank()
-    result = s.get_team_rank_info_by_tname(group_name, 1596697200)
+    result = s.get_team_rank_info_by_tname(group_name)
     if result['data']:
         if len(result['data']) > 1:
             message = f'现在有如下多个名叫{group_name}的公会：\n'
