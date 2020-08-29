@@ -58,6 +58,40 @@ async def send_gif(cq_event: Event):
         return
 
 
+@bot.on_message()
+async def send_gif(cq_event: Event):
+    # 获取信息
+    group_id = cq_event.group_id
+    message = cq_event.message
+    print(message)
+    print(str(message))
+    rex = re.match('(.*?)技能', str(message))
+    if rex:
+        role_name = rex.group(1)
+        with open(r'E:\pcrbot\pcr\plugins\role_wiki\nickname.csv', 'r', encoding='utf-8') as f:
+            f_csv = csv.reader(f)
+            is_find = False
+            for row in f_csv:
+                if role_name in row:
+                    role_name = row[2]
+                    is_find = True
+                    break
+            print(is_find)
+            if not is_find:
+                return
+        w = Wiki()
+        results = w.get_role_skills(role_name)
+        msg = ''
+        for skill in results:
+            msg += '==========\n'
+            msg += skill['title']+skill['sub_title']
+            msg += '[CQ:image,file={}]'.format(skill['image_url'])
+            msg += skill['skill']
+        await bot.send_msg(group_id=group_id,message=msg)
+
+
+
+
 if __name__ == '__main__':
     with open('./nickname.csv', 'r', encoding='utf-8') as f:
         f_csv = csv.reader(f)
