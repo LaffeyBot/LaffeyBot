@@ -48,6 +48,7 @@ async def add_new_group(session: CommandSession):
                     )
                     db.session.add(g)
                     db.session.commit()
+                    await session.send(f'{g.name}公会添加成功！')
                 else:
                     await session.send('该公会记录已经存在了', at_sender=True)
             except ValueError as e:
