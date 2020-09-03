@@ -23,7 +23,7 @@ async def send_gif(cq_event: Event):
     if rex:
         role_name = rex.group(1)
         # 查找是否是对应的别名
-        with open(r'E:\pcrbot\pcr\plugins\role_wiki\nickname.csv', 'r', encoding='utf-8') as f:
+        with open(r'pcr/plugins/role_wiki/nickname.csv', 'r', encoding='utf-8') as f:
             f_csv = csv.reader(f)
             is_find = False
             for row in f_csv:
@@ -68,7 +68,7 @@ async def send_gif(cq_event: Event):
     rex = re.match('(.*?)技能', str(message))
     if rex:
         role_name = rex.group(1)
-        with open(r'E:\pcrbot\pcr\plugins\role_wiki\nickname.csv', 'r', encoding='utf-8') as f:
+        with open(r'pcr/plugins/role_wiki/nickname.csv', 'r', encoding='utf-8') as f:
             f_csv = csv.reader(f)
             is_find = False
             for row in f_csv:
