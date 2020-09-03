@@ -17,21 +17,21 @@ async def send_gif(cq_event: Event):
     # 获取信息
     group_id = cq_event.group_id
     message = cq_event.message
-    print(message)
     print(str(message))
     rex = re.match('(.*?).gif', str(message))
-    print(re)
 
     if rex:
         role_name = util.normalize_str(rex.group(1))
+        print(role_name)
         # 查找是否是对应的别名
         filtered = filter(lambda char_list: role_name in char_list,
                           list(CHARA_NAME.values()))
         result = next(filtered, None)
         if result:
-            role_name = result[0]
+            role_name = result[0].replace('(', '（').replace(')', '）')
         else:
             return
+        print(role_name)
 
         if os.path.exists('pcr/plugins/role_wiki/roles.json'):
             with open('pcr/plugins/role_wiki/roles.json', 'r', encoding='utf-8') as f:
