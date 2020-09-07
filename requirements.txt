@@ -14,7 +14,7 @@ pygtrie~=2.3.3
 fuzzywuzzy~=0.18.0
 PyMySQL~=0.10.0
 ujson~=3.1.0
-Quart~=0.13.0
+Quart
 PyJWT~=1.7.1
 bcrypt~=3.2.0
 Flask-SQLAlchemy~=2.4.4
