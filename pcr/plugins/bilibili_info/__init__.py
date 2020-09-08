@@ -11,9 +11,10 @@ async def get_video_info(cq_event: Event):
     group_id = cq_event.group_id
     message = cq_event.message
     urls = re.findall('https://www.bilibili.com\S+', message)
-    print(urls)
+    print('NOTICED BILIBILILINK: ' + str(urls))
     if urls:
         for url in urls:
+            print('URL:' + url)
             msg = ''
             v = VideoInfo(url)
             result_dic = v.get_video_info()
