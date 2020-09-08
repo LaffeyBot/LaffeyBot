@@ -11,13 +11,14 @@ async def get_video_info(cq_event: Event):
     group_id = cq_event.group_id
     message = cq_event.message
     urls = re.findall('https://www.bilibili.com\S+', message)
-    print('NOTICED BILIBILILINK: ' + str(urls))
     if urls:
         for url in urls:
             print('URL:' + url)
             msg = ''
             v = VideoInfo(url)
+            print(v)
             result_dic = v.get_video_info()
+            print(result_dic)
             msg += f'为指挥官查到{url}的视频简介如下：\n'
             msg += '视频标题是:' + result_dic['title'] + ' up是:' + result_dic['author'] + '\n'
             msg += '点赞数:' + result_dic['data']['like'] + ' 投币数:' + result_dic['data']['coin'] + ' 收藏数:' + \
