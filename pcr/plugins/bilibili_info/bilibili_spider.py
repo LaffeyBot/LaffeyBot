@@ -13,7 +13,7 @@ class VideoInfo(object):
         }
 
     def get_video_info(self)->dict:
-        result = re.search(r'https://www.bilibili.com/(.*?)/.*?',self.base_url)
+        result = re.search(r'https?://www.bilibili.com/(.*?)/.*?',self.base_url)
         if result:
             video_type = result.group(1)
             if video_type == 'video':
@@ -23,7 +23,7 @@ class VideoInfo(object):
 
     def get_ordinary_video_info(self)->dict:
         # 获取视频编号，以便判断是av还是bv
-        result = re.search(r'https://www.bilibili.com/video/(\w+)',self.base_url)
+        result = re.search(r'https?://www.bilibili.com/video/(\w+)',self.base_url)
         self.headers['content-type'] = 'application/json; charset=utf-8'
         if result:
             num = result.group(1)
@@ -36,7 +36,7 @@ class VideoInfo(object):
                 temp.update(response_dic)
                 return temp
             elif num.startswith('AV') or num.startswith('av'):
-                param = {'avid': num}
+                param = {'aid': num[2:]}
                 response = requests.get(url=self.api_url, headers=self.headers, params=param)
                 response_dic = json.loads(response.content.decode(), encoding='utf-8')
                 temp = self.get_video_details()
@@ -64,5 +64,5 @@ class VideoInfo(object):
 
 
 if __name__ == '__main__':
-    v = VideoInfo('https://www.bilibili.com/video/BV19f4y1173X/')
+    v = VideoInfo("http://www.bilibili.com/video/av498688434?share_medium=android&amp;share_source=qq&amp;bbid=f0dyQ3YUIhcvSnJGOkZ0RiBCJh5_SAh6GSgcinfoc&amp;ts=1599624354365")
     print(v.get_video_info())
