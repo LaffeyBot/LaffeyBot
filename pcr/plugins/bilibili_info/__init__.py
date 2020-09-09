@@ -13,12 +13,12 @@ async def get_video_info(cq_event: Event):
     print('------x-----------')
     print(message)
     print(type(message))
-    urls = re.findall('https://www.bilibili.com\\S+', str(message))
+    urls = re.findall(r'https://www.bilibili.com\S+', str(message))
     print('----------------')
     print(urls)
     if urls:
+        url: str
         for url in urls:
-            print('URL:' + url)
             msg = ''
             v = VideoInfo(url)
             print(v)
