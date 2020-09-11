@@ -17,12 +17,10 @@ async def send_gif(cq_event: Event):
     # 获取信息
     group_id = cq_event.group_id
     message = cq_event.message
-    print(str(message))
     rex = re.match('(.*?).gif', str(message))
 
     if rex:
         role_name = util.normalize_str(rex.group(1))
-        print(role_name)
         # 查找是否是对应的别名
         filtered = filter(lambda char_list: role_name in char_list,
                           list(CHARA_NAME.values()))
@@ -31,14 +29,12 @@ async def send_gif(cq_event: Event):
             role_name = result[0].replace('(', '（').replace(')', '）')
         else:
             return
-        print(role_name)
 
         if os.path.exists('pcr/plugins/role_wiki/roles.json'):
             with open('pcr/plugins/role_wiki/roles.json', 'r', encoding='utf-8') as f:
                 data = json.load(f)
             names = data['role_name']
             if role_name in names:
-                print(1)
                 fold_path = os.path.join(config.CQ_SOURCE_PATH, 'images', f'{role_name}动画')
                 if os.path.exists(fold_path):
                     for root,dirs,files in os.walk(fold_path):
