@@ -28,13 +28,14 @@ class TeamRankChart(object):
         rmax = self.get_max_rank() // 100 * 100
         time_length = len(self.time)
         # 设置刻度范围
-        self.ax.set_xlim([0.5,time_length + 0.1])  # x轴从1到记录最长时间
-        if rmin-200<=0:
+        self.ax.set_xlim([0.5, time_length + 0.1])  # x轴从1到记录最长时间
+        if rmin - 200 <= 0:
             self.ax.set_ylim([0, rmax + 200])
         else:
             self.ax.set_ylim([rmin - 200, rmax + 200])  # y轴从最小rank-100到最大rank+100
         # 设置显示刻度
-        self.ax.set_xticks(np.linspace(1, time_length, time_length))
+        if time_length <= 20:
+            self.ax.set_xticks(np.linspace(1, time_length, time_length))
         gap = (rmax - rmin + 400) // 500 + 1
         if gap <= 12:
             self.ax.set_yticks(np.linspace(rmax + 200, rmin - 200, gap))

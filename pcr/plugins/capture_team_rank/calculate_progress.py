@@ -5,8 +5,8 @@ class Progress(object):
     def __init__(self):
         self.boss_hp = config.BOSS_HEALTH
         self.score_rate = [
-            [1, 1, 1.1, 1.1, 1.2],
-            [1.2, 1.2, 1.5, 1.7, 2],
+            [1, 1, 1.3, 1.3, 1.5],
+            [1.3, 1.3, 1.8, 1.8, 2],
         ]
         self.epoch = 1
         self.damage = 0
