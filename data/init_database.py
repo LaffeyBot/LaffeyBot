@@ -49,6 +49,10 @@ def init_database():
                        'qq_id BIGINT NOT NULL,'
                        'api_key TEXT NOT NULL '
                        ');')
+    connection.execute('CREATE TABLE IF NOT EXISTS team_homework('
+                       'homework_id BIGINT NOT NULL,'
+                       'id INT NOT NULL PRIMARY KEY AUTO_INCREMENT'
+                       ');')
 
     connection.close()
 
