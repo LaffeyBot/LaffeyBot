@@ -120,7 +120,7 @@ def draw_pic(team):
     for image in team:
         chara = Chara(int(image['id']), image['stars'], image['weapons'], url=image['avatar'], is_bigfun=True)
         chars.append(chara)
-    team_pic = gen_team_pic(team)
+    team_pic = gen_team_pic(chars)
     team_pic_b64 = pic2b64(team_pic)
     return team_pic_b64
 
