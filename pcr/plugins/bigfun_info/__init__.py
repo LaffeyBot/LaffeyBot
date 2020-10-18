@@ -117,7 +117,7 @@ async def get_message(boss_position, session: CommandSession):
 def draw_pic(team):
     # 1.star是角色星级数，weapon是是否有专武(0无，1有）
     chars = list()
-    for image in team['role_list']:
+    for image in team:
         chara = Chara(int(image['id']), image['stars'], image['weapons'], url=image['avatar'], is_bigfun=True)
         chars.append(chara)
     team_pic = gen_team_pic(team)
