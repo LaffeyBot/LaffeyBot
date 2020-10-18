@@ -8,6 +8,7 @@ import csv
 from nonebot import CommandSession
 from pcr.plugins.priconne._pcr_data import CHARA_NAME
 from hoshino import  util
+import requests
 
 bot = nonebot.get_bot()
 
@@ -95,5 +96,4 @@ if __name__ == '__main__':
             print(row)
     for i in os.walk(r'E:\pcrbot\pcr\plugins\role_wiki'):
         print(i)
-
 

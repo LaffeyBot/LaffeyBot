@@ -111,9 +111,12 @@ def gen_team_pic(team, size=64, star_slot_verbose=True):
     return des
 
 
-def download_chara_icon(id_, star):
-    url = f'https://redive.estertion.win/icon/unit/{id_}{star}1.webp'
-    save_path = R.img(f'priconne/unit/icon_unit_{id_}{star}1.png').path
+def download_chara_icon(id_, star, url=None):
+    if url is None:
+        url = f'https://redive.estertion.win/icon/unit/{id_}{star}1.webp'
+        save_path = R.img(f'priconne/unit/icon_unit_{id_}{star}1.png').path
+    else:
+        save_path = R.img(f'priconne/unit/icon_direct_{id_}{star}1.png').path
     logger.info(f'Downloading chara icon from {url}')
     try:
         rsp = requests.get(url, stream=True, timeout=5)
@@ -131,10 +134,12 @@ def download_chara_icon(id_, star):
 
 class Chara:
 
-    def __init__(self, id_, star=0, equip=0):
+    def __init__(self, id_, star=0, equip=0, url=None, is_bigfun=False):
         self.id = id_
         self.star = star
         self.equip = equip
+        self.url = url
+        self.is_bigfun = is_bigfun
 
     @property
     def name(self):
@@ -146,6 +151,12 @@ class Chara:
 
     @property
     def icon(self):
+        if self.is_bigfun:
+            res = R.img(f'priconne/unit/icon_direct_{self.id}{self.star}1.png')
+            if not res.exist:
+                download_chara_icon(self.id, self.star, url=self.url)
+                res = R.img(f'priconne/unit/icon_direct_{self.id}{self.star}1.png')
+            return res
         star = '3' if 1 <= self.star <= 5 else '6'
         res = R.img(f'priconne/unit/icon_unit_{self.id}{star}1.png')
         if not res.exist:
