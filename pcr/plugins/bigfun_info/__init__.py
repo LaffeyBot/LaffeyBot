@@ -76,15 +76,22 @@ async def get_details(session: CommandSession):
 
 
 async def get_message(boss_position, session: CommandSession):
-    params = {
+    params1 = {
+        'target': 'get-gzlj-team-war-work-category/a',
+        'type': 2,
+        'battle_id':''
+    }
+    print(TeamHomework('https://www.bigfun.cn/api/feweb', params=params1).parse())
+    battle_id = TeamHomework('https://www.bigfun.cn/api/feweb', params=params1).parse()['data']['battle_info']['id']
+    params2 = {
         'target': 'get-gzlj-team-war-work-list/a',
         'type': 2,
-        'battle_id': 3,
+        'battle_id': battle_id,
         'boss_position': boss_position,
         'order': 1,
         'page': 1
     }
-    t = TeamHomework('https://www.bigfun.cn/api/feweb', params=params)
+    t = TeamHomework('https://www.bigfun.cn/api/feweb', params=params2)
     data_dict = t.parse()
     homework_list = data_dict['data']
     message = f'以下是拉菲为指挥官查到的{boss_position}王的作业，请选择合适的使用:\n'
