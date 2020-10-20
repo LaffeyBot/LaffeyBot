@@ -5,7 +5,13 @@ import re
 from .team_homework_spider import TeamHomework
 from data import init_database
 
+from pcr.plugins.priconne.chara import Chara, gen_team_pic
+
+from hoshino.util import pic2b64
+
+
 from nonebot.command.argfilter import extractors
+from nonebot import MessageSegment
 import nonebot
 
 NICKNAME = {'拉菲', '拉菲酱', 'Laffey', 'laffey'}
@@ -103,9 +109,9 @@ async def get_message(boss_position, session: CommandSession):
             message += '【作业编号{0}】 {1}\n'.format(homework['id'], homework['title'])
             message += '该轴预期的伤害为{0} 适用{1}周目 收到的点赞数{2}\n'.format(homework['expect_injury'], homework['boss_cycle'],
                                                                 homework['like_count'])
-            for image in homework['role_list']:
-                pic_path = draw_pic(image['avatar'], image['stars'], image['weapons'])
-                message += '[CQ:image,file={}]'.format(pic_path)
+            team_pic = draw_pic(homework['role_list'])
+            atk_team = str(MessageSegment.image(team_pic))
+            message += atk_team
             message += '\n'
             message += '作者为：{}\n'.format(homework['user']['player_name'])
             homework_ids.append(homework['id'])
@@ -115,10 +121,15 @@ async def get_message(boss_position, session: CommandSession):
     return homework_ids
 
 
-def draw_pic(pic_url, star, weapon):
+def draw_pic(team):
     # 1.star是角色星级数，weapon是是否有专武(0无，1有）
-    # 2. 返回的是处理后图片地址，先暂时用网上地址替换
-    return pic_url
+    chars = list()
+    for image in team:
+        chara = Chara(int(image['id']), image['stars'], image['weapons'], url=image['avatar'], is_bigfun=True)
+        chars.append(chara)
+    team_pic = gen_team_pic(chars)
+    team_pic_b64 = pic2b64(team_pic)
+    return team_pic_b64
 
 
 @team_homework.args_parser
