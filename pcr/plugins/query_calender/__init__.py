@@ -107,6 +107,6 @@ async def send_tips():
                 message += f"即将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n"+tips[2]
 
     if message:
-        await bot.send_group_msg(message=message,group_id=826407504)
+        await bot.send_group_msg(message=message)
     else:
         return
