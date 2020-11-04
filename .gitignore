@@ -223,3 +223,4 @@ player_list.csv
 node_modules/
 temp_test.py
 /res/img/priconne/comic/
+!/pcr/plugins/games/
