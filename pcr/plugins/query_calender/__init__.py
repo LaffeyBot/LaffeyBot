@@ -50,7 +50,7 @@ tips = [
 ]
 
 
-@nonebot.scheduler.scheduled_job('cron', day='*/1', minute='*/1')
+@nonebot.scheduler.scheduled_job('cron', day='*/1', hour='*/8')
 async def send_tips():
     bot = nonebot.get_bot()
     plan_info = calender_info()
