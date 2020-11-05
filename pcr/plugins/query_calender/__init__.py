@@ -50,7 +50,7 @@ tips = [
 ]
 
 
-@nonebot.scheduler.scheduled_job('cron', day='*/1', hour='*/8')
+@nonebot.scheduler.scheduled_job('cron', hour="6-23/3",minute=15)
 async def send_tips():
     bot = nonebot.get_bot()
     plan_info = calender_info()
@@ -78,7 +78,7 @@ async def send_tips():
             tomorrow_start.append(event)
     message = ""
     if event_end:
-        message += "==========\n"
+        message += "==========\n即将结束活动\n"
         for event in event_end:
             message += f"{event['name']}事件将于{event['end_time']}结束"
             if re.search(r"N图.*?|H图.*?", event['name']):
@@ -88,25 +88,25 @@ async def send_tips():
             elif re.search(r"露娜塔", event['name']):
                 message += "本月的露娜塔活动要结束了，还请没打完的指挥官做好最后一击\n"
             elif re.search(r"活动.*?", event['name']):
-                message += f"{event['name']}将于{event['end_time']}结束，请各位指挥官记得清理剩余的boss券\n"
+                message += f"请各位指挥官记得清理剩余的boss券\n"
             else:
-                message += f"{event['name']}即将结束，还请指挥官多多注意喵~"
+                message += f"还请指挥官多多注意喵~\n"
     if tomorrow_start:
-        message += "=========\n"
+        message += "=========\n明天开启活动\n"
         for event in tomorrow_start:
             if re.search(r"H图.*?", event['name']):
                 message += f"明天将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n"+tips[1]
             else:
                 message += f"明天{event['start_time']}将开启活动{event['name']},请各位指挥官做好准备\n"
     if day_after_tomorrow_start:
-        message += "=========\n"
+        message += "=========\n后天开启活动\n"
         for event in day_after_tomorrow_start:
             if re.search(r"N图.*?|H图.*?", event['name']):
-                message += f"即将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n"+tips[0]
+                message += f"即将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n"+tips[0]+"\n"
             elif re.search(r"地下城.*?", event['name']):
-                message += f"即将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n"+tips[2]
+                message += f"即将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n"+tips[2]+"\n"
 
     if message:
-        await bot.send_group_msg(message=message)
+        await bot.send_group_msg(message=message,group_id=826407504)
     else:
         return
