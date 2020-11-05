@@ -50,7 +50,7 @@ tips = [
 ]
 
 
-@nonebot.scheduler.scheduled_job('cron', hour="6-23/3",minute=15)
+@nonebot.scheduler.scheduled_job('cron', hour="6-23/1",minute="*/1")
 async def send_tips():
     bot = nonebot.get_bot()
     plan_info = calender_info()
@@ -105,8 +105,10 @@ async def send_tips():
                 message += f"即将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n"+tips[0]+"\n"
             elif re.search(r"地下城.*?", event['name']):
                 message += f"即将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n"+tips[2]+"\n"
-
+    print(await bot.get_group_list())
     if message:
-        await bot.send_group_msg(message=message,group_id=826407504)
+        # group_list内容[{'group_id': , 'group_name': '', 'max_member_count': , 'member_count': }]
+        for group in bot.get_group_list():
+            await bot.send_group_msg(group_id=group['group_id'],message=message)
     else:
         return
