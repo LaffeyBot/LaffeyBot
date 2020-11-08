@@ -5,6 +5,7 @@ from dateutil.parser import parse
 import datetime
 import nonebot
 import re
+import asyncio
 
 
 @on_command('calender', aliases=('日程表', '日历', '未来活动'), only_to_me=False)
@@ -50,7 +51,7 @@ tips = [
 ]
 
 
-@nonebot.scheduler.scheduled_job('cron', hour="6-23/1",minute="*/1")
+@nonebot.scheduler.scheduled_job('cron', hour="6-23/2", minute="20")
 async def send_tips():
     bot = nonebot.get_bot()
     plan_info = calender_info()
@@ -95,20 +96,22 @@ async def send_tips():
         message += "=========\n明天开启活动\n"
         for event in tomorrow_start:
             if re.search(r"H图.*?", event['name']):
-                message += f"明天将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n"+tips[1]
+                message += f"明天将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n" + tips[1]
             else:
                 message += f"明天{event['start_time']}将开启活动{event['name']},请各位指挥官做好准备\n"
     if day_after_tomorrow_start:
         message += "=========\n后天开启活动\n"
         for event in day_after_tomorrow_start:
             if re.search(r"N图.*?|H图.*?", event['name']):
-                message += f"即将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n"+tips[0]+"\n"
+                message += f"即将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n" + tips[0] + "\n"
             elif re.search(r"地下城.*?", event['name']):
-                message += f"即将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n"+tips[2]+"\n"
-    print(await bot.get_group_list())
-    if message:
-        # group_list内容[{'group_id': , 'group_name': '', 'max_member_count': , 'member_count': }]
-        for group in bot.get_group_list():
-            await bot.send_group_msg(group_id=group['group_id'],message=message)
+                message += f"即将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n" + tips[2] + "\n"
+
+    group_info = await bot.get_group_list()
+    if event_end or day_after_tomorrow_start or tomorrow_start:
+        for group in group_info:
+            # group_list内容[{'group_id': , 'group_name': '', 'max_member_count': , 'member_count': }]
+            await asyncio.sleep(0.5)
+            await bot.send_group_msg(group_id=group['group_id'], message="message")
     else:
         return
