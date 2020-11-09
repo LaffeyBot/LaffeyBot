@@ -113,6 +113,6 @@ async def send_tips():
         for group in group_info:
             # group_list内容[{'group_id': , 'group_name': '', 'max_member_count': , 'member_count': }]
             await asyncio.sleep(0.5)
-            await bot.send_group_msg(group_id=group['group_id'], message="message")
+            await bot.send_group_msg(group_id=group['group_id'], message=message)
     else:
         return
