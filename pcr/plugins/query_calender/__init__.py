@@ -61,13 +61,14 @@ async def send_tips():
     tomorrow_start = []  # 明天开启事件
     day_after_tomorrow_start = []  # 后天开启事件
     event_end = []  # 明天结束事件
-    future_date = [datetime.datetime.today() + datetime.timedelta(i) for i in range(3)]
+    future_date = [(datetime.datetime.today() + datetime.timedelta(i)).strftime("%Y-%m-%d") for i in range(3)]
     for event in plan_info:
-        start_time = event['start_time']
-        end_time = event['end_time']
-        in_today = parse(start_time) <= future_date[0] <= parse(end_time)
-        in_tomorrow = parse(start_time) <= future_date[1] <= parse(end_time)
-        in_day_after = parse(start_time) <= future_date[2] <= parse(end_time)
+        # 要将日期换成天的形式，否则时间判断会出问题
+        start_time = datetime.datetime.strptime(event['start_time'],"%Y/%m/%d %H:%M:%S").strftime("%Y-%m-%d")
+        end_time = datetime.datetime.strptime(event['end_time'],"%Y/%m/%d %H:%M:%S").strftime("%Y-%m-%d")
+        in_today = parse(start_time) < parse(future_date[0]) <= parse(end_time)
+        in_tomorrow = parse(start_time) <= parse(future_date[1]) <= parse(end_time)
+        in_day_after = parse(start_time) <= parse(future_date[2]) <= parse(end_time)
         if in_today and not in_tomorrow:
             # 某个事件第二天结束
             event_end.append(event)
@@ -77,9 +78,9 @@ async def send_tips():
         elif not in_today and in_tomorrow:
             # 明天开始事件
             tomorrow_start.append(event)
-    message = ""
+    message = "活动变更提示：\n"
     if event_end:
-        message += "==========\n即将结束活动\n"
+        message += "==========\n即将结束活动提示\n"
         for event in event_end:
             message += f"{event['name']}事件将于{event['end_time']}结束"
             if re.search(r"N图.*?|H图.*?", event['name']):
@@ -93,14 +94,14 @@ async def send_tips():
             else:
                 message += f"还请指挥官多多注意喵~\n"
     if tomorrow_start:
-        message += "=========\n明天开启活动\n"
+        message += "=========\n明天开启活动提示\n"
         for event in tomorrow_start:
             if re.search(r"H图.*?", event['name']):
                 message += f"明天将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n" + tips[1]
             else:
                 message += f"明天{event['start_time']}将开启活动{event['name']},请各位指挥官做好准备\n"
     if day_after_tomorrow_start:
-        message += "=========\n后天开启活动\n"
+        message += "=========\n后天开启活动提示\n"
         for event in day_after_tomorrow_start:
             if re.search(r"N图.*?|H图.*?", event['name']):
                 message += f"即将开启活动{event['name']},以下是拉菲为指挥官准备的计划：\n" + tips[0] + "\n"
