@@ -35,23 +35,25 @@ async def calender(session: CommandSession):
     await session.send(message)
 
 
-future_date = [
-    (datetime.datetime.today() + datetime.timedelta(i)).strftime("%Y{y}%m{m}%d{d}").format(y="年", m="月", d="日") for i in
-    range(3)]
-tips = [
-    f"1、{future_date[0]} 18点前领取最后一次家具体力，{future_date[0]} 18点-7月22日18点 之间不再领取家具体力\n"
-    f"2、{future_date[1]} 每日200体力 等18点以后领取\n"
-    f"3、{future_date[1]} 18点以后，自回体保证在71~79+每日200体力+额外买6管体力，使体力≥991\n"
-    f"4、{future_date[1]} 完成第三步后，点赞（10点体力），领取家具体力，都会存入邮箱保持24小时，然后下线\n"
-    f"5、{future_date[2]} 起床开刷N2",
-    f"{future_date[1]}开始困难碎片获取翻倍，请各位指挥官提前准备好本期要刷的目标角色碎片",
-    f"{future_date[0]} 留地下城boss不打\n"
-    f"{future_date[1]} 把留下的地下城boss打了，然后进入今天地下城不打\n"
-    f"{future_date[2]} 记得今天地下城可以打两次喵~",
-]
+def get_tips()->list:
+    future_date = [
+        (datetime.datetime.today() + datetime.timedelta(i)).strftime("%Y{y}%m{m}%d{d}").format(y="年", m="月", d="日") for i in
+        range(3)]
+    tips = [
+        f"1、{future_date[0]} 18点前领取最后一次家具体力，{future_date[0]} 18点-{future_date[1]}18点 之间不再领取家具体力\n"
+        f"2、{future_date[1]} 每日200体力 等18点以后领取\n"
+        f"3、{future_date[1]} 18点以后，自回体保证在71~79+每日200体力+额外买6管体力，使体力≥991\n"
+        f"4、{future_date[1]} 完成第三步后，点赞（10点体力），领取家具体力，都会存入邮箱保持24小时，然后下线\n"
+        f"5、{future_date[2]} 起床开刷N2",
+        f"{future_date[1]}开始困难碎片获取翻倍，请各位指挥官提前准备好本期要刷的目标角色碎片",
+        f"{future_date[0]} 留地下城boss不打\n"
+        f"{future_date[1]} 把留下的地下城boss打了，然后进入今天地下城不打\n"
+        f"{future_date[2]} 记得今天地下城可以打两次喵~",
+    ]
+    return tips
 
 
-@nonebot.scheduler.scheduled_job('cron', hour="6-23/2", minute="20")
+@nonebot.scheduler.scheduled_job('cron', hour="6-23/6", minute="20")
 async def send_tips():
     bot = nonebot.get_bot()
     plan_info = calender_info()
@@ -66,7 +68,7 @@ async def send_tips():
         # 要将日期换成天的形式，否则时间判断会出问题
         start_time = datetime.datetime.strptime(event['start_time'],"%Y/%m/%d %H:%M:%S").strftime("%Y-%m-%d")
         end_time = datetime.datetime.strptime(event['end_time'],"%Y/%m/%d %H:%M:%S").strftime("%Y-%m-%d")
-        in_today = parse(start_time) < parse(future_date[0]) <= parse(end_time)
+        in_today = parse(start_time) <= parse(future_date[0]) <= parse(end_time)
         in_tomorrow = parse(start_time) <= parse(future_date[1]) <= parse(end_time)
         in_day_after = parse(start_time) <= parse(future_date[2]) <= parse(end_time)
         if in_today and not in_tomorrow:
@@ -78,6 +80,7 @@ async def send_tips():
         elif not in_today and in_tomorrow:
             # 明天开始事件
             tomorrow_start.append(event)
+    tips = get_tips()
     message = "活动变更提示：\n"
     if event_end:
         message += "==========\n即将结束活动提示\n"
